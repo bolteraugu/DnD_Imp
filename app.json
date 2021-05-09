@@ -1,0 +1,27 @@
+{
+  "expo": {
+    "name": "dndapp",
+    "slug": "dndapp",
+    "platforms": ["ios", "android", "web"],
+    "version": "1.0.0",
+    "icon": "./assets/images/icon.png",
+    "scheme": "myapp",
+    "splash": {
+      "image": "./assets/images/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "package": "com.thomsodyla1.dungeonminion5e",
+      "versionCode": 1
+    },
+    "web": {}
+  }
+}
