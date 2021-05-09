@@ -1,7 +1,7 @@
 import * as React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import { View } from "react-native";
-import * as firebase from "firebase";
+import firebase from "firebase";
 import "firebase/firestore";
 import MenuScreen from "../screens/MenuScreen";
 import DMScreen from "../screens/DMScreen";

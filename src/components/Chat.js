@@ -11,7 +11,7 @@ import {
   TextInput,
 } from "react-native-paper";
 import { GiftedChat, Bubble, Send } from "react-native-gifted-chat";
-import * as firebase from "firebase";
+import firebase from "firebase";
 import "firebase/firestore";
 
 export default function Chat({ groupRef }) {

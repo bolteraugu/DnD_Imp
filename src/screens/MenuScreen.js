@@ -3,7 +3,7 @@ import { StyleSheet, FlatList, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { AuthUserContext } from "../navigation/AuthUserProvider";
 import { Title, Button, List } from "react-native-paper";
-import * as firebase from "firebase";
+import firebase from "firebase";
 import "firebase/firestore";
 import Spinner from "../components/Spinner";
 import Colors from "../utils/colors";

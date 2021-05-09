@@ -2,7 +2,7 @@ import React, { useState, useContext } from "react";
 import { View, StyleSheet } from "react-native";
 import { Title, TextInput, Button } from "react-native-paper";
 import { AuthUserContext } from "../navigation/AuthUserProvider";
-import * as firebase from "firebase";
+import firebase from "firebase";
 import "firebase/firestore";
 
 /**

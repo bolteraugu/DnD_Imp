@@ -5,7 +5,7 @@ import CharacterCard from "../components/CharacterCard";
 import Chat from "../components/Chat";
 import CharacterTemplate from "../utils/character_template.json";
 import Spinner from "../components/Spinner";
-import * as firebase from "firebase";
+import firebase from "firebase";
 import "firebase/firestore";
 
 export default function DMScreen({ route, navigation }) {
