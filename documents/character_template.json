@@ -1,0 +1,224 @@
+{
+    "name": "",
+    "level": 0,
+    "XP": 0,
+    "max_XP": 0,
+    "class": "",
+    "race": "",
+    "alignment": "",
+    
+
+    "abilities": {
+        "strength": 0,
+        "dexterity": 0,
+        "constitution": 0,
+        "intelligence": 0,
+        "wisdom": 0,
+        "charisma": 0
+    },
+
+
+    "inspiration": false,
+    "proficiency_bonus": false,
+    "saving_throws": {
+        "strength": {
+            "mod": 0,
+            "toggle": false
+        },
+        "dexterity": {
+            "mod": 0,
+            "toggle": false
+        },
+        "constitution": {
+            "mod": 0,
+            "toggle": false
+        },
+        "intelligence": {
+            "mod": 0,
+            "toggle": false
+        },
+        "wisdom": {
+            "mod": 0,
+            "toggle": false
+        },
+        "charisma": {
+            "mod": 0,
+            "toggle": false
+        }
+    },
+    "skills":{
+        "acrobatics": {
+            "toggle": false,
+            "ability": "dexterity",
+            "mod": 0
+        },
+        "animal handling": {
+            "toggle": false,
+            "ability": "wisdom",
+            "mod": 0
+        },
+        "arcana": {
+            "toggle": false,
+            "ability": "intelligence",
+            "mod": 0
+        },
+        "athletics": {
+            "toggle": true,
+            "ability": "strength",
+            "mod": 0
+        },
+        "deception": {
+            "toggle": false,
+            "ability": "dexterity",
+            "mod": 0
+        },
+        "history": {
+            "toggle": false,
+            "ability": "intelligence",
+            "mod": 0
+        },
+        "insight": {
+            "toggle": false,
+            "ability": "wisdom",
+            "mod": 0
+        },
+        "intimidation": {
+            "toggle": false,
+            "ability": "charisma",
+            "mod": 0
+        },
+        "investigation": {
+            "toggle": false,
+            "ability": "intelligence",
+            "mod": 0
+        },
+        "medicine": {
+            "toggle": false,
+            "ability": "wisdom",
+            "mod": 0
+        },
+        "nature": {
+            "toggle": false,
+            "ability": "intelligence",
+            "mod": 0
+        },
+        "perception": {
+            "toggle": false,
+            "ability": "wisdom",
+            "mod": 0
+        },
+        "performance": {
+            "toggle": false,
+            "ability": "charisma",
+            "mod": 0
+        },
+        "persuasion": {
+            "toggle": false,
+            "ability": "charisma",
+            "mod": 0
+        },
+        "religion": {
+            "toggle": false,
+            "ability": "intelligence",
+            "mod": 0
+        },
+        "sleight of hand": {
+            "toggle": false,
+            "ability": "dexterity",
+            "mod": 0
+        },
+        "stealth": {
+            "toggle": false,
+            "ability": "dexterity",
+            "mod": 0
+        },
+        "survival": {
+            "toggle": false,
+            "ability": "wisdom",
+            "mod": 0
+        }
+    },
+
+    "armor_class": 0,
+    "initiative": 0,
+    "speed": 0,
+    "HP": 0,
+    "max_HP": 0,
+    "death_saves": {
+        "successes": 0,
+        "failures": 0
+    },
+    "hit_dice": {},
+
+    "attacks_spellcasting": [
+        {
+            "name":"",
+            "atk_bonus": "",
+            "damage_type": ""
+        }
+    ],
+
+    "equipment": [
+        {}
+    ],
+    "currency": {
+        "cp": 0,
+        "sp": 0,
+        "ep": 0,
+        "gp": 0,
+        "pp": 0
+    },
+
+    "personality": {
+        "traits": "",
+        "ideals": "",
+        "bonds": "",
+        "flaws": ""
+    },
+    "features_traits": "",
+
+
+    "avatar": "",
+    "backstory": "",
+    "allies": "",
+    "organisation": "",
+    "additional_features_traits": "",
+    "treasure": [
+        ""
+    ],
+    "appearance_stats": {
+        "age": "",
+        "height": "",
+        "weight": "",
+        "eyes": "",
+        "skin": "",
+        "hair": ""
+    },
+    "notes": [
+        {
+            "title":"",
+            "content": ""
+        }
+    ],
+
+    "spellcasting_class": "",
+    "spellcasting_ability": "",
+    "spell_save_dc": "",
+    "spell_attack_bonus": "",
+    "cantrips": [
+
+    ],
+    "spell_level": [
+        {
+            "level": 1,
+            "slots_total": 0,
+            "slots_expanded": 0,
+            "spells": [
+                {
+                    "name":"",
+                    "known": false
+                }
+            ]
+        }
+    ]
+}
