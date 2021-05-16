@@ -1,6 +1,7 @@
-import React from "react";
-import { Text } from "react-native";
+import React from "react"; //Will need react
+import { Text } from "react-native"; //Probably will need text...
 
+//Not implemented. I will implement this. No way of currently navigating to this.
 export default function PlayerScreen() {
   return <Text>Main</Text>;
   // TOP NEESTED TAB NAVIGATION

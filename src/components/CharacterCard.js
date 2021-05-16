@@ -167,6 +167,7 @@ export default function CharacterCard({
             icon="arrow-expand-all"
             size={28}
             color="#000"
+            //Navigates to playerScreen but then redirects to NotesScreen??? Strange. Will fix later.
             onPress={() => {
               navigation.navigate("PlayerScreen", {
                 screen: "Notes",

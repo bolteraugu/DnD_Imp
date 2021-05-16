@@ -174,7 +174,6 @@ export default function Chat({ groupRef }) {
                 />
               </Dialog.Content>
               <Dialog.Actions>
-                <Button onPress={hideDialog}>Cancel</Button>
                 <Button
                   onPress={() => {
                     groupRef
@@ -182,9 +181,10 @@ export default function Chat({ groupRef }) {
                         members: firebase.firestore.FieldValue.arrayUnion(
                           inputVal
                         ),
+                        numMembers: firebase.firestore.FieldValue.increment(1)
                       })
                       .then(() => {
-                        hideDialog;
+                        hideDialog()
                         setRecipients([...recipients, inputVal]);
                         setMembers([...members, inputVal]);
                       });
@@ -192,6 +192,7 @@ export default function Chat({ groupRef }) {
                 >
                   Add
                 </Button>
+                <Button onPress={hideDialog}>Cancel</Button>
               </Dialog.Actions>
             </Dialog>
           </Portal>

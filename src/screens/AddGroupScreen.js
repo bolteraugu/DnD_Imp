@@ -18,47 +18,52 @@ export default function AddGroupScreen({ navigation }) {
   function handleButtonPress() {
     if (groupName.length > 0) {
       firebase
-        .firestore()
-        .collection("groups")
-        .add({
-          name: groupName,
-          members: [user.toJSON().email],
-        })
-        .then(
-          (docRef) => {
-            docRef.collection("messages").add({
-              text: `You have joined the group ${groupName}.`,
-              createdAt: new Date().getTime(),
-              system: true,
-            });
-            navigation.navigate("Home");
-          },
-          (error) => {
-            alert(error);
-          }
-        );
+          .firestore()
+          .collection("groups")
+          .add({
+            name: groupName,
+            members: [user.toJSON().email],
+            numMembers: 1
+          })
+          .then(
+              (docRef) => {
+                docRef.collection("messages").add({
+                  text: `You have joined the group ${groupName}.`,
+                  createdAt: new Date().toString(),
+                  system: true,
+                });
+                firebase.firestore().collection("logs").doc(groupName + " - " + docRef.id).collection("logs_for_groups").add({
+                  text: `The group has been created by ${user.toJSON().email}.`,
+                  createdAt: new Date().toString(),
+                  system: true,
+                }).then(navigation.navigate("Home"))
+              },
+              (error) => {
+                alert(error);
+              }
+          )
     }
   }
   return (
-    <View style={styles.rootContainer}>
-      <View style={styles.innerContainer}>
-        <Title>Create a new group</Title>
-        <TextInput
-          name="Group Name"
-          value={groupName}
-          onChangeText={(text) => setGroupName(text)}
-          clearButtonMode="while-editing"
-        />
-        <Button
-          mode="contained"
-          style={styles.buttonContainer}
-          onPress={() => handleButtonPress()}
-          disabled={groupName.length === 0}
-        >
-          Create
-        </Button>
+      <View style={styles.rootContainer}>
+        <View style={styles.innerContainer}>
+          <Title>Create a new group</Title>
+          <TextInput
+              name="Group Name"
+              value={groupName}
+              onChangeText={(text) => setGroupName(text)}
+              clearButtonMode="while-editing"
+          />
+          <Button
+              mode="contained"
+              style={styles.buttonContainer}
+              onPress={() => handleButtonPress()}
+              disabled={groupName.length === 0}
+          >
+            Create
+          </Button>
+        </View>
       </View>
-    </View>
   );
 }
 

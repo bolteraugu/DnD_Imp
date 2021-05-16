@@ -1,3 +1,4 @@
+//The color scheme for the app. Specified in hexadecimal.
 export default {
   primary: "#f57c00",
   secondary: "#039be5",
