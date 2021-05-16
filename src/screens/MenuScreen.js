@@ -32,6 +32,41 @@ export default function MenuScreen({ navigation }) {
     const showEditDialog = () => setEditVisible(true);
     const hideEditDialog = () => setEditVisible(false);
     const [newGroupName, setNewGroupName] = useState("");
+    const [groupName, setGroupName] = useState("");
+    /**
+     * Create a new Firestore collection to save threads
+     */
+    function handleButtonPress() {
+        if (groupName.length > 0) {
+            firebase
+                .firestore()
+                .collection("groups")
+                .add({
+                    name: groupName,
+                    members: [user.toJSON().email],
+                    numMembers: 1
+                })
+                .then(
+                    (docRef) => {
+                        docRef.collection("messages").add({
+                            text: `You have joined the group ${groupName}.`,
+                            createdAt: new Date().toString(),
+                        });
+
+                        firebase.firestore().collection("group-logs").doc(docRef.id).set({
+                            groupName: groupName
+                        }).then(() => {
+                            firebase.firestore().collection("group-logs").doc(docRef.id).collection("logs").add({
+                                text: `The group has been created by ${user.toJSON().email}.`,
+                                createdAt: new Date().toString(),
+                            })}).then(navigation.navigate("Home"))
+                    },
+                    (error) => {
+                        alert(error);
+                    }
+                )
+        }
+    }
 
     useEffect(() => {
         const unsubscribe = firebase
@@ -74,15 +109,6 @@ export default function MenuScreen({ navigation }) {
                     <FlatList
                         data={groups}
                         keyExtractor={(item) => item._id}
-                        ListFooterComponent={() => (
-                            <Button
-                                mode="contained"
-                                onPress={() => navigation.navigate("AddGroup")}
-                                style={styles.button}
-                            >
-                                Create Group
-                            </Button>
-                        )}
                         renderItem={({ item }) => (
                             <View style = {styles.row}>
                                 <View style = {styles.groupContainer}>
@@ -91,6 +117,7 @@ export default function MenuScreen({ navigation }) {
                                             navigation.navigate("DM", { group: item })
                                         }
                                         style={styles.container}
+                                        numberOfLines={1}
                                         title={item.name}>{item.name}
                                     </Title>
                                     <IconButton style = {styles.editIcon}
@@ -121,7 +148,7 @@ export default function MenuScreen({ navigation }) {
                                         <Dialog.Title style={styles.popUpTitle}>Edit group name</Dialog.Title>
                                         <Dialog.Content style={styles.popUpContent}>
                                             <TextInput placeholder="New group name"
-                                                       value={newGroupName}
+                                                       //value={newGroupName}
                                                        clearButtonMode="while-editing"
                                                        onChangeText={(text) => setNewGroupName(text)}
                                             />
@@ -205,6 +232,22 @@ export default function MenuScreen({ navigation }) {
                             </View>
                         )}
                     />
+                    <View style = {styles.createGroupContainer}>
+                        <TextInput
+                            style = {styles.createGroupInput}
+                            placeholder="Group Name"
+                            value={groupName}
+                            onChangeText={(text) => setGroupName(text)}
+                            clearButtonMode="while-editing"
+                        />
+                        <Button
+                            mode="contained"
+                            onPress={() => handleButtonPress()}
+                            style={styles.createGroupButton}
+                        >
+                            Create Group
+                        </Button>
+                    </View>
                     <Button style = {styles.deleteAccount}
                             onPress = {() => {
                                 showDeleteDialog()
@@ -254,17 +297,34 @@ MenuScreen.navigationOptions = {
 
 const styles = StyleSheet.create({
 
+    createGroupInput: {
+        width: "65%",
+    },
+
+    createGroupButton: {
+        paddingTop: 10,
+        paddingRight: 7,
+        width: "35%"
+    },
+
+    createGroupContainer: {
+        flexDirection: "row",
+        marginLeft: 10,
+        marginTop: 5,
+    },
+
     groupContainer: {
         justifyContent: 'center',
         height: 60,
-        width: "100%",
+        width: "65.8%",
+        backgroundColor: Colors.white,
+        elevation: 4,
         margin: 5
     },
 
     editIcon: {
         position: 'absolute',
-        right: 20,
-        elevation: 4
+        right: 10,
     },
 
     popUpContent: {
@@ -320,17 +380,18 @@ const styles = StyleSheet.create({
     },
 
     buttonItem: {
-        width: "50%",
-        height: "50%",
+        width: "34.2%",
+        height: "91%",
+        paddingTop: 10,
+        marginTop: 4,
+        position: "absolute",
+        right: 0,
+        elevation: 5,
         paddingVertical: 13
     },
 
-    button: { margin: 5 },
-
     container: {
-        width: "96.8%",
-        backgroundColor: Colors.white,
-        elevation: 4,
+        width: "80%",
         margin: 5,
         paddingHorizontal: 10,
         paddingVertical: 15,
