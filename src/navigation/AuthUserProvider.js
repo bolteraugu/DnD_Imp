@@ -17,9 +17,16 @@ export const AuthUserProvider = ({ children }) => {
             value={{
                 user,
                 setUser,
-                login: async (email, password) => {
+                login: async (email, password, rememberMe) => {
                     try {
-                        await firebase.auth().signInWithEmailAndPassword(email, password);
+                        if (rememberMe) {
+                            await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+                        }
+                        else {
+                            await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.NONE)
+                        }
+                        await
+                            firebase.auth().signInWithEmailAndPassword(email, password);
                     } catch (e) {
                         console.log(e);
                         alert(e);

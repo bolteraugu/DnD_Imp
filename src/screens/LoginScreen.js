@@ -1,8 +1,9 @@
 import React, { useState, useContext } from "react";
 import { View, StyleSheet } from "react-native";
-import { Title, TextInput, Button } from "react-native-paper";
+import { Title, TextInput, Button, Text } from "react-native-paper";
 import { AuthUserContext } from "../navigation/AuthUserProvider";
 import { Checkbox } from "react-native-paper";
+import firebase from "firebase";
 
 export default function LoginScreen({ navigation }) {
     const [email, setEmail] = useState("");
@@ -30,16 +31,21 @@ export default function LoginScreen({ navigation }) {
                 style={styles.input}
                 onChangeText={(userPassword) => setPassword(userPassword)}
             />
-            <Checkbox
-                status = {rememberMe ? 'checked' : 'unchecked'}
-                onPress = {() => {
-                    setRememberMe(!rememberMe)
-                }}
-            />
+            <View style={styles.checkboxContainer}>
+                <Text style={styles.checkboxText}>Remember Me</Text>
+                <Checkbox
+                    status = {rememberMe ? 'checked' : 'unchecked'}
+                    onPress = {() => {
+                        setRememberMe(!rememberMe)
+                    }}
+                />
+            </View>
             <Button
                 mode="contained"
                 style={styles.button}
-                onPress={() => login(email, password)}
+                onPress={() =>
+                    login(email, password, rememberMe)
+                }
             >
                 Login
             </Button>
@@ -55,6 +61,15 @@ export default function LoginScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
+    checkboxContainer: {
+      flexDirection: "row"
+    },
+
+    checkboxText: {
+        marginTop: 6,
+        marginLeft: 6
+    },
+
     button: {
         margin: 5,
     },
