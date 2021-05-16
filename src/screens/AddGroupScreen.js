@@ -32,7 +32,7 @@ export default function AddGroupScreen({ navigation }) {
                   createdAt: new Date().toString(),
                   system: true,
                 });
-                firebase.firestore().collection("logs").doc(groupName + " - " + docRef.id).collection("logs_for_groups").add({
+                firebase.firestore().collection("group-logs").doc(groupName + " - " + docRef.id).collection("logs").add({
                   text: `The group has been created by ${user.toJSON().email}.`,
                   createdAt: new Date().toString(),
                   system: true,

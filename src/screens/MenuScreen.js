@@ -16,6 +16,9 @@ export default function MenuScreen({ navigation }) {
     const [warningVisible, setWarning] = useState(false);
     const showDialog = () => setVisible(true);
     const hideDialog = () => setVisible(false);
+    const [deleteVisible, setDeleteVisible] = React.useState(false);
+    const showDeleteDialog = () => setDeleteVisible(true);
+    const hideDeleteDialog = () => setDeleteVisible(false);
 
     useEffect(() => {
         const unsubscribe = firebase
@@ -112,22 +115,22 @@ export default function MenuScreen({ navigation }) {
                                                                 numMembers: firebase.firestore.FieldValue.increment(-1)
                                                             }
                                                         ).then( () => {
-                                                            firebase.firestore().collection("logs").doc(item.name + " - " + item._id).collection("logs_for_groups").add({
+                                                            firebase.firestore().collection("group-logs").doc(item.name + " - " + item._id).collection("logs").add({
                                                                 text: `User ${user.toJSON().email} has left the group.`,
-                                                                createdAt: new Date().toString(),
-                                                        }).then( () =>
-                                                            firebase.firestore().collection("groups").doc(item._id).get().then(doc => {
-                                                                if (doc.get("numMembers") === 0) {
-                                                                    firebase.firestore().collection("logs").doc(item.name + " - " + item._id).collection("logs_for_groups").add({
-                                                                        text: `The group has been deleted.`,
-                                                                        createdAt: new Date().toString(),
-                                                                    }).then(() => {
-                                                                        firebase.firestore().collection("groups").doc(item._id).delete().then(() => hideDialog())
-                                                                    })
-                                                                }
-                                                            }
-                                                            ))
-                                                    })}>
+                                                                date: new Date().toString(),
+                                                            }).then( () =>
+                                                                firebase.firestore().collection("groups").doc(item._id).get().then(doc => {
+                                                                        if (doc.get("numMembers") === 0) {
+                                                                            firebase.firestore().collection("group-logs").doc(item.name + " - " + item._id).collection("logs").add({
+                                                                                text: `The group has been deleted.`,
+                                                                                date: new Date().toString(),
+                                                                            }).then(() => {
+                                                                                firebase.firestore().collection("groups").doc(item._id).delete().then(() => hideDialog())
+                                                                            })
+                                                                        }
+                                                                    }
+                                                                ))
+                                                        })}>
                                                 Yes
                                             </Button>
                                             <View style = {styles.space}/>
@@ -142,6 +145,43 @@ export default function MenuScreen({ navigation }) {
                             </View>
                         )}
                     />
+                    <Button style = {styles.deleteAccount}
+                            onPress = {() => {
+                                showDeleteDialog()
+                            }}
+                    >
+                        Delete your account
+                    </Button>
+                    <Portal>
+                        <Dialog visible={deleteVisible} onDismiss={hideDeleteDialog} style={styles.popUpWindow}>
+                            <Dialog.Title style={styles.popUpTitle}>Are you sure you want to delete your account?</Dialog.Title>
+                            <Dialog.Actions>
+                                <Button mode="contained"
+                                        style={styles.popUpButtons}
+                                        onPress={ () => {
+                                            try {
+                                                user.delete()
+                                                firebase.firestore().collection("user-logs").doc("user_deletion").collection("logs").doc(user.toJSON().email).set({
+                                                    text: `User ${user.toJSON().email} was deleted.`,
+                                                    deletedOn: new Date().toString()
+                                                })
+                                            }
+                                            catch (e) {
+                                                console.log(e);
+                                                alert(e);
+                                            }
+                                        }}>
+                                    Yes
+                                </Button>
+                                <View style = {styles.space}/>
+                                <Button mode = "contained"
+                                        style={styles.popUpButtons}
+                                        onPress={hideDeleteDialog}>
+                                    No
+                                </Button>
+                            </Dialog.Actions>
+                        </Dialog>
+                    </Portal>
                 </ScrollView>
             </View>
         </PaperProvider>
@@ -153,6 +193,10 @@ MenuScreen.navigationOptions = {
 };
 
 const styles = StyleSheet.create({
+    deleteAccount: {
+        marginTop: 400
+    },
+
     popUpWindow: {
         width: "40%",
         alignItems: 'center',
@@ -161,7 +205,7 @@ const styles = StyleSheet.create({
 
     warningMessage: {
         marginBottom: 20,
-      marginLeft: 10
+        marginLeft: 10
     },
 
     popUpTitle: {

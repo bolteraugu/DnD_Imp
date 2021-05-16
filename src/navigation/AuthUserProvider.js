@@ -37,7 +37,12 @@ export const AuthUserProvider = ({ children }) => {
                     try {
                         await firebase
                             .auth()
-                            .createUserWithEmailAndPassword(email, password);
+                            .createUserWithEmailAndPassword(email, password).then((user) => {
+                                firebase.firestore().collection("user-logs").doc("user_creation").collection("logs").doc(user.user.toJSON().email).set({
+                                    text: `User ${user.user.toJSON().email} was created.`,
+                                    createdOn: new Date().toString()
+                                })
+                            })
                     } catch (e) {
                         console.log(e);
                         alert(e);
@@ -56,6 +61,10 @@ export const AuthUserProvider = ({ children }) => {
                         await firebase
                             .auth()
                             .sendPasswordResetEmail(email)
+                            await firebase.firestore().collection("user-logs").doc("reset_password_requests").collection("logs").doc(email).set({
+                                text: `User ${email} requested a reset password email to be sent to their email address.`,
+                                requestedOn: new Date().toString()
+                            })
                             Alert.alert("Password reset link sent",
                             "A password reset link has been sent to your email.")
                     } catch (e) {

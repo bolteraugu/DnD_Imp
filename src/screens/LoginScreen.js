@@ -1,6 +1,7 @@
 import React, { useState, useContext } from "react";
 import { View, StyleSheet, Alert } from "react-native";
 import { Title, TextInput, Button, Text, IconButton } from "react-native-paper";
+import { TouchableWithoutFeedback } from 'react-native';
 import { AuthUserContext } from "../navigation/AuthUserProvider";
 import { Checkbox } from "react-native-paper";
 
@@ -26,10 +27,10 @@ export default function LoginScreen({ navigation }) {
             />
             <View style={styles.passwordContainer}>
                 <TextInput style = {styles.passwordField}
-                    label="Password"
-                    value={password}
-                    secureTextEntry={!passwordVisible}
-                    onChangeText={(userPassword) => setPassword(userPassword)}
+                           label="Password"
+                           value={password}
+                           secureTextEntry={!passwordVisible}
+                           onChangeText={(userPassword) => setPassword(userPassword)}
                 />
                 <IconButton style = {styles.visibilityIcon}
                             icon={passwordVisible? "eye-off" : "eye"}
@@ -46,9 +47,10 @@ export default function LoginScreen({ navigation }) {
                         setRememberMe(!rememberMe)
                     }}
                 />
-                <Button onPress = {() => navigation.navigate("ForgotPassword")}>
-                    Forgot Password?
-                </Button>
+                <TouchableWithoutFeedback
+                    onPress = {() => navigation.navigate("ForgotPassword")}>
+                    <Text style = {styles.forgotPasswordButton}> Forgot Password? </Text>
+                </TouchableWithoutFeedback>
             </View>
             <Button
                 mode="contained"
@@ -71,6 +73,13 @@ export default function LoginScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
+    forgotPasswordButton: {
+        marginLeft: 6,
+        marginTop: 6,
+        fontSize: 14,
+        color: "#6f1ff0"
+    },
+
     passwordContainer: {
         justifyContent: 'center',
         height: 60,
@@ -87,12 +96,12 @@ const styles = StyleSheet.create({
     },
 
     checkboxContainer: {
-      flexDirection: "row"
+        flexDirection: "row"
     },
 
     checkboxText: {
         marginTop: 6,
-        marginLeft: 6
+        marginLeft: 6,
     },
 
     button: {

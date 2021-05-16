@@ -30,7 +30,7 @@ export default function forgotPasswordScreen({navigation}) {
                     onPress = {() => {
                     forgotPassword(email)
                 }}>
-                    Submit password
+                    Submit
                 </Button>
             </View>
         </View>
