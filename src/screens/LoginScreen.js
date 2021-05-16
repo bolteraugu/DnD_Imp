@@ -9,7 +9,7 @@ export default function LoginScreen({ navigation }) {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [rememberMe, setRememberMe] = useState(false);
-    const [passVisible, setPassVisible] = useState(false);
+    const [passwordVisible, setPasswordVisible] = useState(false);
 
     const { login } = useContext(AuthUserContext);
 
@@ -29,14 +29,14 @@ export default function LoginScreen({ navigation }) {
                 <TextInput style = {styles.passwordField}
                     label="Password"
                     value={password}
-                    secureTextEntry={!passVisible}
+                    secureTextEntry={!passwordVisible}
                     onChangeText={(userPassword) => setPassword(userPassword)}
                 />
                 <IconButton style = {styles.visibilityIcon}
-                            icon={passVisible? "eye-off" : "eye"}
+                            icon={passwordVisible? "eye-off" : "eye"}
                             size={20} color = "#000000"
                             onPress = {() => {
-                                setPassVisible(!passVisible)
+                                setPasswordVisible(!passwordVisible)
                             }}/>
             </View>
             <View style={styles.checkboxContainer}>
@@ -62,7 +62,7 @@ export default function LoginScreen({ navigation }) {
                 style={styles.button}
                 onPress={() => navigation.navigate("Register")}
             >
-                New User? Join Here
+                Register
             </Button>
         </View>
     );
