@@ -1,9 +1,8 @@
 import React, { useState, useContext } from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, Alert } from "react-native";
 import { Title, TextInput, Button, Text, IconButton } from "react-native-paper";
 import { AuthUserContext } from "../navigation/AuthUserProvider";
 import { Checkbox } from "react-native-paper";
-import firebase from "firebase";
 
 export default function LoginScreen({ navigation }) {
     const [email, setEmail] = useState("");
@@ -47,6 +46,9 @@ export default function LoginScreen({ navigation }) {
                         setRememberMe(!rememberMe)
                     }}
                 />
+                <Button onPress = {() => navigation.navigate("ForgotPassword")}>
+                    Forgot Password?
+                </Button>
             </View>
             <Button
                 mode="contained"

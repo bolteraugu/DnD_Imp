@@ -1,6 +1,7 @@
 import React, { createContext, useState } from "react";
 import firebase from "firebase";
 import "firebase/auth";
+import {Alert} from "react-native";
 
 /**
  * This provider is created
@@ -47,6 +48,18 @@ export const AuthUserProvider = ({ children }) => {
                         await firebase.auth().signOut();
                     } catch (e) {
                         console.error(e);
+                        alert(e);
+                    }
+                },
+                forgotPassword: async (email) => {
+                    try {
+                        await firebase
+                            .auth()
+                            .sendPasswordResetEmail(email)
+                            Alert.alert("Password reset link sent",
+                            "A password reset link has been sent to your email.")
+                    } catch (e) {
+                        console.log(e);
                         alert(e);
                     }
                 },

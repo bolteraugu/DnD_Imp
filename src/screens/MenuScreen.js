@@ -7,7 +7,6 @@ import firebase from "firebase/app";
 import 'firebase/firestore';
 import Spinner from "../components/Spinner";
 import Colors from "../utils/colors";
-import DialogActions from "react-native-paper/src/components/Dialog/DialogActions";
 
 export default function MenuScreen({ navigation }) {
     const { user } = useContext(AuthUserContext);
