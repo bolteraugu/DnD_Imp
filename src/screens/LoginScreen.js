@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import { View, StyleSheet } from "react-native";
-import { Title, TextInput, Button, Text } from "react-native-paper";
+import { Title, TextInput, Button, Text, IconButton } from "react-native-paper";
 import { AuthUserContext } from "../navigation/AuthUserProvider";
 import { Checkbox } from "react-native-paper";
 import firebase from "firebase";
@@ -9,6 +9,7 @@ export default function LoginScreen({ navigation }) {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [rememberMe, setRememberMe] = useState(false);
+    const [passVisible, setPassVisible] = useState(false);
 
     const { login } = useContext(AuthUserContext);
 
@@ -24,13 +25,20 @@ export default function LoginScreen({ navigation }) {
                 style={styles.input}
                 onChangeText={(userEmail) => setEmail(userEmail)}
             />
-            <TextInput
-                label="Password"
-                value={password}
-                secureTextEntry={true}
-                style={styles.input}
-                onChangeText={(userPassword) => setPassword(userPassword)}
-            />
+            <View style={styles.passwordContainer}>
+                <TextInput style = {styles.passwordField}
+                    label="Password"
+                    value={password}
+                    secureTextEntry={!passVisible}
+                    onChangeText={(userPassword) => setPassword(userPassword)}
+                />
+                <IconButton style = {styles.visibilityIcon}
+                            icon={passVisible? "eye-off" : "eye"}
+                            size={20} color = "#000000"
+                            onPress = {() => {
+                                setPassVisible(!passVisible)
+                            }}/>
+            </View>
             <View style={styles.checkboxContainer}>
                 <Text style={styles.checkboxText}>Remember Me</Text>
                 <Checkbox
@@ -61,6 +69,21 @@ export default function LoginScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
+    passwordContainer: {
+        justifyContent: 'center',
+        height: 60,
+        margin: 5
+    },
+
+    passwordField: {
+        height: 60,
+    },
+
+    visibilityIcon: {
+        position: 'absolute',
+        right: 10
+    },
+
     checkboxContainer: {
       flexDirection: "row"
     },
@@ -79,6 +102,7 @@ const styles = StyleSheet.create({
         width: 500,
     },
     input: {
+        height: 60,
         margin: 5,
     },
 });
