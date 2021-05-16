@@ -2,7 +2,16 @@ import React, { useState, useContext, useEffect } from "react";
 import { StyleSheet, FlatList, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { AuthUserContext } from "../navigation/AuthUserProvider";
-import { Title, Button, Portal, Provider as PaperProvider, Dialog, Text } from "react-native-paper";
+import {
+    Title,
+    Button,
+    Portal,
+    Provider as PaperProvider,
+    Dialog,
+    Text,
+    IconButton,
+    TextInput
+} from "react-native-paper";
 import firebase from "firebase/app";
 import 'firebase/firestore';
 import Spinner from "../components/Spinner";
@@ -12,13 +21,17 @@ export default function MenuScreen({ navigation }) {
     const { user } = useContext(AuthUserContext);
     const [groups, setGroups] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [visible, setVisible] = React.useState(false);
+    const [visible, setVisible] = useState(false);
     const [warningVisible, setWarning] = useState(false);
     const showDialog = () => setVisible(true);
     const hideDialog = () => setVisible(false);
-    const [deleteVisible, setDeleteVisible] = React.useState(false);
+    const [deleteVisible, setDeleteVisible] = useState(false);
     const showDeleteDialog = () => setDeleteVisible(true);
     const hideDeleteDialog = () => setDeleteVisible(false);
+    const [editVisible, setEditVisible] = useState(false);
+    const showEditDialog = () => setEditVisible(true);
+    const hideEditDialog = () => setEditVisible(false);
+    const [newGroupName, setNewGroupName] = useState("");
 
     useEffect(() => {
         const unsubscribe = firebase
@@ -71,12 +84,22 @@ export default function MenuScreen({ navigation }) {
                             </Button>
                         )}
                         renderItem={({ item }) => (
-                            <View style = {styles.row} >
-                                <Title
-                                    onPress={() => navigation.navigate("DM", { group: item })}
-                                    style={styles.container}
-                                    title={item.name}>{item.name}
-                                </Title>
+                            <View style = {styles.row}>
+                                <View style = {styles.groupContainer}>
+                                    <Title
+                                        onPress={() =>
+                                            navigation.navigate("DM", { group: item })
+                                        }
+                                        style={styles.container}
+                                        title={item.name}>{item.name}
+                                    </Title>
+                                    <IconButton style = {styles.editIcon}
+                                                icon= "square-edit-outline"
+                                                size={30} color = "#000000"
+                                                onPress = {() => {
+                                                    showEditDialog()
+                                                }}/>
+                                </View>
                                 <Button mode="contained"
                                         style = {styles.buttonItem}
                                         onPress={ () =>
@@ -94,6 +117,43 @@ export default function MenuScreen({ navigation }) {
                                     Leave group
                                 </Button>
                                 <Portal>
+                                    <Dialog visible={editVisible} onDismiss={hideEditDialog} style={styles.popUpEditWindow}>
+                                        <Dialog.Title style={styles.popUpTitle}>Edit group name</Dialog.Title>
+                                        <Dialog.Content style={styles.popUpContent}>
+                                            <TextInput placeholder="New group name"
+                                                       value={newGroupName}
+                                                       clearButtonMode="while-editing"
+                                                       onChangeText={(text) => setNewGroupName(text)}
+                                            />
+                                        </Dialog.Content>
+                                        <Dialog.Actions>
+                                            <Button mode="contained"
+                                                    style={styles.popUpEditButtons}
+                                                    disabled={newGroupName.length === 0}
+                                                    onPress={ () => {
+                                                        firebase.firestore().collection("group-logs").doc(item._id).collection("logs").add({
+                                                            text: `User ${user.toJSON().email} edited group name from ${item.name} to ${newGroupName}. The group name changed has been reflected
+                                                                            in the corresponding document in group-logs too.`,
+                                                            date: new Date().toString()}).then( () => {
+                                                            firebase.firestore().collection("groups").doc(item._id).update({
+                                                                name: newGroupName
+                                                            }).then(() => {
+                                                                firebase.firestore().collection("group-logs").doc(item._id).update({
+                                                                    groupName: newGroupName
+                                                                }).then(() => hideEditDialog())
+                                                            })
+                                                        })
+                                                    }}>
+                                                Submit
+                                            </Button>
+                                            <View style = {styles.space}/>
+                                            <Button mode = "contained"
+                                                    style={styles.popUpEditButtons}
+                                                    onPress={hideEditDialog}>
+                                                Cancel
+                                            </Button>
+                                        </Dialog.Actions>
+                                    </Dialog>
                                     <Dialog visible={visible} onDismiss={hideDialog} style={styles.popUpWindow}>
                                         <Dialog.Title style={styles.popUpTitle}>Are you sure you want to leave this group?</Dialog.Title>
                                         <Text visible={warningVisible} style={styles.warningMessage}> NOTE: You are the last player in this group. Leaving it will delete all data (characters, notes, messages etc.)</Text>
@@ -115,13 +175,13 @@ export default function MenuScreen({ navigation }) {
                                                                 numMembers: firebase.firestore.FieldValue.increment(-1)
                                                             }
                                                         ).then( () => {
-                                                            firebase.firestore().collection("group-logs").doc(item.name + " - " + item._id).collection("logs").add({
+                                                            firebase.firestore().collection("group-logs").doc(item._id).collection("logs").add({
                                                                 text: `User ${user.toJSON().email} has left the group.`,
                                                                 date: new Date().toString(),
                                                             }).then( () =>
                                                                 firebase.firestore().collection("groups").doc(item._id).get().then(doc => {
                                                                         if (doc.get("numMembers") === 0) {
-                                                                            firebase.firestore().collection("group-logs").doc(item.name + " - " + item._id).collection("logs").add({
+                                                                            firebase.firestore().collection("group-logs").doc(item._id).collection("logs").add({
                                                                                 text: `The group has been deleted.`,
                                                                                 date: new Date().toString(),
                                                                             }).then(() => {
@@ -193,12 +253,38 @@ MenuScreen.navigationOptions = {
 };
 
 const styles = StyleSheet.create({
+
+    groupContainer: {
+        justifyContent: 'center',
+        height: 60,
+        width: "100%",
+        margin: 5
+    },
+
+    editIcon: {
+        position: 'absolute',
+        right: 20,
+        elevation: 4
+    },
+
+    popUpContent: {
+        width: "100%",
+        height: "30%"
+    },
+
     deleteAccount: {
         marginTop: 400
     },
 
     popUpWindow: {
         width: "40%",
+        alignItems: 'center',
+        alignSelf: 'center'
+    },
+
+    popUpEditWindow: {
+        width: "40%",
+        height: 225,
         alignItems: 'center',
         alignSelf: 'center'
     },
@@ -221,23 +307,35 @@ const styles = StyleSheet.create({
         width: "25%",
         marginBottom: 5
     },
+
+    popUpEditButtons: {
+        width: "25%",
+        marginBottom: -35
+    },
+
     row: {
         flex: 1,
         flexDirection: "row",
         width: "100%"
     },
+
     buttonItem: {
+        width: "50%",
+        height: "50%",
         paddingVertical: 13
     },
+
     button: { margin: 5 },
+
     container: {
-        width: "67%",
+        width: "96.8%",
         backgroundColor: Colors.white,
         elevation: 4,
         margin: 5,
         paddingHorizontal: 10,
         paddingVertical: 15,
     },
+
     title: {
         alignSelf: "center",
     },
