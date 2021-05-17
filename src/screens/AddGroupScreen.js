@@ -30,13 +30,15 @@ export default function AddGroupScreen({ navigation }) {
                 docRef.collection("messages").add({
                   text: `You have joined the group ${groupName}.`,
                   createdAt: new Date().toString(),
-                  system: true,
                 });
-                firebase.firestore().collection("logs").doc(groupName + " - " + docRef.id).collection("logs_for_groups").add({
+
+                firebase.firestore().collection("group-logs").doc(docRef.id).set({
+                    groupName: groupName
+                }).then(() => {
+                firebase.firestore().collection("group-logs").doc(docRef.id).collection("logs").add({
                   text: `The group has been created by ${user.toJSON().email}.`,
                   createdAt: new Date().toString(),
-                  system: true,
-                }).then(navigation.navigate("Home"))
+                })}).then(navigation.navigate("Home"))
               },
               (error) => {
                 alert(error);

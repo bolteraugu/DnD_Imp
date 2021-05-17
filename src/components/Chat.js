@@ -46,7 +46,7 @@ export default function Chat({ groupRef }) {
     const messagesListener = groupRef
       .collection("messages")
       .where("recipients", "array-contains", user.toJSON().email)
-      .orderBy("createdAt", "desc")
+      .orderBy("createdOn", "desc")
       .onSnapshot(
         (querySnapshot) => {
           const messages = querySnapshot.docs.map((doc) => {
@@ -55,7 +55,7 @@ export default function Chat({ groupRef }) {
             const data = {
               _id: doc.id,
               text: "",
-              createdAt: new Date().getTime(),
+              createdOn: new Date().getTime(),
               ...firebaseData,
             };
 
@@ -89,7 +89,7 @@ export default function Chat({ groupRef }) {
       .collection("messages")
       .add({
         text,
-        createdAt: new Date().getTime(),
+        createdOn: new Date().getTime(),
         user: {
           _id: currentUser.uid,
           email: currentUser.email,
