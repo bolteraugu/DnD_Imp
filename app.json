@@ -1,13 +1,13 @@
 {
   "expo": {
-    "name": "DnDProject",
-    "slug": "DnDProject",
+    "name": "DnD Imp",
+    "slug": "DnD_Imp",
+    "platforms": ["ios", "android", "web"],
     "version": "1.0.0",
-    "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/dragon-icon.png",
     "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
+      "image": "./assets/dragon-loading.png",
+      "resizeMode": "cover",
       "backgroundColor": "#ffffff"
     },
     "updates": {
@@ -17,13 +17,15 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "icon": "./assets/dragon-icon.png",
+      "bundleIdentifier": "com.bolteraugu.dndImp",
+      "buildNumber": "1.0.0"
     },
     "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#FFFFFF"
-      }
+      "package": "com.bolteraugu.dndImp",
+      "icon": "./assets/dragon-icon.png",
+      "versionCode": 1
     },
     "web": {
       "favicon": "./assets/favicon.png"

@@ -1,0 +1,168 @@
+{
+    "name": "char_1",
+    "level": 1,
+    "XP": 52,
+    "max_XP": 80,
+    "class": "Fighter",
+    "race": "Human",
+    "alignment": "Lawful neutral",
+    "armor_class": 17,
+    "initiative": -1,
+    "speed": 30,
+    "HP": 12,
+    "max_HP": 12,
+    "death_saves": {
+        "successes": 0,
+        "failures": 0
+    },
+    "abilities": {
+        "strength": 16,
+        "dexterity": 9,
+        "constitution": 15,
+        "intelligence": 11,
+        "wisdom": 13,
+        "charisma": 14
+    },
+    "inspiration": false,
+    "saving_throws": {
+        "strength": {
+            "mod": 5,
+            "toggle": true
+        },
+        "dexterity": {
+            "mod": -1,
+            "toggle": false
+        },
+        "constitution": {
+            "mod": 4,
+            "toggle": true
+        },
+        "intelligence": {
+            "mod": 0,
+            "toggle": false
+        },
+        "wisdom": {
+            "mod": 1,
+            "toggle": false
+        },
+        "charisma": {
+            "mod": 2,
+            "toggle": false
+        }
+    },
+    "skills":{
+        "acrobatics": {
+            "toggle": false,
+            "ability": "dexterity",
+            "mod": -1
+        },
+        "animal handling": {
+            "toggle": false,
+            "ability": "wisdom",
+            "mod": 1
+        },
+        "arcana": {
+            "toggle": false,
+            "ability": "intelligence",
+            "mod": 0
+        },
+        "athletics": {
+            "toggle": true,
+            "ability": "strength",
+            "mod": 5
+        },
+        "deception": {
+            "toggle": false,
+            "ability": "dexterity",
+            "mod": 2
+        },
+        "history": {
+            "toggle": true,
+            "ability": "intelligence",
+            "mod": 2
+        },
+        "insight": {
+            "toggle": false,
+            "ability": "wisdom",
+            "mod": 1
+        },
+        "intimidation": {
+            "toggle": false,
+            "ability": "charisma",
+            "mod": 2
+        },
+        "investigation": {
+            "toggle": false,
+            "ability": "intelligence",
+            "mod": 0
+        },
+        "medicine": {
+            "toggle": false,
+            "ability": "wisdom",
+            "mod": 1
+        },
+        "nature": {
+            "toggle": false,
+            "ability": "intelligence",
+            "mod": 0
+        },
+        "perception": {
+            "toggle": true,
+            "ability": "wisdom",
+            "mod": 3
+        },
+        "performance": {
+            "toggle": false,
+            "ability": "charisma",
+            "mod": 2
+        },
+        "persuasion": {
+            "toggle": true,
+            "ability": "charisma",
+            "mod": 4
+        },
+        "religion": {
+            "toggle": false,
+            "ability": "intelligence",
+            "mod": 0
+        },
+        "sleight of hand": {
+            "toggle": false,
+            "ability": "dexterity",
+            "mod": -1
+        },
+        "stealth": {
+            "toggle": false,
+            "ability": "dexterity",
+            "mod": -1
+        },
+        "survival": {
+            "toggle": false,
+            "ability": "wisdom",
+            "mod": 1
+        }
+    },
+    "personality": {
+        "traits": "",
+        "ideals": "",
+        "bonds": "",
+        "flaws": ""
+    },
+    "bio":[
+        {
+            "title": "Human",
+            "content": " Humans are the youngest of the common races, late to arrive on the world scene and short-lived in comparison to dwarves, elves, and dragons. But they are the innovators, the achievers, and the pioneers of the world, the most adaptable and ambitious people among the common races. When humans settle somewhere, they stay. They build cities to last for the ages and great kingdoms that can persist for centuries. They live fully in the present—making them well suited to the adventuring life—but also plan for the future, striving to leave a lasting legacy. Human culture varies by region. In the Forgotten Realms, the clothing, architecture, cuisine, music, and literature in the northwestern lands of Neverwinter are different from their counterparts in distant Turmish or Impiltur to the east. Human physical characteristics vary according to the ancient migrations of the earliest humans, so that the humans of Neverwinter have every possible variation of coloration and features. Having so much more variety than other cultures, humans have no truly typical names. Some human parents give their children names from other languages, such as Dwarvish or Elvish (pronounced more or less correctly). Traditional names among different human cultures vary widely. You might be Haseid (Calishite), Kerri (Chondathan), Kosef (Damaran), Amafrey (Illuskan), So-Kehur (Mulan), Madislak (Rashemi), Mei (Shou), or Salazar (Turami)."
+        },
+        {
+            "title": "Figther",
+            "content": "Fighters are the most diverse class of characters in the worlds of Dungeons & Dragons. Questing knights, conquering overlords, royal champions, elite foot soldiers, hardened mercenaries, and bandit kings—as fighters, they all share an unparalleled mastery with weapons and armor, and a thorough knowledge of the skills of combat. And they are well acquainted with death, both meting it out and staring it defiantly in the face."
+        },
+        {
+            "title": "Background",
+            "content": "Your family is no stranger to wealth, power, and privilege. In the glorydays of Neverwinter, your parents were the count and countess of Corlinn Hill, a large estate located in the hills northeast of the city. But Mount Hotenow erupted thirty years ago, devastating Neverwinter and erasing Corlinn Hill from the map. Instead of growing up on an estate, you were raised in a small but comfortable town house in Waterdeep. As an adult, you stand to inherit a meaningless title and little else. Personal Goal: Civilize Phandalin. You were meant for more than being a ruler of nothing at all. Rebuilding Corlinn Hill is impractical, thanks to the volcano. But in the last three or four years, hardy settlers have been rebuilding another ruin near the city: the old town of Phandalin, which orcs sacked five centuries ago. Clearly, what Phandalin needs now is a civilizing influence—someone to take the reins and bring law and order. Someone like you. You’re not the only one with such ideas. A knight named Sildar Hallwinter recently set out for Phandalin in the company of a dwarf named Gundren Rockseeker. They plan to reclaim an ancient mine and restore Phandalin to a civilized center of wealth and prosperity. Since your goals align, Hallwinter should be willing to assist you. Alignment: Lawful Neutral. It’s essential to establish law and order, even if it takes an iron fist to do it. The nobility are bound by honor and tradition to protect their people from both external and internal threats to stability. An organized society leaves no room for evil and chaos to take root."
+        }
+    ],
+    "notes": [
+
+    ]
+}
