@@ -33,6 +33,7 @@ export default function MenuScreen({ navigation }) {
     const hideEditDialog = () => setEditVisible(false);
     const [newGroupName, setNewGroupName] = useState("");
     const [groupName, setGroupName] = useState("");
+    const [storedAccountType, setStoredAccountType] = useState("")
     /**
      * Create a new Firestore collection to save threads
      */
@@ -264,8 +265,15 @@ export default function MenuScreen({ navigation }) {
                                         onPress={ () => {
                                             try {
                                                 user.delete()
+
+                                                firebase.firestore().collection("user-logs").doc("user_deletion").collection("logs").doc(user.toJSON().email).get().then(
+                                                    (snapshot) => {
+                                                        setStoredAccountType(snapshot.get("accountType"))
+                                                    })
+
                                                 firebase.firestore().collection("user-logs").doc("user_deletion").collection("logs").doc(user.toJSON().email).set({
                                                     text: `User ${user.toJSON().email} was deleted.`,
+                                                    accountType: storedAccountType,
                                                     deletedOn: new Date().toString()
                                                 })
                                             }

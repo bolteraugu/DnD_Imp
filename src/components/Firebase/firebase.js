@@ -2,6 +2,7 @@ import firebase from "firebase";
 import "firebase/auth";
 
 import firebaseConfig from "./firebaseConfig";
+import * as Facebook from "expo-facebook";
 
 // Initialize Firebase App
 

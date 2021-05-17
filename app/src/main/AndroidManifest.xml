@@ -1,0 +1,8 @@
+<manifest
+          xmlns:android="http://www.w3.org/2001/XMLSchema-instance" package="com.bolteraugu.dungeonminion5eNewAndImproved"
+          android:schemaLocation="http://schemas.android.com/apk/rest/android ">
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <application>
+        <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
+    </application>
+</manifest>
