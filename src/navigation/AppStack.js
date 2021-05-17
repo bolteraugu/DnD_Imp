@@ -5,7 +5,6 @@ import firebase from 'firebase';
 import 'firebase/firestore';
 import MenuScreen from '../screens/MenuScreen';
 import DMScreen from '../screens/DMScreen';
-import AddGroupScreen from '../screens/AddGroupScreen';
 import {IconButton} from 'react-native-paper';
 import {logout} from '../components/Firebase/firebase';
 import NotesScreen from '../screens/NotesScreen';
@@ -43,7 +42,6 @@ export default function AppStack() {
           ),
         })}
       />
-      <Stack.Screen name="AddGroup" component={AddGroupScreen} />
       <Stack.Screen
         name="DM"
         component={DMScreen}
