@@ -4,8 +4,7 @@ import {Title, TextInput, Button, Text, IconButton} from 'react-native-paper';
 import {TouchableWithoutFeedback} from 'react-native';
 import {AuthUserContext} from '../navigation/AuthUserProvider';
 import {Checkbox} from 'react-native-paper';
-import {appleAuth} from '@invertase/react-native-apple-authentication';
-import colors from '../utils/colors';
+import {Linking} from 'react-native'
 
 export default function LoginScreen({navigation}) {
   const [email, setEmail] = useState('');
@@ -14,16 +13,13 @@ export default function LoginScreen({navigation}) {
   const [passwordVisible, setPasswordVisible] = useState(false);
 
   const {login} = useContext(AuthUserContext);
-  const {onAppleButtonPress} = useContext(AuthUserContext);
-  const {onAndroidAppleButtonPress} = useContext(AuthUserContext);
-  const {onFacebookButtonPress} = useContext(AuthUserContext);
-  const {onGoogleButtonPress} = useContext(AuthUserContext);
 
   //Got help for checkbox code from here: https://callstack.github.io/react-native-paper/checkbox.html
 
   return (
-    <View style={styles.container}>
-      <Title style={styles.titleText}>Welcome to Dungeon Minion 5e</Title>
+      <View style = {styles.titleBox}>
+          <Title style={styles.titleText}>Welcome to Dungeon Minion 5e</Title>
+    <View style={styles.body}>
       <TextInput
         label="Email"
         value={email}
@@ -71,69 +67,26 @@ export default function LoginScreen({navigation}) {
         Login
       </Button>
       <Button
-        style={styles.googleSignInButton}
-        color="#000000"
-        onPress={() => {
-          onGoogleButtonPress();
-        }}
-      >
-        Login with Google
-      </Button>
-      <IconButton
-        style={styles.googleIcon}
-        icon="google"
-        size={28}
-        color="#000000"
-      />
-      <Button
-        style={styles.appleSignInButton}
-        color={colors.white}
-        onPress={() => {
-          if (appleAuth.isSupported) {
-            onAppleButtonPress({rememberMe});
-          } else {
-            onAndroidAppleButtonPress({rememberMe});
-          }
-        }}
-      >
-        Login with Apple
-      </Button>
-      <IconButton
-        style={styles.appleIcon}
-        icon="apple"
-        size={28}
-        color="#ffffff"
-      />
-      <View style={styles.facebookContainer}>
-        <Button
-          style={styles.facebookButton}
-          color="#000000"
-          mode="contained"
-          onPress={() => {
-            onFacebookButtonPress({rememberMe});
-          }}
-        >
-          Login with Facebook
-        </Button>
-        <IconButton
-          style={styles.facebookIcon}
-          icon="facebook"
-          size={28}
-          color="#ffffff"
-        />
-      </View>
-      <Button
         mode="contained"
         style={styles.button}
         onPress={() => navigation.navigate('Register')}
       >
         Register
       </Button>
+      <Button
+          style = {styles.contactUs}
+          onPress={() => Linking.openURL('mailto:Engr489DnDProject@gmail.com?subject=D%26D%20Imp%20Support%20Request')}
+      >Contact Us</Button>
     </View>
+      </View>
   );
 }
 
 const styles = StyleSheet.create({
+  contactUs: {
+    marginTop:200,
+  },
+
   facebookButton: {
     width: '98%',
     margin: 5,
@@ -216,6 +169,24 @@ const styles = StyleSheet.create({
     marginTop: 200,
     width: 500,
   },
+
+    body: {
+        alignSelf: 'center',
+        width: 500,
+        marginTop: 50
+    },
+
+    titleBox: {
+        alignSelf: 'center',
+        marginTop: 100,
+        width: 500,
+    },
+
+    titleText: {
+      alignSelf: 'center',
+      fontSize: 26
+    },
+
   input: {
     height: 60,
     margin: 5,

@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "DnD Imp",
+    "name": "D&D Imp",
     "slug": "DnD_Imp",
     "platforms": ["ios", "android", "web"],
     "version": "1.0.0",

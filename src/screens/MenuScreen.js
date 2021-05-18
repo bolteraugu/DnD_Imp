@@ -540,6 +540,8 @@ const styles = StyleSheet.create({
 
   title: {
     alignSelf: 'center',
+    fontSize: 26,
+    marginBottom: 50
   },
   wrapper: {
     alignSelf: 'center',

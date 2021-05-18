@@ -8,11 +8,11 @@ import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
 const Stack = createStackNavigator();
 
 export default function AuthStack() {
-  return (
-    <Stack.Navigator initialRouteName="Welcome" headerMode="none">
-      <Stack.Screen name="Login" component={LoginScreen} />
-      <Stack.Screen name="Register" component={RegisterScreen} />
-      <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
-    </Stack.Navigator>
-  );
+    return (
+        <Stack.Navigator initialRouteName="Welcome" headerMode="none">
+            <Stack.Screen name="Login" component={LoginScreen} />
+            <Stack.Screen name="Register" component={RegisterScreen} />
+            <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
+        </Stack.Navigator>
+    );
 }

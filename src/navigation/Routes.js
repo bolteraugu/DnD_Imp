@@ -13,8 +13,7 @@ export default function Routes() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // onAuthStateChanged returns an unsubscriber
-    const unsubscribeAuth = auth.onAuthStateChanged(async (authUser) => {
+    return auth.onAuthStateChanged(async (authUser) => {
       try {
         await (authUser ? setUser(authUser) : setUser(null));
         setIsLoading(false);
@@ -22,9 +21,6 @@ export default function Routes() {
         console.log(error);
       }
     });
-
-    // unsubscribe auth listener on unmount
-    return unsubscribeAuth;
   }, [setUser]);
 
   if (isLoading) {
