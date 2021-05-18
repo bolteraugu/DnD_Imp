@@ -439,13 +439,14 @@ MenuScreen.navigationOptions = {
 
 const styles = StyleSheet.create({
   createGroupInput: {
-    width: '65%',
+    width: '66.4%',
+    marginLeft: -5.6
   },
 
   createGroupButton: {
     paddingTop: 10,
     paddingRight: 7,
-    width: '35%',
+    width: '34.6%',
   },
 
   createGroupContainer: {
