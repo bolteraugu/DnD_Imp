@@ -20,7 +20,12 @@
       "supportsTablet": true,
       "icon": "./assets/dragon-icon.png",
       "bundleIdentifier": "com.bolteraugu.dndImp",
-      "buildNumber": "1.0.0"
+      "buildNumber": "1.0.0",
+      "splash": {
+        "image": "./assets/dragon-loading.png",
+        "resizeMode": "cover",
+        "backgroundColor": "#ffffff"
+      }
     },
     "android": {
       "package": "com.bolteraugu.dndImp",

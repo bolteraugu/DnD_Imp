@@ -3,11 +3,15 @@
 
 import React from 'react'; //Importing React
 
-import Providers from './src/navigation'; //Getting the Providers from index.js. Returns it so app is pointed to the current page.
-import {LogBox} from 'react-native'; //Importing LogBox so I can ignore all warnings in the app (means yellow box won't pop up
+import Providers from './src/navigation/index'; //Getting the Providers from index.js. Returns it so app is pointed to the current page.
+import {Platform} from 'react-native'
+let LogBox;
 
 export default function App() {
-  LogBox.ignoreAllLogs();
-  //console.disableYellowBox = true; Old code from Dylan's project
+  //Band-aid fix for issue where web version of the app couldn't import LogBox
+  if (Platform.OS === "android" || Platform.OS === "ios") {
+    LogBox = require('react-native').LogBox; //Importing LogBox so I can ignore all warnings in the app (means yellow box won't pop up
+    LogBox.ignoreAllLogs();
+  }
   return <Providers />;
 }

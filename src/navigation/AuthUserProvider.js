@@ -2,7 +2,6 @@ import React, {createContext, useState} from 'react';
 import firebase from 'firebase';
 import 'firebase/auth';
 import {Alert} from 'react-native';
-import auth from '@react-native-firebase/auth';
 
 /**
  * This provider is created
