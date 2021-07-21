@@ -179,7 +179,6 @@ export default function MenuScreen({navigation}) {
                     <Dialog.Content style={styles.popUpContent}>
                       <TextInput
                         placeholder="New group name"
-                        //value={newGroupName}
                         clearButtonMode="while-editing"
                         onChangeText={(text) => setNewGroupName(text)}
                       />

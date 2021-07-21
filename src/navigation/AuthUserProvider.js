@@ -48,8 +48,10 @@ export const AuthUserProvider = ({children}) => {
                                 'Dwarf', 'Elf', 'Halfling', 'Human', 'Dragonborn', 'Gnome', 'Half-Elf', 'Half-Orc', 'Tiefling'
                             ],
                             classes: [
-                                'Dwarf', 'Elf', 'Halfling', 'Human', 'Dragonborn', 'Gnome', 'Half-Elf', 'Half-Orc', 'Tiefling'
-                            ]
+                                'Dwarf', 'Elf', 'Halfling', 'Human', 'Dragonborn', 'Gnome', 'Half-Elf', 'Half-Orc', 'Tiefling',
+                            ],
+                            numRacesCreated: 0,
+                            numClassesCreated: 0
                         })
                 })
               // .then((user) => {
