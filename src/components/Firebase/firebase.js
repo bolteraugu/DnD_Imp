@@ -9,6 +9,8 @@ if (!firebase.apps.length) {
   firebase.initializeApp(firebaseConfig);
 }
 
+firebase.firestore().settings({ experimentalForceLongPolling: true });
+
 export const auth = firebase.auth();
 
 export const loginWithEmail = (email, password) =>

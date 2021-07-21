@@ -7,11 +7,11 @@ import MenuScreen from '../screens/MenuScreen';
 import DMScreen from '../screens/DMScreen';
 import {IconButton} from 'react-native-paper';
 import {logout} from '../components/Firebase/firebase';
-import NotesScreen from '../screens/NotesScreen';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import Chat from '../components/Chat';
 import {StyleSheet} from 'react-native';
 import colors from '../utils/colors';
+import BiographyScreen from "../screens/BiographyScreen";
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -42,6 +42,7 @@ export default function AppStack() {
           ),
         })}
       />
+
       <Stack.Screen
         name="DM"
         component={DMScreen}
@@ -49,7 +50,7 @@ export default function AppStack() {
           title: route.params.group.name,
         })}
       />
-      <Stack.Screen name="PlayerScreen" component={CharacterNav} />
+      <Stack.Screen name="CharacterSheet" component={CharacterNav} />
     </Stack.Navigator>
   );
 }
@@ -57,10 +58,10 @@ export default function AppStack() {
 const Tab = createMaterialTopTabNavigator();
 
 function CharacterNav() {
-  const groupRef = firebase
-    .firestore()
-    .collection('groups')
-    .doc('RElb1Yxu6g7cyq1745wh');
+  // const groupRef = firebase
+  //   .firestore()
+  //   .collection('groups')
+  //   .doc('RElb1Yxu6g7cyq1745wh');
   return (
     <View style={styles.playerScreenContainer}>
       <View style={styles.playerTabsContainer}>
@@ -70,12 +71,8 @@ function CharacterNav() {
             style: {backgroundColor: colors.lightGrey},
           }}
         >
-          {/* <Tab.Screen name="Main" component={PlayerScreen} /> */}
-          <Tab.Screen name="Notes" component={NotesScreen} />
+          <Tab.Screen name="Biography" component={BiographyScreen} />
         </Tab.Navigator>
-      </View>
-      <View style={styles.chatContainer}>
-        <Chat groupRef={groupRef} />
       </View>
     </View>
   );

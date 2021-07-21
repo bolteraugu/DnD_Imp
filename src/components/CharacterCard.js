@@ -2,6 +2,8 @@ import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import {IconButton, Surface, TextInput} from 'react-native-paper';
 import 'firebase/firestore';
+import firebase from 'firebase';
+import DropDownPicker from 'react-native-dropdown-picker'
 
 export default function CharacterCard({
   character,
@@ -41,6 +43,22 @@ export default function CharacterCard({
               value={character.name}
               onChangeText={(text) => onChange(index, 'name', text, false)}
             />
+            {/*<DropDownPicker>*/}
+            {/*  items = {[*/}
+            {/*  {value: 'Dwarf'},*/}
+            {/*  {value: 'Elf'},*/}
+            {/*  {value: 'Halfling'},*/}
+            {/*  {value: 'Human'},*/}
+            {/*  {value: 'Dragonborn'},*/}
+            {/*  {value: 'Gnome'},*/}
+            {/*  {value: 'Half-Elf'},*/}
+            {/*  {value: 'Half-Orc'},*/}
+            {/*  {value: 'Tiefling'},*/}
+            {/*]}*/}
+            {/*  defaultIndex={0}*/}
+            {/*  containerStyle={{height: 40, width: 100}}*/}
+            {/*  onChangeItem = {item => onChange(index, 'name', item.value, false)}*/}
+            {/*</DropDownPicker>*/}
             <TextInput
               label="Alignment"
               style={styles.stringContainer}
@@ -167,10 +185,10 @@ export default function CharacterCard({
             icon="arrow-expand-all"
             size={28}
             color="#000"
-            //Navigates to playerScreen but then redirects to NotesScreen??? Strange. Will fix later.
+            //Navigates to playerScreen but then redirects to CharacterSheetScreen??? Strange. Will fix later.
             onPress={() => {
-              navigation.navigate('PlayerScreen', {
-                screen: 'Notes',
+              navigation.navigate('CharacterSheet', {
+                screen: 'Biography',
                 params: {
                   charRef: groupRef.collection('characters').doc(character._id),
                 },

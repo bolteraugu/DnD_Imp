@@ -1,0 +1,16 @@
+{
+  "name": "Enter Name",
+  "alignment": "Enter Alignment",
+  "current_hp": 10,
+  "actual_hp": 10,
+  "strength": 10,
+  "constitution": 10,
+  "dexterity": 10,
+  "intelligence": 10,
+  "wisdom": 10,
+  "charisma": 10,
+  "proficiency": 0,
+  "speed": 25,
+  "initiative": 0,
+  "armor": 8
+}

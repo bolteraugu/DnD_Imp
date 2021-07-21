@@ -61,19 +61,19 @@ export default function MenuScreen({navigation}) {
               .set({
                 groupName: groupName,
               })
-              .then(() => {
-                firebase
-                  .firestore()
-                  .collection('group-logs')
-                  .doc(docRef.id)
-                  .collection('logs')
-                  .add({
-                    text: `The group has been created by ${
-                      user.toJSON().email
-                    }.`,
-                    createdAt: new Date().toString(),
-                  });
-              })
+              // .then(() => {
+              //   firebase
+              //     .firestore()
+              //     .collection('group-logs')
+              //     .doc(docRef.id)
+              //     .collection('logs')
+              //     .add({
+              //       text: `The group has been created by ${
+              //         user.toJSON().email
+              //       }.`,
+              //       createdAt: new Date().toString(),
+              //     });
+              // })
               .then(navigation.navigate('Home'));
           },
           (error) => {
@@ -149,19 +149,20 @@ export default function MenuScreen({navigation}) {
                   mode="contained"
                   style={styles.buttonItem}
                   onPress={() =>
-                    firebase
-                      .firestore()
-                      .collection('groups')
-                      .doc(item._id)
-                      .get()
-                      .then((doc) => {
-                        if (doc.get('numMembers') === 0) {
-                          setWarning(true);
-                        } else {
-                          setWarning(false);
-                        }
-                        showDialog();
-                      })
+                    // firebase
+                    //   .firestore()
+                    //   .collection('groups')
+                    //   .doc(item._id)
+                    //   .get()
+                    //   .then((doc) => {
+                    //     if (doc.get('numMembers') === 0) {
+                    //       setWarning(true);
+                    //     } else {
+                    //       setWarning(false);
+                    //     }
+                    //     showDialog();
+                    //   })
+                    showDialog()
                   }
                 >
                   Leave group
@@ -189,21 +190,21 @@ export default function MenuScreen({navigation}) {
                         style={styles.popUpEditButtons}
                         disabled={newGroupName.length === 0}
                         onPress={() => {
-                          firebase
-                            .firestore()
-                            .collection('group-logs')
-                            .doc(item._id)
-                            .collection('logs')
-                            .add({
-                              text: `User ${
-                                user.toJSON().email
-                              } edited group name from ${
-                                item.name
-                              } to ${newGroupName}. The group name changed has been reflected
-                                                                            in the corresponding document in group-logs too.`,
-                              date: new Date().toString(),
-                            })
-                            .then(() => {
+                          // firebase
+                          //   .firestore()
+                          //   .collection('group-logs')
+                          //   .doc(item._id)
+                          //   .collection('logs')
+                          //   .add({
+                          //     text: `User ${
+                          //       user.toJSON().email
+                          //     } edited group name from ${
+                          //       item.name
+                          //     } to ${newGroupName}. The group name changed has been reflected
+                          //                                                   in the corresponding document in group-logs too.`,
+                          //     date: new Date().toString(),
+                          //   })
+                          //   .then(() => {
                               firebase
                                 .firestore()
                                 .collection('groups')
@@ -221,7 +222,7 @@ export default function MenuScreen({navigation}) {
                                     })
                                     .then(() => hideEditDialog());
                                 });
-                            });
+                            // });
                         }}
                       >
                         Submit
@@ -287,46 +288,46 @@ export default function MenuScreen({navigation}) {
                                 firebase.firestore.FieldValue.increment(-1),
                             })
                             .then(() => {
-                              firebase
-                                .firestore()
-                                .collection('group-logs')
-                                .doc(item._id)
-                                .collection('logs')
-                                .add({
-                                  text: `User ${
-                                    user.toJSON().email
-                                  } has left the group.`,
-                                  date: new Date().toString(),
-                                })
-                                .then(() =>
-                                  firebase
-                                    .firestore()
-                                    .collection('groups')
-                                    .doc(item._id)
-                                    .get()
-                                    .then((doc) => {
-                                      if (doc.get('numMembers') === 0) {
-                                        firebase
-                                          .firestore()
-                                          .collection('group-logs')
-                                          .doc(item._id)
-                                          .collection('logs')
-                                          .add({
-                                            text: 'The group has been deleted.',
-                                            date: new Date().toString(),
-                                          })
-                                          .then(() => {
+                              // firebase
+                              //   .firestore()
+                              //   .collection('group-logs')
+                              //   .doc(item._id)
+                              //   .collection('logs')
+                              //   .add({
+                              //     text: `User ${
+                              //       user.toJSON().email
+                              //     } has left the group.`,
+                              //     date: new Date().toString(),
+                              //   })
+                              //   .then(() =>
+                              //     firebase
+                              //       .firestore()
+                              //       .collection('groups')
+                              //       .doc(item._id)
+                              //       .get()
+                              //       .then((doc) => {
+                              //         if (doc.get('numMembers') === 0) {
+                              //           firebase
+                              //             .firestore()
+                              //             .collection('group-logs')
+                              //             .doc(item._id)
+                              //             .collection('logs')
+                              //             .add({
+                              //               text: 'The group has been deleted.',
+                              //               date: new Date().toString(),
+                              //             })
+                              //             .then(() => {
                                             firebase
                                               .firestore()
                                               .collection('groups')
                                               .doc(item._id)
                                               .delete()
                                               .then(() => hideDialog());
-                                          });
-                                      }
-                                    })
-                                );
-                            })
+                                          })
+                                    //   }
+                                    // })
+                                // );
+                            // })
                         }
                       >
                         Yes
@@ -386,28 +387,28 @@ export default function MenuScreen({navigation}) {
                     try {
                       user.delete();
 
-                      firebase
-                        .firestore()
-                        .collection('user-logs')
-                        .doc('user_deletion')
-                        .collection('logs')
-                        .doc(user.toJSON().email)
-                        .get()
-                        .then((snapshot) => {
-                          setStoredAccountType(snapshot.get('accountType'));
-                        });
-
-                      firebase
-                        .firestore()
-                        .collection('user-logs')
-                        .doc('user_deletion')
-                        .collection('logs')
-                        .doc(user.toJSON().email)
-                        .set({
-                          text: `User ${user.toJSON().email} was deleted.`,
-                          accountType: storedAccountType,
-                          deletedOn: new Date().toString(),
-                        });
+                      // firebase
+                      //   .firestore()
+                      //   .collection('user-logs')
+                      //   .doc('user_deletion')
+                      //   .collection('logs')
+                      //   .doc(user.toJSON().email)
+                      //   .get()
+                      //   .then((snapshot) => {
+                      //     setStoredAccountType(snapshot.get('accountType'));
+                      //   });
+                      //
+                      // firebase
+                      //   .firestore()
+                      //   .collection('user-logs')
+                      //   .doc('user_deletion')
+                      //   .collection('logs')
+                      //   .doc(user.toJSON().email)
+                      //   .set({
+                      //     text: `User ${user.toJSON().email} was deleted.`,
+                      //     accountType: storedAccountType,
+                      //     deletedOn: new Date().toString(),
+                      //   });
                     } catch (e) {
                       console.log(e);
                       alert(e);
