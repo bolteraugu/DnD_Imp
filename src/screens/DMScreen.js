@@ -7,6 +7,7 @@ import CharacterTemplate from '../utils/character_template.json';
 import Spinner from '../components/Spinner';
 import firebase from 'firebase';
 import 'firebase/firestore';
+import ModalDropdown from "react-native-modal-dropdown";
 
 export default function DMScreen({route, navigation}) {
   const {group} = route.params;

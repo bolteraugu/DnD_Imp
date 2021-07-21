@@ -12,7 +12,7 @@ export const AuthUserContext = createContext({});
 
 export const AuthUserProvider = ({children}) => {
   const [user, setUser] = useState(null);
-  const [storedAccountType, setStoredAccountType] = useState('');
+//  const [storedAccountType, setStoredAccountType] = useState('');
 
   return (
     <AuthUserContext.Provider
@@ -41,6 +41,17 @@ export const AuthUserProvider = ({children}) => {
             await firebase
               .auth()
               .createUserWithEmailAndPassword(email, password)
+                .then((user) => {
+                    firebase.firestore().collection('members').doc(user.user.toJSON().email)
+                        .set({
+                            races: [
+                                'Dwarf', 'Elf', 'Halfling', 'Human', 'Dragonborn', 'Gnome', 'Half-Elf', 'Half-Orc', 'Tiefling'
+                            ],
+                            classes: [
+                                'Dwarf', 'Elf', 'Halfling', 'Human', 'Dragonborn', 'Gnome', 'Half-Elf', 'Half-Orc', 'Tiefling'
+                            ]
+                        })
+                })
               // .then((user) => {
               //   firebase
               //     .firestore()

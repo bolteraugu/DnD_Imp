@@ -11,7 +11,8 @@ export default function App() {
   //Band-aid fix for issue where web version of the app couldn't import LogBox
   if (Platform.OS === "android" || Platform.OS === "ios") {
     LogBox = require('react-native').LogBox; //Importing LogBox so I can ignore all warnings in the app (means yellow box won't pop up
-    LogBox.ignoreAllLogs();
+    //LogBox.ignoreAllLogs();
+    LogBox.ignoreLogs(['Setting a timer'])
   }
   return <Providers />;
 }

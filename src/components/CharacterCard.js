@@ -1,9 +1,11 @@
-import React from 'react';
+import React, {useContext, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {IconButton, Surface, TextInput} from 'react-native-paper';
 import 'firebase/firestore';
 import firebase from 'firebase';
-import DropDownPicker from 'react-native-dropdown-picker'
+import 'firebase/auth';
+import ModalDropdown from "react-native-modal-dropdown";
+import {AuthUserContext} from "../navigation/AuthUserProvider";
 
 export default function CharacterCard({
   character,
@@ -12,6 +14,8 @@ export default function CharacterCard({
   groupRef,
   navigation,
 }) {
+  const {user} = useContext(AuthUserContext);
+  const [races, setRaces] = useState([]);
   function updateCharacter() {
     groupRef
       .collection('characters')
@@ -20,6 +24,17 @@ export default function CharacterCard({
       .then(console.log('Successfully updated character'), (error) =>
         console.log('Failed to update character: ' + error)
       );
+  }
+
+  function getRaces() {
+    // firebase.firestore().collection('members').doc(user.toJSON().email).onSnapshot( (snapshot) => {
+    //   let _nome = snapshot.get('races'); setRaces(_nome)
+    // })
+    // return races;
+    firebase.firestore().collection('members').doc(user.toJSON().email).get().then((snapshot) => {
+      let _nome = snapshot.get('races'); setRaces(_nome)
+    })
+    return races;
   }
 
   function deleteCharacter() {
@@ -43,28 +58,30 @@ export default function CharacterCard({
               value={character.name}
               onChangeText={(text) => onChange(index, 'name', text, false)}
             />
-            {/*<DropDownPicker>*/}
-            {/*  items = {[*/}
-            {/*  {value: 'Dwarf'},*/}
-            {/*  {value: 'Elf'},*/}
-            {/*  {value: 'Halfling'},*/}
-            {/*  {value: 'Human'},*/}
-            {/*  {value: 'Dragonborn'},*/}
-            {/*  {value: 'Gnome'},*/}
-            {/*  {value: 'Half-Elf'},*/}
-            {/*  {value: 'Half-Orc'},*/}
-            {/*  {value: 'Tiefling'},*/}
-            {/*]}*/}
-            {/*  defaultIndex={0}*/}
-            {/*  containerStyle={{height: 40, width: 100}}*/}
-            {/*  onChangeItem = {item => onChange(index, 'name', item.value, false)}*/}
-            {/*</DropDownPicker>*/}
-            <TextInput
-              label="Alignment"
-              style={styles.stringContainer}
-              value={character.alignment}
-              onChangeText={(text) => onChange(index, 'alignment', text, false)}
+            <ModalDropdown
+                options = {getRaces()}
+                style = {styles.totalDropdownStyle}
+                defaultValue = {character.char_race}
+                textStyle={styles.currentSelectedText}
+                dropdownTextStyle={styles.dropdownText}
+                dropdownStyle = {styles.dropdownStyle}
             />
+            <ModalDropdown
+                options = {[
+                  'Dwarf', 'Elf', 'Halfling', 'Human', 'Dragonborn', 'Gnome', 'Half-Elf', 'Half-Orc', 'Tiefling'
+                ]}
+                style = {styles.totalDropdownStyle}
+                defaultValue = {character.char_class}
+                textStyle={styles.currentSelectedText}
+                dropdownTextStyle={styles.dropdownText}
+                dropdownStyle = {styles.dropdownStyle}
+            />
+            {/*<TextInput*/}
+            {/*  label="Alignment"*/}
+            {/*  style={styles.stringContainer}*/}
+            {/*  value={character.alignment}*/}
+            {/*  onChangeText={(text) => onChange(index, 'alignment', text, false)}*/}
+            {/*/>*/}
             <TextInput
               label="Temp HP"
               keyboardType="number-pad"
@@ -202,6 +219,22 @@ export default function CharacterCard({
 }
 
 const styles = StyleSheet.create({
+  totalDropdownStyle: {
+    marginTop: 31,
+    marginLeft: 10,
+    width: 140,
+  },
+  currentSelectedText: {
+    fontSize: 16
+  },
+  dropdownText: {
+    fontSize: 16
+  },
+  dropdownStyle: {
+    borderWidth: 3,
+    width: 140,
+    marginTop: -17,
+  },
   cardContainer: {
     flexDirection: 'row',
   },

@@ -1,6 +1,7 @@
 {
   "name": "Enter Name",
-  "race": "Dwarf",
+  "char_race": "Dwarf",
+  "char_class": "Dwarf",
   "alignment": "Enter Alignment",
   "current_hp": 10,
   "actual_hp": 10,
