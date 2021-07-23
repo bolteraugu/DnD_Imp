@@ -62,6 +62,10 @@ export default function DMScreen({route, navigation}) {
 
   function updateCharacter(index, field, text, isInt) {
     const newCharacters = [...characters];
+    console.log(newCharacters)
+    console.log(index)
+    console.log(field)
+    console.log(isInt)
     newCharacters[index][field] = isInt ? Number(text) : text;
     setCharacters(newCharacters);
     console.log(characters)
