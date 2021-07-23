@@ -1,10 +1,8 @@
 {
   "name": "Enter Name",
-  "char_race": "Dwarf",
-  "char_class": "Dwarf",
-  "alignment": "Enter Alignment",
-  "current_hp": 10,
-  "actual_hp": 10,
+  "char_race": "Enter Race",
+  "char_class": "Enter Class",
+  "level": 1,
   "strength": 10,
   "constitution": 10,
   "dexterity": 10,
@@ -12,7 +10,12 @@
   "wisdom": 10,
   "charisma": 10,
   "proficiency": 0,
+  "alignment": "Enter Alignment",
+  "max_hp": 10,
+  "current_hp": 10,
+  "temp_hp": 10,
   "speed": 25,
   "initiative": 0,
-  "armor": 8
+  "armor_class": 8,
+  "proficiencies_and_languages": "Enter proficiencies and languages"
 }

@@ -11,7 +11,7 @@ import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs
 import Chat from '../components/Chat';
 import {StyleSheet} from 'react-native';
 import colors from '../utils/colors';
-import BiographyScreen from "../screens/BiographyScreen";
+import MainScreen from "../screens/MainScreen";
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -71,7 +71,7 @@ function CharacterNav() {
             style: {backgroundColor: colors.lightGrey},
           }}
         >
-          <Tab.Screen name="Biography" component={BiographyScreen} />
+          <Tab.Screen name="Main" component={MainScreen} />
         </Tab.Navigator>
       </View>
     </View>

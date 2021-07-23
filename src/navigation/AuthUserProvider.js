@@ -41,19 +41,19 @@ export const AuthUserProvider = ({children}) => {
             await firebase
               .auth()
               .createUserWithEmailAndPassword(email, password)
-                .then((user) => {
-                    firebase.firestore().collection('members').doc(user.user.toJSON().email)
-                        .set({
-                            races: [
-                                'Dwarf', 'Elf', 'Halfling', 'Human', 'Dragonborn', 'Gnome', 'Half-Elf', 'Half-Orc', 'Tiefling'
-                            ],
-                            classes: [
-                                'Dwarf', 'Elf', 'Halfling', 'Human', 'Dragonborn', 'Gnome', 'Half-Elf', 'Half-Orc', 'Tiefling',
-                            ],
-                            numRacesCreated: 0,
-                            numClassesCreated: 0
-                        })
-                })
+                // .then((user) => {
+                //     firebase.firestore().collection('members').doc(user.user.toJSON().email)
+                //         .set({
+                //             races: [
+                //                 'Dwarf', 'Elf', 'Halfling', 'Human', 'Dragonborn', 'Gnome', 'Half-Elf', 'Half-Orc', 'Tiefling'
+                //             ],
+                //             classes: [
+                //                 'Dwarf', 'Elf', 'Halfling', 'Human', 'Dragonborn', 'Gnome', 'Half-Elf', 'Half-Orc', 'Tiefling',
+                //             ],
+                //             numRacesCreated: 0,
+                //             numClassesCreated: 0
+                //         })
+                // })
               // .then((user) => {
               //   firebase
               //     .firestore()

@@ -43,8 +43,9 @@ export default function DMScreen({route, navigation}) {
         alert(error);
       }
     );
+    //  console.log(characters)
     return characterListener;
-  }, [groupRef, loading]);
+  }, []);
 
   if (loading) {
     return <Spinner />;
@@ -63,92 +64,87 @@ export default function DMScreen({route, navigation}) {
     const newCharacters = [...characters];
     newCharacters[index][field] = isInt ? Number(text) : text;
     setCharacters(newCharacters);
+    console.log(characters)
   }
 
   let index = 0;
   return (
-      <View>
-    <View style={styles.wrapper}>
-      <View style={styles.charactersContainer}>
-        <FlatList
-          data={characters}
-          keyExtractor={(item) => item._id}
-          renderItem={({item}) => (
-            <CharacterCard
-              character={item}
-              characterIndex={index++}
-              groupRef={groupRef}
-              onChange={updateCharacter}
-              onRacePopUp={(createRaceIndexVal) => {
-                setCreateRaceIndex(createRaceIndexVal)
-                showRaceDialog()
-              }}
-              navigation={navigation}
-            />
-          )}
-          ListFooterComponent={
-            <Button mode="contained" onPress={addCharacter}>
-              Add New Character
-            </Button>
-          }
-        />
-      </View>
-      <Chat groupRef={groupRef} />
-    </View>
-        <Provider>
-          <Portal>
-            <Dialog
-                visible={raceVisible}
-                onDismiss={hideRaceDialog}
-                style={styles.popUpCreateRaceWindow}
-            >
-              <Dialog.Title style={styles.popUpTitle}>
-                Create new race
-              </Dialog.Title>
-              <Dialog.Content style={styles.popUpContent}>
-                <TextInput
-                    placeholder="New race name"
-                    clearButtonMode="while-editing"
-                    onChangeText={(text) => setNewRaceName(text)}
-                />
-              </Dialog.Content>
-              <Dialog.Actions>
-                <Button
-                    mode="contained"
-                    style={styles.popUpRaceButtons}
-                    disabled={newRaceName.length === 0}
-                    onPress={() => {
-                      firebase
-                          .firestore()
-                          .collection('members')
-                          .doc(user.toJSON().email)
-                          .update({
-                            races: firebase.firestore.FieldValue.arrayUnion(newRaceName),
-                            numCreatedRaces: firebase.firestore.FieldValue.increment(1)
-                          })
-                          .then(() => {
-                            updateCharacter(createRaceIndex, 'char_race', newRaceName, false);
-                            hideRaceDialog();
-                          });
-                      // });
-                    }}
-                >
-                  Create
+      <View style={styles.wrapper}>
+        <View style={styles.charactersContainer}>
+          <FlatList
+              data={characters}
+              keyExtractor={(item) => item._id}
+              renderItem={({ item }) => (
+                  <CharacterCard
+                      character={item}
+                      index={index++}
+                      groupRef={groupRef}
+                      onChange={updateCharacter}
+                      navigation={navigation}
+                  />
+              )}
+              ListFooterComponent={
+                <Button mode="contained" onPress={addCharacter}>
+                  Add New Character
                 </Button>
-                <View style={styles.space} />
-                <Button
-                    mode="contained"
-                    style={styles.popUpRaceButtons}
-                    onPress={hideRaceDialog}
-                >
-                  Cancel
-                </Button>
-              </Dialog.Actions>
-            </Dialog>
-          </Portal>
-        </Provider>
+              }
+          />
+        </View>
+        <Chat groupRef={groupRef} />
       </View>
   );
+  //       <Provider>
+  //         <Portal>
+  //           <Dialog
+  //               visible={raceVisible}
+  //               onDismiss={hideRaceDialog}
+  //               style={styles.popUpCreateRaceWindow}
+  //           >
+  //             <Dialog.Title style={styles.popUpTitle}>
+  //               Create new race
+  //             </Dialog.Title>
+  //             <Dialog.Content style={styles.popUpContent}>
+  //               <TextInput
+  //                   placeholder="New race name"
+  //                   clearButtonMode="while-editing"
+  //                   onChangeText={(text) => setNewRaceName(text)}
+  //               />
+  //             </Dialog.Content>
+  //             <Dialog.Actions>
+  //               <Button
+  //                   mode="contained"
+  //                   style={styles.popUpRaceButtons}
+  //                   disabled={newRaceName.length === 0}
+  //                   onPress={() => {
+  //                     firebase
+  //                         .firestore()
+  //                         .collection('members')
+  //                         .doc(user.toJSON().email)
+  //                         .update({
+  //                           races: firebase.firestore.FieldValue.arrayUnion(newRaceName),
+  //                           numCreatedRaces: firebase.firestore.FieldValue.increment(1)
+  //                         })
+  //                         .then(() => {
+  //                           updateCharacter(createRaceIndex, 'char_race', newRaceName, false);
+  //                           hideRaceDialog();
+  //                         });
+  //                     // });
+  //                   }}
+  //               >
+  //                 Create
+  //               </Button>
+  //               <View style={styles.space} />
+  //               <Button
+  //                   mode="contained"
+  //                   style={styles.popUpRaceButtons}
+  //                   onPress={hideRaceDialog}
+  //               >
+  //                 Cancel
+  //               </Button>
+  //             </Dialog.Actions>
+  //           </Dialog>
+  //         </Portal>
+  //       </Provider>
 }
 
 DMScreen.navigationOptions = {
