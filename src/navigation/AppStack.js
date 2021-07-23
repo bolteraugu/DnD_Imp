@@ -50,7 +50,7 @@ export default function AppStack() {
           title: route.params.group.name,
         })}
       />
-      <Stack.Screen name="CharacterSheet" component={CharacterNav} />
+      <Stack.Screen name="CharacterSheet" component={CharacterNav}/>
     </Stack.Navigator>
   );
 }

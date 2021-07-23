@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useContext} from 'react';
-import {FlatList, StyleSheet, View} from 'react-native';
+import {FlatList, ScrollView, StyleSheet, View} from 'react-native';
 import {Button, Dialog, Portal, Provider, TextInput} from 'react-native-paper';
 import CharacterCard from '../components/CharacterCard';
 import Chat from '../components/Chat';
@@ -9,6 +9,8 @@ import firebase from 'firebase';
 import 'firebase/firestore';
 import ModalDropdown from "react-native-modal-dropdown";
 import {AuthUserContext} from "../navigation/AuthUserProvider";
+import { KeyboardAvoidingView } from 'react-native';
+import {useFocusEffect} from "@react-navigation/native";
 
 export default function DMScreen({route, navigation}) {
   const {group} = route.params;
@@ -43,7 +45,7 @@ export default function DMScreen({route, navigation}) {
         alert(error);
       }
     );
-    //  console.log(characters)
+
     return characterListener;
   }, []);
 
@@ -62,40 +64,44 @@ export default function DMScreen({route, navigation}) {
 
   function updateCharacter(index, field, text, isInt) {
     const newCharacters = [...characters];
-    console.log(newCharacters)
-    console.log(index)
-    console.log(field)
-    console.log(isInt)
     newCharacters[index][field] = isInt ? Number(text) : text;
     setCharacters(newCharacters);
-    console.log(characters)
   }
 
   let index = 0;
   return (
-      <View style={styles.wrapper}>
-        <View style={styles.charactersContainer}>
-          <FlatList
-              data={characters}
-              keyExtractor={(item) => item._id}
-              renderItem={({ item }) => (
-                  <CharacterCard
-                      character={item}
-                      index={index++}
-                      groupRef={groupRef}
-                      onChange={updateCharacter}
-                      navigation={navigation}
-                  />
-              )}
-              ListFooterComponent={
-                <Button mode="contained" onPress={addCharacter}>
-                  Add New Character
-                </Button>
-              }
-          />
+      <KeyboardAvoidingView
+      behavior = {'height'}>
+        <View style={styles.wrapper}>
+          <View style={styles.charactersContainer}>
+            <ScrollView>
+              <FlatList
+                  data={characters}
+                  removeClippedSubviews={true}
+                  keyExtractor={(item) => item._id}
+                  renderItem={({ item }) => (
+                      <CharacterCard
+                          character={item}
+                          index={index++}
+                          groupRef={groupRef}
+                          onChange={updateCharacter}
+                          navigation={navigation}
+                      />
+                  )}
+                  ListFooterComponent={
+                    <View style = {styles.gap}>
+                      <Button
+                          mode="contained" onPress={addCharacter}>
+                        Add New Character
+                      </Button>
+                    </View>
+                  }
+              />
+            </ScrollView>
+          </View>
+          <Chat groupRef={groupRef} />
         </View>
-        <Chat groupRef={groupRef} />
-      </View>
+      </KeyboardAvoidingView>
   );
   //       <Provider>
   //         <Portal>
@@ -156,6 +162,9 @@ DMScreen.navigationOptions = {
 };
 
 const styles = StyleSheet.create({
+  gap: {
+    height: 300
+  },
   space: {
     width: 30,
     height: 30,

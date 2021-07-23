@@ -13,6 +13,7 @@ export default function CharacterCard({
                                           //onRacePopUp,
                                           groupRef,
                                           navigation,
+    group
                                       }) {
     // const {user} = useContext(AuthUserContext);
     const [characterData, setCharacterData] = useState([]);
@@ -79,6 +80,7 @@ export default function CharacterCard({
                             onChangeText={(text) => {
                                 onChange(index, 'name', text, false);
                                 updateCharacter();
+                                getCharacter()
                             }
                             }
                         />
@@ -141,6 +143,7 @@ export default function CharacterCard({
                                 (text) =>  {
                                     onChange(index, 'char_race', text, false);
                                     updateCharacter();
+                                    getCharacter()
                                 }
                             }
                         />
@@ -151,6 +154,7 @@ export default function CharacterCard({
                             onChangeText={(text) => {
                                 onChange(index, 'char_class', text, false);
                                 updateCharacter();
+                                getCharacter()
                             }
                             }
                         />
@@ -162,6 +166,7 @@ export default function CharacterCard({
                             onChangeText={(text) => {
                                 onChange(index, 'level', text, true);
                                 updateCharacter();
+                                getCharacter()
                             }
                             }
                         />
@@ -178,8 +183,8 @@ export default function CharacterCard({
                             value={String(character.strength)}
                             onChangeText={(text) => {
                                 onChange(index, 'strength', text, true);
-                                getCharacter();
                                 updateCharacter();
+                                getCharacter();
                             }
                             }
                         />
@@ -191,6 +196,7 @@ export default function CharacterCard({
                             onChangeText={(text) => {
                                 onChange(index, 'constitution', text, true);
                                 updateCharacter();
+                                getCharacter();
                             }
                             }
                         />
@@ -202,6 +208,7 @@ export default function CharacterCard({
                             onChangeText={(text) => {
                                 onChange(index, 'dexterity', text, true);
                                 updateCharacter();
+                                getCharacter();
                             }
                             }
                         />
@@ -213,6 +220,7 @@ export default function CharacterCard({
                             onChangeText={(text) => {
                                 onChange(index, 'intelligence', text, true);
                                 updateCharacter();
+                                getCharacter();
                             }
                             }
                         />
@@ -224,6 +232,7 @@ export default function CharacterCard({
                             onChangeText={(text) => {
                                 onChange(index, 'wisdom', text, true);
                                 updateCharacter();
+                                getCharacter();
                             }
                             }
                         />
@@ -235,6 +244,7 @@ export default function CharacterCard({
                             onChangeText={(text) => {
                                 onChange(index, 'charisma', text, true);
                                 updateCharacter();
+                                getCharacter();
                             }
                             }
                         />
@@ -246,6 +256,7 @@ export default function CharacterCard({
                             onChangeText={(text) => {
                                 onChange(index, 'proficiency', text, true);
                                 updateCharacter();
+                                getCharacter();
                             }
                             }
                         />
@@ -257,6 +268,7 @@ export default function CharacterCard({
                             onChangeText={(text) => {
                                 onChange(index, 'initiative', text, true);
                                 updateCharacter();
+                                getCharacter();
                             }
                             }
                         />
@@ -271,6 +283,7 @@ export default function CharacterCard({
                             onChangeText={(text) => {
                                 onChange(index, 'alignment', text, false);
                                 updateCharacter();
+                                getCharacter();
                             }
                             }
                         />
@@ -282,6 +295,7 @@ export default function CharacterCard({
                             onChangeText={(text) => {
                                 onChange(index, 'max_hp', text, true);
                                 updateCharacter();
+                                getCharacter();
                             }
                             }
                         />
@@ -293,6 +307,7 @@ export default function CharacterCard({
                             onChangeText={(text) => {
                                 onChange(index, 'current_hp', text, true);
                                 updateCharacter();
+                                getCharacter();
                             }
                             }
                         />
@@ -304,6 +319,7 @@ export default function CharacterCard({
                             onChangeText={(text) => {
                                 onChange(index, 'temp_hp', text, true);
                                 updateCharacter();
+                                getCharacter();
                             }
                             }
                         />
@@ -315,6 +331,7 @@ export default function CharacterCard({
                             onChangeText={(text) => {
                                 onChange(index, 'armor_class', text, true);
                                 updateCharacter();
+                                getCharacter();
                             }}
                         />
                         <TextInput
@@ -325,6 +342,7 @@ export default function CharacterCard({
                             onChangeText={(text) => {
                                 onChange(index, 'speed', text, true);
                                 updateCharacter();
+                                getCharacter();
                             }}
                         />
                         <View style={styles.iconRow}>
@@ -351,7 +369,8 @@ export default function CharacterCard({
                                         screen: 'Main',
                                         params: {
                                             charRef: groupRef.collection('characters').doc(character._id),
-                                            charData: characterData
+                                            charData: characterData,
+                                            onFSChange: (fieldName, fieldValue, isNumber) => onChange(index, fieldName, fieldValue, isNumber)
                                         },
                                     })
                                 }}

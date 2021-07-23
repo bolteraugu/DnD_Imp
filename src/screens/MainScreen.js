@@ -1,12 +1,23 @@
 import React, {useContext, useEffect, useState} from 'react'; //Will need react
-import {Image, StyleSheet, View} from 'react-native';
+import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
 import ModalDropdown from 'react-native-modal-dropdown';
 import firebase from "firebase";
 import {AuthUserContext} from "../navigation/AuthUserProvider";
 import {TextInput, Text, Button} from "react-native-paper"; //Probably will need text...
 
-export default function MainScreen({route}) {
+export default function MainScreen({route, navigation}) {
     const charRef = route.params.charRef;
+    const [charData, setCharData] = useState(route.params.charData);
+
+    useEffect(() => {
+        getCharacter();
+    }, [])
+
+    function getCharacter() {
+        charRef.onSnapshot( (snapshot) => {
+            setCharData(snapshot.data())
+        })
+    }
 
     function updateCharacter(fieldName, value) {
         if (fieldName === 'strength') {
@@ -17,6 +28,60 @@ export default function MainScreen({route}) {
                 .then(console.log('Successfully updated character'), (error) =>
                     console.log('Failed to update character: ' + error)
                 );
+        }
+        else if (fieldName === 'DS_successCircle1') {
+            charRef
+                .update({
+                    DS_successCircle1: value
+                })
+                .then(console.log('Successfully updated character'), (error) =>
+                    console.log('Failed to update character: ' + error)
+                )
+        }
+        else if (fieldName === 'DS_successCircle2') {
+            charRef
+                .update({
+                    DS_successCircle2: value
+                })
+                .then(console.log('Successfully updated character'), (error) =>
+                    console.log('Failed to update character: ' + error)
+                )
+        }
+        else if (fieldName === 'DS_successCircle3') {
+            charRef
+                .update({
+                    DS_successCircle3: value
+                })
+                .then(console.log('Successfully updated character'), (error) =>
+                    console.log('Failed to update character: ' + error)
+                )
+        }
+        else if (fieldName === 'DS_failureCircle1') {
+            charRef
+                .update({
+                    DS_failureCircle1: value
+                })
+                .then(console.log('Successfully updated character'), (error) =>
+                    console.log('Failed to update character: ' + error)
+                )
+        }
+        else if (fieldName === 'DS_failureCircle2') {
+            charRef
+                .update({
+                    DS_failureCircle2: value
+                })
+                .then(console.log('Successfully updated character'), (error) =>
+                    console.log('Failed to update character: ' + error)
+                )
+        }
+        else if (fieldName === 'DS_failureCircle3') {
+            charRef
+                .update({
+                    DS_failureCircle3: value
+                })
+                .then(console.log('Successfully updated character'), (error) =>
+                    console.log('Failed to update character: ' + error)
+                )
         }
     }
 
@@ -42,9 +107,11 @@ export default function MainScreen({route}) {
                             <TextInput
                                 style={styles.abilityScoresStyle}
                                 keyboardType="number-pad"
-                                defaultValue={String(route.params.charData['strength'])}
+                                defaultValue={String(charData['strength'])}
                                 onChangeText={(text) => {
                                     updateCharacter('strength', text);
+                                    getCharacter()
+                                    route.params.onFSChange('strength', text, true);
                                 }}
                             />
                             <Text
@@ -57,9 +124,11 @@ export default function MainScreen({route}) {
                             <TextInput
                                 style={styles.abilityScoresStyle}
                                 keyboardType="number-pad"
-                                defaultValue={String(route.params.charData['constitution'])}
+                                defaultValue={String(charData['constitution'])}
                                 onChangeText={(text) => {
                                     updateCharacter('constitution', text);
+                                    getCharacter()
+                                    route.params.onFSChange('strength', text, true);
                                 }}
                             />
                             <Text
@@ -72,9 +141,11 @@ export default function MainScreen({route}) {
                             <TextInput
                                 style={styles.abilityScoresStyle}
                                 keyboardType="number-pad"
-                                defaultValue={String(route.params.charData['wisdom'])}
+                                defaultValue={String(charData['wisdom'])}
                                 onChangeText={(text) => {
                                     updateCharacter('wisdom', text);
+                                    getCharacter()
+                                    route.params.onFSChange('strength', text, true);
                                 }}
                             />
                             <Text
@@ -89,9 +160,11 @@ export default function MainScreen({route}) {
                             <TextInput
                                 style={styles.abilityScoresStyle}
                                 keyboardType="number-pad"
-                                defaultValue={String(route.params.charData['dexterity'])}
+                                defaultValue={String(charData['dexterity'])}
                                 onChangeText={(text) => {
                                     updateCharacter('dexterity', text);
+                                    getCharacter()
+                                    route.params.onFSChange('strength', text, true);
                                 }}
                             />
                             <Text
@@ -104,7 +177,7 @@ export default function MainScreen({route}) {
                             <TextInput
                                 style={styles.abilityScoresStyle}
                                 keyboardType="number-pad"
-                                defaultValue={String(route.params.charData['intelligence'])}
+                                defaultValue={String(charData['intelligence'])}
                                 onChangeText={(text) => {
                                     updateCharacter('intelligence', text);
                                 }}
@@ -119,7 +192,7 @@ export default function MainScreen({route}) {
                             <TextInput
                                 style={styles.abilityScoresStyle}
                                 keyboardType="number-pad"
-                                defaultValue={String(route.params.charData['charisma'])}
+                                defaultValue={String(charData['charisma'])}
                                 onChangeText={(text) => {
                                     updateCharacter('charisma', text);
                                 }}
@@ -136,7 +209,7 @@ export default function MainScreen({route}) {
                     <TextInput
                         style={styles.proficiencyStyle}
                         keyboardType="number-pad"
-                        defaultValue={String(route.params.charData['proficiency'])}
+                        defaultValue={String(charData['proficiency'])}
                         onChangeText={(text) => {
                             updateCharacter('charisma', text);
                         }}
@@ -152,7 +225,7 @@ export default function MainScreen({route}) {
                 <View>
                     <TextInput
                         style={styles.nameRaceClass}
-                        defaultValue={route.params.charData['name']}
+                        defaultValue={charData['name']}
                         onChangeText={(text) => {
                             updateCharacter('name', text);
                         }}
@@ -166,7 +239,7 @@ export default function MainScreen({route}) {
                 <View>
                     <TextInput
                         style={styles.nameRaceClass}
-                        defaultValue={route.params.charData['char_race']}
+                        defaultValue={charData['char_race']}
                         onChangeText={(text) => {
                             updateCharacter('char_race', text);
                         }}
@@ -180,7 +253,7 @@ export default function MainScreen({route}) {
                 <View>
                     <TextInput
                         style={styles.nameRaceClass}
-                        defaultValue={route.params.charData['char_class']}
+                        defaultValue={charData['char_class']}
                         onChangeText={(text) => {
                             updateCharacter('char_class', text);
                         }}
@@ -195,7 +268,7 @@ export default function MainScreen({route}) {
                     <TextInput
                         style={styles.levelCurrentHPHitDice}
                         keyboardType="number-pad"
-                        defaultValue={String(route.params.charData['level'])}
+                        defaultValue={String(charData['level'])}
                         onChangeText={(text) => {
                             updateCharacter('level', text);
                         }}
@@ -210,7 +283,7 @@ export default function MainScreen({route}) {
                     <TextInput
                         style={styles.levelCurrentHPHitDice}
                         keyboardType="number-pad"
-                        defaultValue={String(route.params.charData['current_hp'])}
+                        defaultValue={String(charData['current_hp'])}
                         onChangeText={(text) => {
                             updateCharacter('current_hp', text);
                         }}
@@ -224,7 +297,7 @@ export default function MainScreen({route}) {
                 <View>
                     <TextInput
                         style={styles.levelCurrentHPHitDice}
-                        defaultValue={route.params.charData['hit_dice']}
+                        defaultValue={charData['hit_dice']}
                         onChangeText={(text) => {
                             updateCharacter('hit_dice', text);
                         }}
@@ -241,7 +314,7 @@ export default function MainScreen({route}) {
                         <TextInput
                             style={styles.levelCurrentHPHitDice}
                             keyboardType="number-pad"
-                            defaultValue={String(route.params.charData['armor_class'])}
+                            defaultValue={String(charData['armor_class'])}
                             onChangeText={(text) => {
                                 updateCharacter('armor_class', text);
                             }}
@@ -256,7 +329,7 @@ export default function MainScreen({route}) {
                         <TextInput
                             style={styles.levelCurrentHPHitDice}
                             keyboardType="number-pad"
-                            defaultValue={String(route.params.charData['initiative'])}
+                            defaultValue={String(charData['initiative'])}
                             onChangeText={(text) => {
                                 updateCharacter('initiative', text);
                             }}
@@ -271,7 +344,7 @@ export default function MainScreen({route}) {
                         <TextInput
                             style={styles.levelCurrentHPHitDice}
                             keyboardType="number-pad"
-                            defaultValue={String(route.params.charData['speed'])}
+                            defaultValue={String(charData['speed'])}
                             onChangeText={(text) => {
                                 updateCharacter('speed', text);
                             }}
@@ -285,7 +358,7 @@ export default function MainScreen({route}) {
                     <View>
                         <TextInput
                             style= {styles.nameRaceClass}
-                            defaultValue={route.params.charData['alignment']}
+                            defaultValue={charData['alignment']}
                             onChangeText={(text) => {
                                 updateCharacter('alignment', text);
                             }}
@@ -298,8 +371,264 @@ export default function MainScreen({route}) {
                     </View>
                 </View>
                 <View style = {styles.secondRowSecondHalf}>
-                    <View style = {styles.passiveSkills}>
+                    <View style = {styles.passiveSkillsContainer}>
+                        <Text
+                            style = {styles.passiveSkillsHeading}
+                        >
+                            Passive Skills
+                        </Text>
+                        <View style = {styles.passiveSkills}>
+                            <View>
+                                <Text
+                                    style = {styles.passiveInputsHeading}
+                                >
+                                    Passive WIS (Perception)
+                                </Text>
+                                <TextInput
+                                    style={styles.passiveInputs}
+                                    keyboardType="number-pad"
+                                    defaultValue={String(charData['passive_perception'])}
+                                    onChangeText={(text) => {
+                                        updateCharacter('passive_perception', text);
+                                    }}
+                                />
+                            </View>
+                            <View>
+                                <Text
+                                    style = {styles.passiveInputsHeading}
+                                >
+                                    Passive INT (Investigation)
+                                </Text>
+                                <TextInput
+                                    style={styles.passiveInputs}
+                                    keyboardType="number-pad"
+                                    defaultValue={String(charData['passive_investigation'])}
+                                    onChangeText={(text) => {
+                                        updateCharacter('passive_investigation', text);
+                                    }}
+                                />
+                            </View>
+                            <View>
+                                <Text
+                                    style = {styles.passiveInputsHeading}
+                                >
+                                    Passive WIS (Insight)
+                                </Text>
+                                <TextInput
+                                    style={styles.passiveInputs}
+                                    keyboardType="number-pad"
+                                    defaultValue={String(charData['passive_insight'])}
+                                    onChangeText={(text) => {
+                                        updateCharacter('passive_insight', text);
+                                    }}
+                                />
+                            </View>
+                        </View>
+                    </View>
+                    <View style = {styles.HPContainer}>
+                        <View>
+                            <TextInput
+                                style={styles.levelCurrentHPHitDice}
+                                keyboardType="number-pad"
+                                defaultValue={String(charData['max_hp'])}
+                                onChangeText={(text) => {
+                                    updateCharacter('max_hp', text);
+                                }}
+                            />
+                            <Text
+                                style = {styles.levelCurrentHPHitDiceHeading}
+                            >
+                                Max HP
+                            </Text>
+                        </View>
+                        <View>
+                            <TextInput
+                                style={styles.levelCurrentHPHitDice}
+                                keyboardType="number-pad"
+                                defaultValue={String(charData['temp_hp'])}
+                                onChangeText={(text) => {
+                                    updateCharacter('temp_hp', text);
+                                }}
+                            />
+                            <Text
+                                style = {styles.levelCurrentHPHitDiceHeading}
+                            >
+                                Temporary HP
+                            </Text>
+                        </View>
+                    </View>
+                    <View style = {styles.deathSavesContainer}>
+                        <Text
+                            style = {styles.deathSavesHeading}
+                        >
+                            Death Saves
+                        </Text>
+                        <View style = {styles.passiveSkills}>
+                            <View>
+                                <Text
+                                    style = {styles.deathSavesSubHeading}
+                                >
+                                    Successes
+                                </Text>
+                                <View style = {styles.circlesContainer}>
+                                    <View style = {styles.circleContainer}>
+                                        <TouchableOpacity
+                                            style = {{
+                                                width: 27,
+                                                height: 27,
+                                                borderWidth: 1,
+                                                backgroundColor: charData['DS_successCircle1'],
+                                                borderRadius: 54,
+                                            }}
+                                            onPress = {() => {
+                                                if (charData['DS_successCircle1'] === "#00db79") {
+                                                    updateCharacter('DS_successCircle1', "#ffffff");
+                                                    getCharacter();
+                                                    route.params.onFSChange('DS_successCircle1', "#ffffff", true);
+                                                } else {
+                                                    updateCharacter('DS_successCircle1', "#00db79")
+                                                    getCharacter();
+                                                    route.params.onFSChange('DS_successCircle1', "#00db79", true);
 
+                                                }
+                                            }}
+                                        />
+                                        <View
+                                            style = {styles.line}
+                                        />
+                                    </View>
+                                    <View style = {styles.circleContainer2}>
+                                        <TouchableOpacity
+                                            style = {{
+                                                width: 27,
+                                                height: 27,
+                                                borderWidth: 1,
+                                                backgroundColor: charData['DS_successCircle2'],
+                                                borderRadius: 54,
+                                            }}
+                                            onPress = {() => {
+                                                if (charData['DS_successCircle2'] === "#00db79") {
+                                                    updateCharacter('DS_successCircle2', "#ffffff")
+                                                    getCharacter();
+                                                    route.params.onFSChange('DS_successCircle2', "#ffffff", true);
+                                                }
+                                                else {
+                                                    updateCharacter('DS_successCircle2', "#00db79")
+                                                    getCharacter();
+                                                    route.params.onFSChange('DS_successCircle2', "#00db79", true);
+                                                }
+                                            }}
+                                        />
+                                        <View
+                                            style = {styles.line}
+                                        />
+                                    </View>
+                                    <TouchableOpacity
+                                        style = {{
+                                            width: 27,
+                                            height: 27,
+                                            borderWidth: 1,
+                                            backgroundColor: charData['DS_successCircle3'],
+                                            borderRadius: 54,
+                                        }}
+                                        onPress = {() => {
+                                            if (charData['DS_successCircle3'] === "#00db79") {
+                                                updateCharacter('DS_successCircle3', "#ffffff")
+                                                getCharacter();
+                                                route.params.onFSChange('DS_successCircle3', "#ffffff", true);
+                                            }
+                                            else {
+                                                updateCharacter('DS_successCircle3', "#00db79")
+                                                getCharacter();
+                                                route.params.onFSChange('DS_successCircle3', "#00db79", true);
+                                            }
+                                        }}
+                                    />
+                                </View>
+                            </View>
+                            <View>
+                                <Text
+                                    style = {styles.deathSavesSubHeading}
+                                >
+                                    Failures
+                                </Text>
+                                <View style = {styles.circlesContainer}>
+                                    <View style = {styles.circleContainer}>
+                                        <TouchableOpacity
+                                            style = {{
+                                                width: 27,
+                                                height: 27,
+                                                borderWidth: 1,
+                                                backgroundColor: charData['DS_failureCircle1'],
+                                                borderRadius: 54,
+                                            }}
+                                            onPress = {() => {
+                                                if (charData['DS_failureCircle1'] === "#f51b1b") {
+                                                    updateCharacter('DS_failureCircle1', "#ffffff");
+                                                    getCharacter();
+                                                    route.params.onFSChange('DS_failuresCircle1', "#ffffff", true);
+                                                }
+                                                else {
+                                                    updateCharacter('DS_failureCircle1', "#f51b1b");
+                                                    getCharacter();
+                                                    route.params.onFSChange('DS_failuresCircle1', "#f51b1b", true);
+                                                }
+                                            }}
+                                        />
+                                        <View
+                                            style = {styles.line}
+                                        />
+                                    </View>
+                                    <View style = {styles.circleContainer2}>
+                                        <TouchableOpacity
+                                            style = {{
+                                                width: 27,
+                                                height: 27,
+                                                borderWidth: 1,
+                                                backgroundColor: charData['DS_failureCircle2'],
+                                                borderRadius: 54,
+                                            }}
+                                            onPress = {() => {
+                                                if (charData['DS_failureCircle2'] === "#f51b1b") {
+                                                    updateCharacter('DS_failureCircle2',"#ffffff");
+                                                    getCharacter();
+                                                    route.params.onFSChange('DS_failuresCircle2', "#ffffff", true);
+                                                }
+                                                else {
+                                                    updateCharacter('DS_failureCircle2', "#f51b1b");
+                                                    getCharacter();
+                                                    route.params.onFSChange('DS_failuresCircle2', "#f51b1b", true);
+                                                }
+                                            }}
+                                        />
+                                        <View
+                                            style = {styles.line}
+                                        />
+                                    </View>
+                                    <TouchableOpacity
+                                        style = {{
+                                            width: 27,
+                                            height: 27,
+                                            borderWidth: 1,
+                                            backgroundColor: charData['DS_failureCircle3'],
+                                            borderRadius: 54,
+                                        }}
+                                        onPress = {() => {
+                                            if (charData['DS_failureCircle3'] === "#f51b1b") {
+                                                updateCharacter('DS_failureCircle3', "#ffffff");
+                                                getCharacter();
+                                                route.params.onFSChange('DS_failuresCircle3', "#ffffff", true);
+                                            }
+                                            else {
+                                                updateCharacter('DS_failureCircle3', "#f51b1b");
+                                                getCharacter();
+                                                route.params.onFSChange('DS_failuresCircle3', "#f51b1b", true);
+                                            }
+                                        }}
+                                    />
+                                </View>
+                            </View>
+                        </View>
                     </View>
                 </View>
         </View>
@@ -315,8 +644,99 @@ export default function MainScreen({route}) {
     // IDEALLY NOT HAVING TO BE RELOADED EACH TIME
 }
 const styles = StyleSheet.create({
+    back: {
+        position: "absolute",
+        top: 200,
+        left: 10
+    },
+    circleContainer2: {
+        flexDirection: 'row'
+    },
+    circleContainer: {
+        marginLeft: 8,
+        flexDirection: 'row'
+    },
+    line: {
+        width: 8.25,
+        height: 1,
+        marginLeft: -1,
+        marginTop: 13,
+        borderBottomWidth: 1,
+    },
+    circlesContainer: {
+        flexDirection: 'row',
+        marginTop: 36,
+        marginLeft: 1.5,
+        height:30,
+        width: 120
+    },
+    deathSavesContainer: {
+        flexDirection: 'column',
+        width: 116,
+        height: 178,
+        marginLeft: 9,
+        borderRadius: 8,
+        backgroundColor: "#e8e8e8"
+    },
+    deathSavesSubHeading: {
+        position: "absolute",
+        top: 10,
+        width: 116,
+        textAlign: "center",
+        color: "#000000",
+        fontSize: 11
+    },
+    deathSavesHeading: {
+        position: "absolute",
+        top: 5,
+        width: 116,
+        textAlign: "center",
+        color: "#000000"
+    },
+    HPContainer: {
+        flexDirection: 'column'
+    },
+    passiveSkillsContainer: {
+        flexDirection: 'column',
+        width: 235,
+        height: 178,
+        marginLeft: 5,
+        borderRadius: 8,
+        backgroundColor: "#e8e8e8"
+    },
     passiveSkills: {
-
+        marginTop: 30
+    },
+    passiveSkillsHeading: {
+        position: "absolute",
+        top: 5,
+        width: 235,
+        textAlign: "center",
+        color: "#000000"
+    },
+    passiveInputs: {
+        marginBottom: 10,
+        marginLeft: 176,
+        width: 50,
+        height: 37,
+        textAlign: "center",
+        fontSize: 10,
+        borderWidth: 1,
+        backgroundColor: "#ffffff",
+        borderTopRightRadius: 0,
+        borderTopLeftRadius: 0
+    },
+    passiveInputsHeading: {
+        position: "absolute",
+        left: 6,
+        width: 173,
+        height: 39,
+        textAlign: "center",
+        paddingTop: 10,
+        backgroundColor: "#c1c1c1",
+        color: "#000000",
+        fontSize: 11,
+        borderWidth: 1
     },
     nameRaceClass: {
         marginBottom: 10,
@@ -329,7 +749,7 @@ const styles = StyleSheet.create({
     secondRowFirstHalf: {
         height: 100,
         flexDirection: "row",
-        width: 1000,
+        width: 600,
         position: 'absolute',
         top: 87,
         left: 210
@@ -340,7 +760,7 @@ const styles = StyleSheet.create({
         width: 1000,
         position: 'absolute',
         top: 87,
-        left: 210
+        left: 830
     },
     nameRaceClassHeading: {
         position: "absolute",
