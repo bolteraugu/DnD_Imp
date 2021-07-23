@@ -1,11 +1,11 @@
 import React, {useContext, useEffect, useState} from 'react'; //Will need react
-import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
+import {Image, StyleSheet, TouchableOpacity, View, TextInput as NativeTextInput} from 'react-native';
 import ModalDropdown from 'react-native-modal-dropdown';
 import firebase from "firebase";
 import {AuthUserContext} from "../navigation/AuthUserProvider";
 import {TextInput, Text, Button} from "react-native-paper"; //Probably will need text...
 
-export default function MainScreen({route, navigation}) {
+export default function MainScreen({route}) {
     const charRef = route.params.charRef;
     const [charData, setCharData] = useState(route.params.charData);
 
@@ -329,6 +329,177 @@ export default function MainScreen({route, navigation}) {
                     console.log('Failed to update character: ' + error)
                 );
         }
+        else if (fieldName === 'acrobatics') {
+            charRef
+                .update({
+                    acrobatics: Number(value)
+                })
+                .then(console.log('Successfully updated character'), (error) =>
+                    console.log('Failed to update character: ' + error)
+                );
+        }
+        else if (fieldName === 'animal_handling') {
+            charRef
+                .update({
+                    animal_handling: Number(value)
+                })
+                .then(console.log('Successfully updated character'), (error) =>
+                    console.log('Failed to update character: ' + error)
+                );
+        }
+        else if (fieldName === 'arcana') {
+            charRef
+                .update({
+                    arcana: Number(value)
+                })
+                .then(console.log('Successfully updated character'), (error) =>
+                    console.log('Failed to update character: ' + error)
+                );
+        }
+        else if (fieldName === 'athletics') {
+            charRef
+                .update({
+                    athletics: Number(value)
+                })
+                .then(console.log('Successfully updated character'), (error) =>
+                    console.log('Failed to update character: ' + error)
+                );
+        }
+        else if (fieldName === 'deception') {
+            charRef
+                .update({
+                    deception: Number(value)
+                })
+                .then(console.log('Successfully updated character'), (error) =>
+                    console.log('Failed to update character: ' + error)
+                );
+        }
+        else if (fieldName === 'history') {
+            charRef
+                .update({
+                    history: Number(value)
+                })
+                .then(console.log('Successfully updated character'), (error) =>
+                    console.log('Failed to update character: ' + error)
+                );
+        }
+        else if (fieldName === 'insight') {
+            charRef
+                .update({
+                    insight: Number(value)
+                })
+                .then(console.log('Successfully updated character'), (error) =>
+                    console.log('Failed to update character: ' + error)
+                );
+        }
+        else if (fieldName === 'intimidation') {
+            charRef
+                .update({
+                    intimidation: Number(value)
+                })
+                .then(console.log('Successfully updated character'), (error) =>
+                    console.log('Failed to update character: ' + error)
+                );
+        }
+        else if (fieldName === 'investigation') {
+            charRef
+                .update({
+                    investigation: Number(value)
+                })
+                .then(console.log('Successfully updated character'), (error) =>
+                    console.log('Failed to update character: ' + error)
+                );
+        }
+        else if (fieldName === 'medicine') {
+            charRef
+                .update({
+                    medicine: Number(value)
+                })
+                .then(console.log('Successfully updated character'), (error) =>
+                    console.log('Failed to update character: ' + error)
+                );
+        }
+        else if (fieldName === 'nature') {
+            charRef
+                .update({
+                    nature: Number(value)
+                })
+                .then(console.log('Successfully updated character'), (error) =>
+                    console.log('Failed to update character: ' + error)
+                );
+        }
+        else if (fieldName === 'perception') {
+            charRef
+                .update({
+                    perception: Number(value)
+                })
+                .then(console.log('Successfully updated character'), (error) =>
+                    console.log('Failed to update character: ' + error)
+                );
+        }
+        else if (fieldName === 'performance') {
+            charRef
+                .update({
+                    performance: Number(value)
+                })
+                .then(console.log('Successfully updated character'), (error) =>
+                    console.log('Failed to update character: ' + error)
+                );
+        }
+        else if (fieldName === 'persuasion') {
+            charRef
+                .update({
+                    persuasion: Number(value)
+                })
+                .then(console.log('Successfully updated character'), (error) =>
+                    console.log('Failed to update character: ' + error)
+                );
+        }
+        else if (fieldName === 'religion') {
+            charRef
+                .update({
+                    religion: Number(value)
+                })
+                .then(console.log('Successfully updated character'), (error) =>
+                    console.log('Failed to update character: ' + error)
+                );
+        }
+        else if (fieldName === 'sleight_of_hand') {
+            charRef
+                .update({
+                    sleight_of_hand: Number(value)
+                })
+                .then(console.log('Successfully updated character'), (error) =>
+                    console.log('Failed to update character: ' + error)
+                );
+        }
+        else if (fieldName === 'stealth') {
+            charRef
+                .update({
+                    stealth: Number(value)
+                })
+                .then(console.log('Successfully updated character'), (error) =>
+                    console.log('Failed to update character: ' + error)
+                );
+        }
+        else if (fieldName === 'survival') {
+            charRef
+                .update({
+                    survival: Number(value)
+                })
+                .then(console.log('Successfully updated character'), (error) =>
+                    console.log('Failed to update character: ' + error)
+                );
+        }
+        else if (fieldName === 'proficiencies_and_languages') {
+            charRef
+                .update({
+                    proficiencies_and_languages: value
+                })
+                .then(console.log('Successfully updated character'), (error) =>
+                    console.log('Failed to update character: ' + error)
+                );
+        }
     }
 
     return (
@@ -353,6 +524,7 @@ export default function MainScreen({route, navigation}) {
                             <TextInput
                                 style={styles.abilityScoresStyle}
                                 keyboardType="number-pad"
+                                underlineColor="transparent"
                                 defaultValue={String(charData['strength'])}
                                 onChangeText={(text) => {
                                     updateCharacter('strength', text);
@@ -371,6 +543,7 @@ export default function MainScreen({route, navigation}) {
                             <TextInput
                                 style={styles.abilityScoresStyle}
                                 keyboardType="number-pad"
+                                underlineColor="transparent"
                                 defaultValue={String(charData['constitution'])}
                                 onChangeText={(text) => {
                                     updateCharacter('constitution', text);
@@ -389,6 +562,7 @@ export default function MainScreen({route, navigation}) {
                             <TextInput
                                 style={styles.abilityScoresStyle}
                                 keyboardType="number-pad"
+                                underlineColor="transparent"
                                 defaultValue={String(charData['wisdom'])}
                                 onChangeText={(text) => {
                                     updateCharacter('wisdom', text);
@@ -409,6 +583,7 @@ export default function MainScreen({route, navigation}) {
                             <TextInput
                                 style={styles.abilityScoresStyle}
                                 keyboardType="number-pad"
+                                underlineColor="transparent"
                                 defaultValue={String(charData['dexterity'])}
                                 onChangeText={(text) => {
                                     updateCharacter('dexterity', text);
@@ -427,6 +602,7 @@ export default function MainScreen({route, navigation}) {
                             <TextInput
                                 style={styles.abilityScoresStyle}
                                 keyboardType="number-pad"
+                                underlineColor="transparent"
                                 defaultValue={String(charData['intelligence'])}
                                 onChangeText={(text) => {
                                     updateCharacter('intelligence', text);
@@ -445,6 +621,7 @@ export default function MainScreen({route, navigation}) {
                             <TextInput
                                 style={styles.abilityScoresStyle}
                                 keyboardType="number-pad"
+                                underlineColor="transparent"
                                 defaultValue={String(charData['charisma'])}
                                 onChangeText={(text) => {
                                     updateCharacter('charisma', text);
@@ -465,6 +642,7 @@ export default function MainScreen({route, navigation}) {
                     <TextInput
                         style={styles.proficiencyStyle}
                         keyboardType="number-pad"
+                        underlineColor="transparent"
                         defaultValue={String(charData['proficiency'])}
                         onChangeText={(text) => {
                             updateCharacter('proficiency', text);
@@ -485,6 +663,8 @@ export default function MainScreen({route, navigation}) {
                     <TextInput
                         style={styles.nameRaceClass}
                         defaultValue={charData['name']}
+                        underlineColor="transparent"
+                        placeholder={"Enter name..."}
                         onChangeText={(text) => {
                             updateCharacter('name', text);
                             getCharacter()
@@ -502,6 +682,8 @@ export default function MainScreen({route, navigation}) {
                     <TextInput
                         style={styles.nameRaceClass}
                         defaultValue={charData['char_race']}
+                        underlineColor="transparent"
+                        placeholder={"Enter race..."}
                         onChangeText={(text) => {
                             updateCharacter('char_race', text);
                             getCharacter()
@@ -519,6 +701,8 @@ export default function MainScreen({route, navigation}) {
                     <TextInput
                         style={styles.nameRaceClass}
                         defaultValue={charData['char_class']}
+                        underlineColor="transparent"
+                        placeholder={"Enter class..."}
                         onChangeText={(text) => {
                             updateCharacter('char_class', text);
                             getCharacter()
@@ -536,6 +720,7 @@ export default function MainScreen({route, navigation}) {
                     <TextInput
                         style={styles.levelCurrentHPHitDice}
                         keyboardType="number-pad"
+                        underlineColor="transparent"
                         defaultValue={String(charData['level'])}
                         onChangeText={(text) => {
                             updateCharacter('level', text);
@@ -554,6 +739,7 @@ export default function MainScreen({route, navigation}) {
                     <TextInput
                         style={styles.levelCurrentHPHitDice}
                         keyboardType="number-pad"
+                        underlineColor="transparent"
                         defaultValue={String(charData['current_hp'])}
                         onChangeText={(text) => {
                             updateCharacter('current_hp', text);
@@ -572,6 +758,7 @@ export default function MainScreen({route, navigation}) {
                     <TextInput
                         style={styles.levelCurrentHPHitDice}
                         defaultValue={charData['hit_dice']}
+                        underlineColor="transparent"
                         onChangeText={(text) => {
                             updateCharacter('hit_dice', text);
                             getCharacter()
@@ -591,6 +778,7 @@ export default function MainScreen({route, navigation}) {
                     <TextInput
                         style={styles.levelCurrentHPHitDice}
                         keyboardType="number-pad"
+                        underlineColor="transparent"
                         defaultValue={String(charData['armor_class'])}
                         onChangeText={(text) => {
                             updateCharacter('armor_class', text);
@@ -609,6 +797,7 @@ export default function MainScreen({route, navigation}) {
                     <TextInput
                         style={styles.levelCurrentHPHitDice}
                         keyboardType="number-pad"
+                        underlineColor="transparent"
                         defaultValue={String(charData['initiative'])}
                         onChangeText={(text) => {
                             updateCharacter('initiative', text);
@@ -628,6 +817,7 @@ export default function MainScreen({route, navigation}) {
                         style={styles.levelCurrentHPHitDice}
                         keyboardType="number-pad"
                         defaultValue={String(charData['speed'])}
+                        underlineColor="transparent"
                         onChangeText={(text) => {
                             updateCharacter('speed', text);
                             getCharacter()
@@ -645,6 +835,8 @@ export default function MainScreen({route, navigation}) {
                     <TextInput
                         style= {styles.nameRaceClass}
                         defaultValue={charData['alignment']}
+                        underlineColor="transparent"
+                        placeholder={"Enter alignment..."}
                         onChangeText={(text) => {
                             updateCharacter('alignment', text);
                             getCharacter()
@@ -676,6 +868,7 @@ export default function MainScreen({route, navigation}) {
                             <TextInput
                                 style={styles.passiveInputs}
                                 keyboardType="number-pad"
+                                underlineColor="transparent"
                                 defaultValue={String(charData['passive_perception'])}
                                 onChangeText={(text) => {
                                     updateCharacter('passive_perception', text);
@@ -694,6 +887,7 @@ export default function MainScreen({route, navigation}) {
                             <TextInput
                                 style={styles.passiveInputs}
                                 keyboardType="number-pad"
+                                underlineColor="transparent"
                                 defaultValue={String(charData['passive_investigation'])}
                                 onChangeText={(text) => {
                                     updateCharacter('passive_investigation', text);
@@ -712,6 +906,7 @@ export default function MainScreen({route, navigation}) {
                             <TextInput
                                 style={styles.passiveInputs}
                                 keyboardType="number-pad"
+                                underlineColor="transparent"
                                 defaultValue={String(charData['passive_insight'])}
                                 onChangeText={(text) => {
                                     updateCharacter('passive_insight', text);
@@ -728,6 +923,7 @@ export default function MainScreen({route, navigation}) {
                         <TextInput
                             style={styles.maxHPInputs}
                             keyboardType="number-pad"
+                            underlineColor="transparent"
                             defaultValue={String(charData['max_hp'])}
                             onChangeText={(text) => {
                                 updateCharacter('max_hp', text);
@@ -746,6 +942,7 @@ export default function MainScreen({route, navigation}) {
                         <TextInput
                             style={styles.tempHPInputs}
                             keyboardType="number-pad"
+                            underlineColor="transparent"
                             defaultValue={String(charData['temp_hp'])}
                             onChangeText={(text) => {
                                 updateCharacter('temp_hp', text);
@@ -963,6 +1160,7 @@ export default function MainScreen({route, navigation}) {
                             <TextInput
                                 style = {styles.STValue}
                                 defaultValue = {String(charData["ST_strength"])}
+                                underlineColor="transparent"
                                 onChangeText = {(text) => {
                                     updateCharacter('ST_strength', text);
                                     getCharacter()
@@ -980,6 +1178,7 @@ export default function MainScreen({route, navigation}) {
                             <TextInput
                                 style = {styles.STValue}
                                 defaultValue = {String(charData["ST_dexterity"])}
+                                underlineColor="transparent"
                                 onChangeText = {(text) => {
                                     updateCharacter('ST_dexterity', text);
                                     getCharacter()
@@ -997,6 +1196,7 @@ export default function MainScreen({route, navigation}) {
                             <TextInput
                                 style = {styles.STValue}
                                 defaultValue = {String(charData["ST_constitution"])}
+                                underlineColor="transparent"
                                 onChangeText = {(text) => {
                                     updateCharacter('ST_constitution', text);
                                     getCharacter()
@@ -1014,6 +1214,7 @@ export default function MainScreen({route, navigation}) {
                             <TextInput
                                 style = {styles.STValue}
                                 defaultValue = {String(charData["ST_intelligence"])}
+                                underlineColor="transparent"
                                 onChangeText = {(text) => {
                                     updateCharacter('ST_intelligence', text);
                                     getCharacter()
@@ -1031,6 +1232,7 @@ export default function MainScreen({route, navigation}) {
                             <TextInput
                                 style = {styles.STValue}
                                 defaultValue = {String(charData["ST_wisdom"])}
+                                underlineColor="transparent"
                                 onChangeText = {(text) => {
                                     updateCharacter('ST_wisdom', text);
                                     getCharacter()
@@ -1048,6 +1250,7 @@ export default function MainScreen({route, navigation}) {
                             <TextInput
                                 style = {styles.STValue}
                                 defaultValue = {String(charData["ST_charisma"])}
+                                underlineColor="transparent"
                                 onChangeText = {(text) => {
                                     updateCharacter('ST_charisma', text);
                                     getCharacter()
@@ -1058,6 +1261,400 @@ export default function MainScreen({route, navigation}) {
                         </View>
                     </View>
                 </View>
+            <View style = {styles.skillsContainer}>
+                <Text
+                    style = {styles.skillsHeading}
+                >
+                    Skills
+                </Text>
+                <View style = {styles.skillsSubHeadingContainer}>
+                <Text
+                    style = {styles.skillsSubHeading}
+                >
+                    Skill
+                </Text>
+                <Text
+                    style = {styles.bonusSubHeading}
+                >
+                    Bonus
+                </Text>
+                    <Text
+                        style = {styles.skillsSubHeading}
+                    >
+                        Skill
+                    </Text>
+                    <Text
+                        style = {styles.bonusSubHeading}
+                    >
+                        Bonus
+                    </Text>
+            </View>
+                <View style = {styles.skillsSections}>
+                <View style = {styles.skillsSection1}>
+                    <View style = {styles.skillsHeadingValueContainer}>
+                        <View style = {styles.skillsTitles}>
+                            <Text style = {styles.skillsTitleValue}>
+                                Acrobatics (Dex)
+                            </Text>
+                        </View>
+                        <TextInput
+                            style = {styles.skillsValue}
+                            defaultValue = {String(charData["acrobatics"])}
+                            underlineColor="transparent"
+                            onChangeText = {(text) => {
+                                updateCharacter('acrobatics', text);
+                                getCharacter()
+                                route.params.onFSChange('acrobatics', text, true);
+                                route.params.updateCharData()
+                            }}
+                        />
+                    </View>
+                    <View style = {styles.skillsHeadingValueContainer}>
+                        <View style = {styles.skillsTitles}>
+                            <Text style = {styles.skillsTitleValue}>
+                                Animal Handling (Wis)
+                            </Text>
+                        </View>
+                        <TextInput
+                            style = {styles.skillsValue}
+                            defaultValue = {String(charData["animal_handling"])}
+                            underlineColor="transparent"
+                            onChangeText = {(text) => {
+                                updateCharacter('animal_handling', text);
+                                getCharacter()
+                                route.params.onFSChange('animal_handling', text, true);
+                                route.params.updateCharData()
+                            }}
+                        />
+                    </View>
+                    <View style = {styles.skillsHeadingValueContainer}>
+                        <View style = {styles.skillsTitles}>
+                            <Text style = {styles.skillsTitleValue}>
+                                Arcana (Int)
+                            </Text>
+                        </View>
+                        <TextInput
+                            style = {styles.skillsValue}
+                            defaultValue = {String(charData["arcana"])}
+                            underlineColor="transparent"
+                            onChangeText = {(text) => {
+                                updateCharacter('arcana', text);
+                                getCharacter()
+                                route.params.onFSChange('arcana', text, true);
+                                route.params.updateCharData()
+                            }}
+                        />
+                    </View>
+                    <View style = {styles.skillsHeadingValueContainer}>
+                        <View style = {styles.skillsTitles}>
+                            <Text style = {styles.skillsTitleValue}>
+                                Athletics (Str)
+                            </Text>
+                        </View>
+                        <TextInput
+                            style = {styles.skillsValue}
+                            defaultValue = {String(charData["athletics"])}
+                            underlineColor="transparent"
+                            onChangeText = {(text) => {
+                                updateCharacter('athletics', text);
+                                getCharacter()
+                                route.params.onFSChange('athletics', text, true);
+                                route.params.updateCharData()
+                            }}
+                        />
+                    </View>
+                    <View style = {styles.skillsHeadingValueContainer}>
+                        <View style = {styles.skillsTitles}>
+                            <Text style = {styles.skillsTitleValue}>
+                                Deception (Cha)
+                            </Text>
+                        </View>
+                        <TextInput
+                            style = {styles.skillsValue}
+                            defaultValue = {String(charData["deception"])}
+                            underlineColor="transparent"
+                            onChangeText = {(text) => {
+                                updateCharacter('deception', text);
+                                getCharacter()
+                                route.params.onFSChange('deception', text, true);
+                                route.params.updateCharData()
+                            }}
+                        />
+                    </View>
+                    <View style = {styles.skillsHeadingValueContainer}>
+                        <View style = {styles.skillsTitles}>
+                            <Text style = {styles.skillsTitleValue}>
+                                History (Int)
+                            </Text>
+                        </View>
+                        <TextInput
+                            style = {styles.skillsValue}
+                            defaultValue = {String(charData["history"])}
+                            underlineColor="transparent"
+                            onChangeText = {(text) => {
+                                updateCharacter('history', text);
+                                getCharacter()
+                                route.params.onFSChange('history', text, true);
+                                route.params.updateCharData()
+                            }}
+                        />
+                    </View>
+                    <View style = {styles.skillsHeadingValueContainer}>
+                        <View style = {styles.skillsTitles}>
+                            <Text style = {styles.skillsTitleValue}>
+                                Insight (Wis)
+                            </Text>
+                        </View>
+                        <TextInput
+                            style = {styles.skillsValue}
+                            defaultValue = {String(charData["insight"])}
+                            underlineColor="transparent"
+                            onChangeText = {(text) => {
+                                updateCharacter('insight', text);
+                                getCharacter()
+                                route.params.onFSChange('insight', text, true);
+                                route.params.updateCharData()
+                            }}
+                        />
+                    </View>
+                    <View style = {styles.skillsHeadingValueContainer}>
+                        <View style = {styles.skillsTitles}>
+                            <Text style = {styles.skillsTitleValue}>
+                                Intimidation (Cha)
+                            </Text>
+                        </View>
+                        <TextInput
+                            style = {styles.skillsValue}
+                            defaultValue = {String(charData["intimidation"])}
+                            underlineColor="transparent"
+                            onChangeText = {(text) => {
+                                updateCharacter('intimidation', text);
+                                getCharacter()
+                                route.params.onFSChange('intimidation', text, true);
+                                route.params.updateCharData()
+                            }}
+                        />
+                    </View>
+                    <View style = {styles.skillsHeadingValueContainer}>
+                        <View style = {styles.skillsTitles}>
+                            <Text style = {styles.skillsTitleValue}>
+                                Investigation (Int)
+                            </Text>
+                        </View>
+                        <TextInput
+                            style = {styles.skillsValue}
+                            defaultValue = {String(charData["investigation"])}
+                            underlineColor="transparent"
+                            onChangeText = {(text) => {
+                                updateCharacter('investigation', text);
+                                getCharacter()
+                                route.params.onFSChange('investigation', text, true);
+                                route.params.updateCharData()
+                            }}
+                        />
+                    </View>
+                </View>
+                <View style = {styles.skillsSection2}>
+                    <View style = {styles.skillsHeadingValueContainer}>
+                        <View style = {styles.skillsTitles}>
+                            <Text style = {styles.skillsTitleValue}>
+                                Medicine (Wis)
+                            </Text>
+                        </View>
+                        <TextInput
+                            style = {styles.skillsValue}
+                            defaultValue = {String(charData["medicine"])}
+                            underlineColor="transparent"
+                            onChangeText = {(text) => {
+                                updateCharacter('medicine', text);
+                                getCharacter()
+                                route.params.onFSChange('medicine', text, true);
+                                route.params.updateCharData()
+                            }}
+                        />
+                    </View>
+                    <View style = {styles.skillsHeadingValueContainer}>
+                        <View style = {styles.skillsTitles}>
+                            <Text style = {styles.skillsTitleValue}>
+                                Nature (Int)
+                            </Text>
+                        </View>
+                        <TextInput
+                            style = {styles.skillsValue}
+                            defaultValue = {String(charData["nature"])}
+                            underlineColor="transparent"
+                            onChangeText = {(text) => {
+                                updateCharacter('nature', text);
+                                getCharacter()
+                                route.params.onFSChange('nature', text, true);
+                                route.params.updateCharData()
+                            }}
+                        />
+                    </View>
+                    <View style = {styles.skillsHeadingValueContainer}>
+                        <View style = {styles.skillsTitles}>
+                            <Text style = {styles.skillsTitleValue}>
+                                Perception (Wis)
+                            </Text>
+                        </View>
+                        <TextInput
+                            style = {styles.skillsValue}
+                            defaultValue = {String(charData["perception"])}
+                            underlineColor="transparent"
+                            onChangeText = {(text) => {
+                                updateCharacter('perception', text);
+                                getCharacter()
+                                route.params.onFSChange('perception', text, true);
+                                route.params.updateCharData()
+                            }}
+                        />
+                    </View>
+                    <View style = {styles.skillsHeadingValueContainer}>
+                        <View style = {styles.skillsTitles}>
+                            <Text style = {styles.skillsTitleValue}>
+                                Performance (Cha)
+                            </Text>
+                        </View>
+                        <TextInput
+                            style = {styles.skillsValue}
+                            defaultValue = {String(charData["performance"])}
+                            underlineColor="transparent"
+                            onChangeText = {(text) => {
+                                updateCharacter('performance', text);
+                                getCharacter()
+                                route.params.onFSChange('performance', text, true);
+                                route.params.updateCharData()
+                            }}
+                        />
+                    </View>
+                    <View style = {styles.skillsHeadingValueContainer}>
+                        <View style = {styles.skillsTitles}>
+                            <Text style = {styles.skillsTitleValue}>
+                                Persuasion (Cha)
+                            </Text>
+                        </View>
+                        <TextInput
+                            style = {styles.skillsValue}
+                            defaultValue = {String(charData["persuasion"])}
+                            underlineColor="transparent"
+                            onChangeText = {(text) => {
+                                updateCharacter('persuasion', text);
+                                getCharacter()
+                                route.params.onFSChange('persuasion', text, true);
+                                route.params.updateCharData()
+                            }}
+                        />
+                    </View>
+                    <View style = {styles.skillsHeadingValueContainer}>
+                        <View style = {styles.skillsTitles}>
+                            <Text style = {styles.skillsTitleValue}>
+                                Religion (Int)
+                            </Text>
+                        </View>
+                        <TextInput
+                            style = {styles.skillsValue}
+                            defaultValue = {String(charData["religion"])}
+                            underlineColor="transparent"
+                            onChangeText = {(text) => {
+                                updateCharacter('religion', text);
+                                getCharacter()
+                                route.params.onFSChange('religion', text, true);
+                                route.params.updateCharData()
+                            }}
+                        />
+                    </View>
+                    <View style = {styles.skillsHeadingValueContainer}>
+                        <View style = {styles.skillsTitles}>
+                            <Text style = {styles.skillsTitleValue}>
+                                Sleight of Hand (Dex)
+                            </Text>
+                        </View>
+                        <TextInput
+                            style = {styles.skillsValue}
+                            underlineColor="transparent"
+                            defaultValue = {String(charData["sleight_of_hand"])}
+                            onChangeText = {(text) => {
+                                updateCharacter('sleight_of_hand', text);
+                                getCharacter()
+                                route.params.onFSChange('sleight_of_hand', text, true);
+                                route.params.updateCharData()
+                            }}
+                        />
+                    </View>
+                    <View style = {styles.skillsHeadingValueContainer}>
+                        <View style = {styles.skillsTitles}>
+                            <Text style = {styles.skillsTitleValue}>
+                                Stealth (Dex)
+                            </Text>
+                        </View>
+                        <TextInput
+                            style = {styles.skillsValue}
+                            underlineColor="transparent"
+                            defaultValue = {String(charData["stealth"])}
+                            onChangeText = {(text) => {
+                                updateCharacter("Stealth", text);
+                                getCharacter()
+                                route.params.onFSChange("Stealth", text, true);
+                                route.params.updateCharData()
+                            }}
+                        />
+                    </View>
+                    <View style = {styles.skillsHeadingValueContainer}>
+                        <View style = {styles.skillsTitles}>
+                            <Text style = {styles.skillsTitleValue}>
+                                Survival (Wis)
+                            </Text>
+                        </View>
+                        <TextInput
+                            style = {styles.skillsValue}
+                            underlineColor="transparent"
+                            defaultValue = {String(charData["survival"])}
+                            onChangeText = {(text) => {
+                                updateCharacter("Survival", text);
+                                getCharacter()
+                                route.params.onFSChange("Survival", text, true);
+                                route.params.updateCharData()
+                            }}
+                        />
+                    </View>
+                </View>
+                </View>
+            </View>
+            <TextInput
+                style = {styles.profAndLanguages}
+                underlineColor="transparent"
+                multiline={true}
+                defaultValue = {charData["proficiencies_and_languages"]}
+                render={props => (
+                    <NativeTextInput
+                        {...props}
+                        style={[
+                            props.style,
+                            props.multiline
+                                ? {
+                                    paddingTop: 30,
+                                    paddingLeft: 25,
+                                    paddingRight: 25,
+                                    paddingBottom: 8,
+                                    height: 100,
+                                }
+                                : null,
+                        ]}
+                        placeholder={"Enter proficiencies and languages..."}
+                    />
+                )}
+                onChangeText = {(text) => {
+                    updateCharacter('proficiencies_and_languages', text);
+                    getCharacter()
+                    route.params.onFSChange('proficiencies_and_languages', text, false);
+                    route.params.updateCharData()
+                }}
+            />
+            <Text
+                style = {styles.profAndLanguagesHeading}
+            >
+                Proficiencies and languages
+            </Text>
         </View>
     );
     // TOP NESTED TAB NAVIGATION
@@ -1071,6 +1668,76 @@ export default function MainScreen({route, navigation}) {
     // IDEALLY NOT HAVING TO BE RELOADED EACH TIME
 }
 const styles = StyleSheet.create({
+    profAndLanguages: {
+        width: 360,
+        height: 449,
+        position: 'absolute',
+        top: 164,
+        left: 470,
+        borderWidth: 1,
+        backgroundColor: "#e8e8e8",
+        borderTopRightRadius: 0,
+        borderTopLeftRadius: 0,
+    },
+    profAndLanguagesHeading: {
+        position: "absolute",
+        top: 169,
+        left: 470,
+        width: 360,
+        textAlign: "center",
+        color: "#0038d4"
+    },
+    skillsSections: {
+        flexDirection: 'row'
+    },
+    skillsSection1: {
+        flexDirection: 'column',
+        marginLeft: -9
+    },
+    skillsSection2: {
+        flexDirection: 'column',
+        marginLeft: -10
+    },
+    skillsSubHeadingContainer: {
+        flexDirection: 'row',
+        marginTop: 30,
+        width: 300,
+        marginLeft: 158,
+        justifyContent: 'center'
+    },
+    skillsSubHeading: {
+        fontSize: 14,
+        marginRight: 75
+    },
+    bonusSubHeading: {
+        marginRight: 85
+    },
+    skillsTitles: {
+        borderWidth: 1,
+        height: 28,
+        paddingTop: 3,
+        width: 156,
+        backgroundColor: "#c1c1c1"
+    },
+    skillsTitleValue: {
+        fontSize: 11,
+        textAlign: 'center',
+    },
+    skillsValue: {
+        borderWidth: 1,
+        height: 26,
+        width: 70,
+        textAlign: 'center',
+        backgroundColor: "#ffffff",
+        borderTopLeftRadius: 0,
+        borderTopRightRadius: 0,
+        marginLeft: -2
+    },
+    skillsHeadingValueContainer: {
+        flexDirection: 'row',
+        marginTop: 6,
+        marginLeft: 19,
+    },
     STTitles: {
         marginBottom: 15,
         borderWidth: 1,
@@ -1092,6 +1759,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#ffffff",
         borderTopLeftRadius: 0,
         borderTopRightRadius: 0,
+        marginLeft: -2
     },
     STHeadingValueContainer: {
         flexDirection: 'row',
@@ -1111,6 +1779,23 @@ const styles = StyleSheet.create({
         position: 'absolute',
         top: 164,
         left: 220
+    },
+    skillsContainer: {
+        backgroundColor: "#e8e8e8",
+        width: 484,
+        height: 371.5,
+        flexDirection: 'column',
+        borderWidth: 1,
+        position: 'absolute',
+        top: 244,
+        left: 835
+    },
+    skillsHeading: {
+        position: "absolute",
+        top: 5,
+        width: 484,
+        textAlign: "center",
+        color: "#0038d4"
     },
     STHeading: {
         position: "absolute",
@@ -1135,7 +1820,7 @@ const styles = StyleSheet.create({
     },
     circlesContainer: {
         flexDirection: 'row',
-        marginTop: 36,
+        marginTop: 26,
         marginLeft: 1.5,
         height:30,
         width: 120
@@ -1143,16 +1828,16 @@ const styles = StyleSheet.create({
     deathSavesContainer: {
         flexDirection: 'column',
         width: 116,
-        height: 178,
+        height: 149,
         marginLeft: 9,
-        borderRadius: 8,
         backgroundColor: "#e8e8e8",
-        borderWidth: 1
+        borderWidth: 1,
+        borderRadius: 0
     },
     deathSavesSubHeading: {
         position: "absolute",
-        top: 10,
         width: 116,
+        top: 4,
         textAlign: "center",
         color: "#000000",
         fontSize: 11
@@ -1170,7 +1855,7 @@ const styles = StyleSheet.create({
     passiveSkillsContainer: {
         flexDirection: 'column',
         width: 235,
-        height: 178,
+        height: 149.5,
         marginLeft: 5,
         borderRadius: 8,
         backgroundColor: "#e8e8e8",
@@ -1190,7 +1875,7 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         marginLeft: 176,
         width: 50,
-        height: 37,
+        height: 27,
         textAlign: "center",
         fontSize: 10,
         borderWidth: 1,
@@ -1202,9 +1887,9 @@ const styles = StyleSheet.create({
         position: "absolute",
         left: 6,
         width: 173,
-        height: 39,
+        height: 29,
         textAlign: "center",
-        paddingTop: 10,
+        paddingTop: 5,
         backgroundColor: "#c1c1c1",
         color: "#000000",
         fontSize: 11,
@@ -1218,7 +1903,9 @@ const styles = StyleSheet.create({
         textAlign: "center",
         paddingTop: 20,
         backgroundColor: "#e8e8e8",
-        borderWidth: 1
+        borderWidth: 1,
+        borderTopRightRadius: 0,
+        borderTopLeftRadius: 0
     },
     secondRowFirstHalf: {
         height: 100,
@@ -1252,7 +1939,9 @@ const styles = StyleSheet.create({
         textAlign: "center",
         paddingTop: 20,
         backgroundColor: "#e8e8e8",
-        borderWidth: 1
+        borderWidth: 1,
+        borderTopRightRadius: 0,
+        borderTopLeftRadius: 0
     },
     maxHPInputs: {
         marginBottom: 10,
@@ -1262,7 +1951,9 @@ const styles = StyleSheet.create({
         textAlign: "center",
         paddingTop: 20,
         backgroundColor: "#e8e8e8",
-        borderWidth: 1
+        borderWidth: 1,
+        borderTopRightRadius: 0,
+        borderTopLeftRadius: 0
     },
     tempHPInputs: {
         marginBottom: 10,
@@ -1272,7 +1963,9 @@ const styles = StyleSheet.create({
         textAlign: "center",
         paddingTop: 20,
         backgroundColor: "#e8e8e8",
-        borderWidth: 1
+        borderWidth: 1,
+        borderTopRightRadius: 0,
+        borderTopLeftRadius: 0
     },
     levelCurrentHPHitDiceHeading: {
         position: "absolute",
@@ -1326,7 +2019,9 @@ const styles = StyleSheet.create({
         textAlign: "center",
         paddingTop: 15,
         backgroundColor: "#e8e8e8",
-        borderWidth: 1
+        borderWidth: 1,
+        borderTopRightRadius: 0,
+        borderTopLeftRadius: 0
     },
     abilityScoresContainer: {
         flexDirection: "row"
@@ -1345,7 +2040,9 @@ const styles = StyleSheet.create({
         textAlign: "center",
         paddingTop: 15,
         backgroundColor: "#e8e8e8",
-        borderWidth: 1
+        borderWidth: 1,
+        borderTopRightRadius: 0,
+        borderTopLeftRadius: 0
     },
     changeImageStyle: {
         marginBottom: 10,

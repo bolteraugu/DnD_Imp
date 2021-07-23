@@ -4,6 +4,9 @@ import {View} from 'react-native';
 import firebase from 'firebase';
 import 'firebase/firestore';
 import MenuScreen from '../screens/MenuScreen';
+import BiographyScreen from '../screens/BiographyScreen'
+import InventoryScreen from '../screens/InventoryScreen'
+import SpellsScreen from '../screens/SpellsScreen'
 import DMScreen from '../screens/DMScreen';
 import {IconButton} from 'react-native-paper';
 import {logout} from '../components/Firebase/firebase';
@@ -82,6 +85,9 @@ function CharacterNav() {
           }}
         >
           <Tab.Screen name="Main" component={MainScreen} />
+            <Tab.Screen name="Biography" component={BiographyScreen} />
+            <Tab.Screen name="Inventory" component={InventoryScreen} />
+            <Tab.Screen name="Spells" component={SpellsScreen} />
         </Tab.Navigator>
       </View>
     </View>

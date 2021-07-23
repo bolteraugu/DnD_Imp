@@ -77,6 +77,7 @@ export default function CharacterCard({
                             label="Name"
                             style={styles.stringContainer}
                             value={character.name}
+                            placeholder={"Enter name..."}
                             onChangeText={(text) => {
                                 onChange(index, 'name', text, false);
                                 updateCharacter();
@@ -139,6 +140,7 @@ export default function CharacterCard({
                             label="Race"
                             style={styles.stringContainer}
                             value={character.char_race}
+                            placeholder={"Enter race..."}
                             onChangeText={
                                 (text) =>  {
                                     onChange(index, 'char_race', text, false);
@@ -151,6 +153,7 @@ export default function CharacterCard({
                             label="Class"
                             style={styles.stringContainer}
                             value={character.char_class}
+                            placeholder={"Enter class..."}
                             onChangeText={(text) => {
                                 onChange(index, 'char_class', text, false);
                                 updateCharacter();
@@ -279,6 +282,7 @@ export default function CharacterCard({
                         <TextInput
                             label="Alignment"
                             style={styles.stringContainer}
+                            placeholder={"Enter alignment..."}
                             value={character.alignment}
                             onChangeText={(text) => {
                                 onChange(index, 'alignment', text, false);
