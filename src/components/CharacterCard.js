@@ -370,7 +370,8 @@ export default function CharacterCard({
                                         params: {
                                             charRef: groupRef.collection('characters').doc(character._id),
                                             charData: characterData,
-                                            onFSChange: (fieldName, fieldValue, isNumber) => onChange(index, fieldName, fieldValue, isNumber)
+                                            onFSChange: (fieldName, fieldValue, isNumber) => onChange(index, fieldName, fieldValue, isNumber),
+                                            updateCharData: () => getCharacter()
                                         },
                                     })
                                 }}

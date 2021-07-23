@@ -50,7 +50,17 @@ export default function AppStack() {
           title: route.params.group.name,
         })}
       />
-      <Stack.Screen name="CharacterSheet" component={CharacterNav}/>
+      <Stack.Screen name="CharacterSheet" component={CharacterNav}
+                    options={{
+                        title: "Full Character Sheet",
+                    }}
+                    screenOptions={{
+                        headerStyle: {
+                            backgroundColor: colors.primary,
+                            height: 70
+                        }
+                    }}
+      />
     </Stack.Navigator>
   );
 }
