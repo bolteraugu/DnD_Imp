@@ -12,7 +12,7 @@ export const AuthUserContext = createContext({});
 
 export const AuthUserProvider = ({children}) => {
   const [user, setUser] = useState(null);
-//  const [storedAccountType, setStoredAccountType] = useState('');
+  const [storedAccountType, setStoredAccountType] = useState('');
 
   return (
     <AuthUserContext.Provider
@@ -54,19 +54,19 @@ export const AuthUserProvider = ({children}) => {
                 //             numClassesCreated: 0
                 //         })
                 // })
-              // .then((user) => {
-              //   firebase
-              //     .firestore()
-              //     .collection('user-logs')
-              //     .doc('user_creation')
-              //     .collection('logs')
-              //     .doc(user.user.toJSON().email)
-              //     .set({
-              //       text: `User ${user.user.toJSON().email} was created.`,
-              //       accountType: 'Standard',
-              //       createdOn: new Date().toString(),
-              //     });
-              // });
+              .then((user) => {
+                firebase
+                  .firestore()
+                  .collection('user-logs')
+                  .doc('user_creation')
+                  .collection('logs')
+                  .doc(user.user.toJSON().email)
+                  .set({
+                    text: `User ${user.user.toJSON().email} was created.`,
+                    accountType: 'Standard',
+                    createdOn: new Date().toString(),
+                  });
+              });
           } catch (e) {
             console.log(e);
             alert(e);
@@ -84,28 +84,28 @@ export const AuthUserProvider = ({children}) => {
           try {
             await firebase.auth().sendPasswordResetEmail(email);
 
-            // firebase
-            //   .firestore()
-            //   .collection('user-logs')
-            //   .doc('user-creation')
-            //   .collection('logs')
-            //   .doc(email)
-            //   .get()
-            //   .then((snapshot) => {
-            //     setStoredAccountType(snapshot.get('accountType'));
-            //   });
+            firebase
+              .firestore()
+              .collection('user-logs')
+              .doc('user-creation')
+              .collection('logs')
+              .doc(email)
+              .get()
+              .then((snapshot) => {
+                setStoredAccountType(snapshot.get('accountType'));
+              });
 
-            // await firebase
-            //   .firestore()
-            //   .collection('user-logs')
-            //   .doc('reset_password_requests')
-            //   .collection('logs')
-            //   .doc(email)
-            //   .set({
-            //     text: `User ${email} requested a reset password email to be sent to their email address.`,
-            //     accountType: storedAccountType,
-            //     requestedOn: new Date().toString(),
-            //   });
+            await firebase
+              .firestore()
+              .collection('user-logs')
+              .doc('reset_password_requests')
+              .collection('logs')
+              .doc(email)
+              .set({
+                text: `User ${email} requested a reset password email to be sent to their email address.`,
+                accountType: storedAccountType,
+                requestedOn: new Date().toString(),
+              });
             Alert.alert(
               'Password reset link sent',
               'A password reset link has been sent to your email.'

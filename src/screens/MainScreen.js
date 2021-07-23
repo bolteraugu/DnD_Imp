@@ -16,11 +16,8 @@ export default function MainScreen({route}) {
     function getCharacter() {
         charRef.onSnapshot( (snapshot) => {
             setCharData(snapshot.data())
-            //console.log(snapshot.get('name'))
         })
     }
-
-    //console.log(route.params.charData['name'])
 
     function updateCharacter(fieldName, value) {
         if (fieldName === 'strength') {

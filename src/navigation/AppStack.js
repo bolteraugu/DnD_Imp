@@ -71,10 +71,6 @@ export default function AppStack() {
 const Tab = createMaterialTopTabNavigator();
 
 function CharacterNav() {
-  // const groupRef = firebase
-  //   .firestore()
-  //   .collection('groups')
-  //   .doc('RElb1Yxu6g7cyq1745wh');
   return (
     <View style={styles.playerScreenContainer}>
       <View style={styles.playerTabsContainer}>
