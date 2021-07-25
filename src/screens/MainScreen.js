@@ -5,9 +5,11 @@ import firebase from "firebase";
 import {AuthUserContext} from "../navigation/AuthUserProvider";
 import {TextInput, Text, Button} from "react-native-paper"; //Probably will need text...
 
-export default function MainScreen({route}) {
+export default function MainScreen({route, navigation}) {
     const charRef = route.params.charRef;
     const [charData, setCharData] = useState(route.params.charData);
+    global.charaRef = charRef;
+    global.charaData = charData;
 
     useEffect(() => {
         getCharacter();
@@ -16,7 +18,8 @@ export default function MainScreen({route}) {
     function getCharacter() {
         charRef.onSnapshot( (snapshot) => {
             setCharData(snapshot.data())
-        })
+        });
+        global.charaData = charData;
     }
 
     function updateCharacter(fieldName, value) {
