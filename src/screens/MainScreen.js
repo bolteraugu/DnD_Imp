@@ -982,13 +982,13 @@ export default function MainScreen({route, navigation}) {
                                             borderRadius: 54,
                                         }}
                                         onPress = {() => {
-                                            if (charData['DS_successCircle1'] === "#00db79") {
+                                            if (charData['DS_successCircle1']  === "#00db79") {
                                                 updateCharacter('DS_successCircle1', "#ffffff");
                                                 getCharacter();
                                                 route.params.onFSChange('DS_successCircle1', "#ffffff", true);
                                                 route.params.updateCharData()
                                             } else {
-                                                updateCharacter('DS_successCircle1', "#00db79")
+                                                updateCharacter('DS_successCircle1', "#00db79");
                                                 getCharacter();
                                                 route.params.onFSChange('DS_successCircle1', "#00db79", true);
                                                 route.params.updateCharData()
