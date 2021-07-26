@@ -515,7 +515,8 @@ const styles = StyleSheet.create({
         width: 909,
         textAlign: "center",
         color: "#000000",
-        fontSize: 16
+        fontSize: 15,
+        fontWeight: "bold",
     },
     spellsListHeading: {
         marginTop: 10,
@@ -524,7 +525,7 @@ const styles = StyleSheet.create({
         textAlign: "center",
         fontWeight: "bold",
         color: "#000000",
-        fontSize: 16
+        fontSize: 17
     },
     spellsInput: {
         marginTop: 10,
