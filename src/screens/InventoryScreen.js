@@ -1,14 +1,16 @@
 import {Button, Text, TextInput} from "react-native-paper";
 import React, {useEffect, useState} from "react"
 import {createMaterialTopTabNavigator} from "@react-navigation/material-top-tabs";
-import {View, StyleSheet, TextInput as NativeTextInput, ScrollView, FlatList} from "react-native";
+import {View, StyleSheet, TextInput as NativeTextInput, ScrollView, FlatList, KeyboardAvoidingView} from "react-native";
 import colors from "../utils/colors";
 import CharacterCard from "../components/CharacterCard";
 import Spinner from "../components/Spinner";
+import Weapon from "../components/Weapon";
 
-export default function InventoryScreen({route}) {
+export default function InventoryScreen({route, navigation}) {
     const [charData, setCharData] = useState(global.charaData);
     const [loading, setLoading] = useState(true);
+    const [weapons, setWeapons] = useState([]);
 
     useEffect(() => {
         getCharacter();
@@ -44,65 +46,49 @@ export default function InventoryScreen({route}) {
         });
     }
 
+    function updateWeapon(index, field, value) {
+        const newWeapons = [...weapons];
+        newWeapons[index][field] = value;
+        setWeapons(newWeapons);
+    }
+
     function updateCharacter(fieldName, value) {
-        if (fieldName === 'personality_traits') {
+        if (fieldName === 'CP') {
             global.charaRef
                 .update({
-                    personality_traits: value
+                    CP: value
                 })
                 .then(console.log('Successfully updated character'), (error) =>
                     console.log('Failed to update character: ' + error)
                 );
-        }
-        else if (fieldName === 'ideals') {
+        } else if (fieldName === 'SP') {
             global.charaRef
                 .update({
-                    ideals: value
+                    SP: value
                 })
                 .then(console.log('Successfully updated character'), (error) =>
                     console.log('Failed to update character: ' + error)
                 );
-        }
-        else if (fieldName === 'bonds') {
+        } else if (fieldName === 'EP') {
             global.charaRef
                 .update({
-                    bonds: value
+                    EP: value
                 })
                 .then(console.log('Successfully updated character'), (error) =>
                     console.log('Failed to update character: ' + error)
                 );
-        }
-        else if (fieldName === 'flaws') {
+        } else if (fieldName === 'GP') {
             global.charaRef
                 .update({
-                    flaws: value
+                    GP: value
                 })
                 .then(console.log('Successfully updated character'), (error) =>
                     console.log('Failed to update character: ' + error)
                 );
-        }
-        else if (fieldName === 'features_and_traits') {
+        } else if (fieldName === 'PP') {
             global.charaRef
                 .update({
-                    features_and_traits: value
-                })
-                .then(console.log('Successfully updated character'), (error) =>
-                    console.log('Failed to update character: ' + error)
-                );
-        }
-        else if (fieldName === 'appearance') {
-            global.charaRef
-                .update({
-                    appearance: value
-                })
-                .then(console.log('Successfully updated character'), (error) =>
-                    console.log('Failed to update character: ' + error)
-                );
-        }
-        else if (fieldName === 'backstory') {
-            global.charaRef
-                .update({
-                    backstory: value
+                    PP: value
                 })
                 .then(console.log('Successfully updated character'), (error) =>
                     console.log('Failed to update character: ' + error)
@@ -110,100 +96,101 @@ export default function InventoryScreen({route}) {
         }
     }
 
+    let index = 0;
     return (
-        <View style = {styles.totalContainer}>
-            <View style = {styles.currencyContainer}>
-                <Text
-                    style = {styles.currencyHeading}
-                >
-                    Currency
-                </Text>
-                    <View style = {styles.currencyTypes}>
-                    <View style = {styles.currencyTypeContainer}>
+        <KeyboardAvoidingView
+            behavior = {'height'}>
+            <ScrollView>
+                <View style = {styles.totalContainer}>
+                    <View style = {styles.currencyContainer}>
                         <Text
-                            style = {styles.currencyTypeHeading}
+                            style = {styles.currencyHeading}
                         >
-                            CP
+                            Currency
                         </Text>
-                        <TextInput
-                            style = {styles.currencyTypeInput}
-                            underlineColor="transparent"
-                            defaultValue = {charData["personality_traits"]}
-                            onChangeText = {(text) => {
-                                updateCharacter('personality_traits', text);
-                                getCharacter()
-                            }}
-                        />
+                        <View style = {styles.currencyTypes}>
+                            <View style = {styles.currencyTypeContainer}>
+                                <Text
+                                    style = {styles.currencyTypeHeading}
+                                >
+                                    CP
+                                </Text>
+                                <TextInput
+                                    style = {styles.currencyTypeInput}
+                                    underlineColor="transparent"
+                                    defaultValue = {charData["CP"]}
+                                    onChangeText = {(text) => {
+                                        updateCharacter('CP', text);
+                                        getCharacter()
+                                    }}
+                                />
+                            </View>
+                            <View style = {styles.currencyTypeContainer}>
+                                <Text
+                                    style = {styles.currencyTypeHeading}
+                                >
+                                    SP
+                                </Text>
+                                <TextInput
+                                    style = {styles.currencyTypeInput}
+                                    underlineColor="transparent"
+                                    defaultValue = {charData["SP"]}
+                                    onChangeText = {(text) => {
+                                        updateCharacter('SP', text);
+                                        getCharacter()
+                                    }}
+                                />
+                            </View>
+                            <View style = {styles.currencyTypeContainer}>
+                                <Text
+                                    style = {styles.currencyTypeHeading}
+                                >
+                                    EP
+                                </Text>
+                                <TextInput
+                                    style = {styles.currencyTypeInput}
+                                    underlineColor="transparent"
+                                    defaultValue = {charData["EP"]}
+                                    onChangeText = {(text) => {
+                                        updateCharacter('EP', text);
+                                        getCharacter()
+                                    }}
+                                />
+                            </View>
+                            <View style = {styles.currencyTypeContainer}>
+                                <Text
+                                    style = {styles.currencyTypeHeading}
+                                >
+                                    GP
+                                </Text>
+                                <TextInput
+                                    style = {styles.currencyTypeInput}
+                                    underlineColor="transparent"
+                                    defaultValue = {charData["GP"]}
+                                    onChangeText = {(text) => {
+                                        updateCharacter('GP', text);
+                                        getCharacter()
+                                    }}
+                                />
+                            </View>
+                            <View style = {styles.currencyTypeContainer}>
+                                <Text
+                                    style = {styles.currencyTypeHeading}
+                                >
+                                    PP
+                                </Text>
+                                <TextInput
+                                    style = {styles.currencyTypeInput}
+                                    underlineColor="transparent"
+                                    defaultValue = {charData["PP"]}
+                                    onChangeText = {(text) => {
+                                        updateCharacter('PP', text);
+                                        getCharacter()
+                                    }}
+                                />
+                            </View>
+                        </View>
                     </View>
-                    <View style = {styles.currencyTypeContainer}>
-                        <Text
-                            style = {styles.currencyTypeHeading}
-                        >
-                            SP
-                        </Text>
-                        <TextInput
-                            style = {styles.currencyTypeInput}
-                            underlineColor="transparent"
-                            defaultValue = {charData["ideals"]}
-                            onChangeText = {(text) => {
-                                updateCharacter('ideals', text);
-                                getCharacter()
-                            }}
-                        />
-                    </View>
-                    <View style = {styles.currencyTypeContainer}>
-                        <Text
-                            style = {styles.currencyTypeHeading}
-                        >
-                            EP
-                        </Text>
-                        <TextInput
-                            style = {styles.currencyTypeInput}
-                            underlineColor="transparent"
-                            defaultValue = {charData["bonds"]}
-                            onChangeText = {(text) => {
-                                updateCharacter('bonds', text);
-                                getCharacter()
-                            }}
-                        />
-                    </View>
-                    <View style = {styles.currencyTypeContainer}>
-                        <Text
-                            style = {styles.currencyTypeHeading}
-                        >
-                            GP
-                        </Text>
-                        <TextInput
-                            style = {styles.currencyTypeInput}
-                            underlineColor="transparent"
-                            defaultValue = {charData["flaws"]}
-                            onChangeText = {(text) => {
-                                updateCharacter('flaws', text);
-                                getCharacter()
-                            }}
-                        />
-                    </View>
-                    <View style = {styles.currencyTypeContainer}>
-                        <Text
-                            style = {styles.currencyTypeHeading}
-                        >
-                            PP
-                        </Text>
-                        <TextInput
-                            style = {styles.currencyTypeInput}
-                            underlineColor="transparent"
-                            defaultValue = {charData["flaws"]}
-                            onChangeText = {(text) => {
-                                updateCharacter('flaws', text);
-                                getCharacter()
-                            }}
-                        />
-                    </View>
-                </View>
-            </View>
-            <KeyboardAvoidingView
-                behavior = {'height'}>
-                <ScrollView>
                     <View style = {styles.weaponContainer}>
                         <Text
                             style = {styles.currencyHeading}
@@ -211,35 +198,116 @@ export default function InventoryScreen({route}) {
                             Weapons
                         </Text>
                         <FlatList
-                            data={characters}
+                            data={weapons}
+                            style = {styles.list}
                             removeClippedSubviews={true}
                             keyExtractor={(item) => item._id}
                             renderItem={({ item }) => (
-                                <CharacterCard
-                                    character={item}
+                                <Weapon
                                     index={index++}
-                                    groupRef={groupRef}
-                                    onChange={updateCharacter}
-                                    navigation={navigation}
+                                    weapon={item}
+                                    onChange={updateWeapon}
                                 />
                             )}
                             ListFooterComponent={
-                                <View style = {styles.gap}>
+                                <View style = {styles.centerButton}>
                                     <Button
-                                        mode="contained" onPress={addCharacter}>
-                                        Add New Character
+                                        mode="contained"
+                                        style = {styles.addButton}
+                                        onPress={() => {navigation.navigate('AddWeapon')}}>
+                                        Add A New Weapon
                                     </Button>
                                 </View>
                             }
                         />
                     </View>
-                </ScrollView>
-            </KeyboardAvoidingView>
-        </View>
+                    <View style = {styles.inventoryContainer}>
+                        <Text
+                            style = {styles.currencyHeading}
+                        >
+                            Armor
+                        </Text>
+                        <FlatList
+                            data={weapons}
+                            style = {styles.list}
+                            removeClippedSubviews={true}
+                            keyExtractor={(item) => item._id}
+                            renderItem={({ item }) => (
+                                <Weapon
+                                    index={index++}
+                                    weapon={item}
+                                    onChange={updateWeapon}
+                                />
+                            )}
+                            ListFooterComponent={
+                                <View style = {styles.centerButton}>
+                                    <Button
+                                        mode="contained"
+                                        style = {styles.addButton}
+                                        onPress={() => {navigation.navigate('AddWeapon')}}>
+                                        Add New Armor
+                                    </Button>
+                                </View>
+                            }
+                        />
+                    </View>
+                    <View style = {styles.inventoryContainer}>
+                        <Text
+                            style = {styles.currencyHeading}
+                        >
+                            Possession
+                        </Text>
+                        <FlatList
+                            data={weapons}
+                            style = {styles.list}
+                            removeClippedSubviews={true}
+                            keyExtractor={(item) => item._id}
+                            renderItem={({ item }) => (
+                                <Weapon
+                                    index={index++}
+                                    weapon={item}
+                                    onChange={updateWeapon}
+                                />
+                            )}
+                            ListFooterComponent={
+                                <View style = {styles.centerButtonFinal}>
+                                    <Button
+                                        mode="contained"
+                                        style = {styles.addPossessionButton}
+                                        onPress={() => {navigation.navigate('AddWeapon')}}>
+                                        Add A New Possession
+                                    </Button>
+                                </View>
+                            }
+                        />
+                    </View>
+                </View>
+            </ScrollView>
+        </KeyboardAvoidingView>
     );
 }
 
 const styles = StyleSheet.create({
+    centerButton: {
+        width: "100%",
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    centerButtonFinal: {
+        width: "100%",
+        alignItems: 'center'
+    },
+    addButton: {
+      width: "20%",
+        marginTop: 5
+    },
+    addPossessionButton: {
+        width: "27%",
+        marginTop: 5
+    },
+    list: {
+        marginTop: 50
+    },
     totalContainer: {
         flexDirection: 'column'
     },
@@ -248,15 +316,23 @@ const styles = StyleSheet.create({
         marginLeft: 100
     },
     currencyContainer: {
-        height: "35%",
+        height: 115,
         marginTop: 7,
         marginLeft: 10,
         marginRight: 10,
-        borderWidth: 1,
-        backgroundColor: "#e8e8e8",
     },
     weaponContainer: {
-        flexDirection: 'column'
+        flexDirection: 'column',
+        marginLeft: 10,
+        marginRight: 10,
+        alignItems: 'center'
+    },
+    inventoryContainer: {
+        flexDirection: 'column',
+        marginLeft: 10,
+        marginTop: 10,
+        marginRight: 10,
+        alignItems: 'center'
     },
     currencyTypeContainer: {
         flexDirection: 'row',
@@ -274,7 +350,7 @@ const styles = StyleSheet.create({
     },
     currencyTypeInput: {
         borderWidth: 1,
-        backgroundColor: "#ffffff",
+        backgroundColor: "#e8e8e8",
         borderTopRightRadius: 0,
         borderTopLeftRadius: 0,
         height: 30,
@@ -287,5 +363,13 @@ const styles = StyleSheet.create({
         position: 'absolute',
         top: 10,
         fontSize: 17
+    },
+    armorHeading: {
+        width: "100%",
+        textAlign: "center",
+        color: "#0038d4",
+        position: 'absolute',
+        top: 10,
+        fontSize: 17,
     }
 })

@@ -89,7 +89,7 @@ export default function DMScreen({route, navigation}) {
                       />
                   )}
                   ListFooterComponent={
-                    <View style = {styles.gap}>
+                    <View>
                       <Button
                           mode="contained" onPress={addCharacter}>
                         Add New Character
