@@ -133,13 +133,13 @@ const styles = StyleSheet.create({
         marginBottom: 2,
     },
     deleteButton: {
-        marginTop: 36,
+        marginTop: 46,
         marginRight: 10
     },
     nameContainer: {
         margin: 2,
         width: 328,
-        height: 45,
+        height: 64,
         backgroundColor: "#e0e0de",
         fontFamily: 'sans-serif'
     },

@@ -18,6 +18,7 @@ import MainScreen from "../screens/MainScreen";
 import AddWeaponScreen from "../screens/AddWeaponScreen"
 import AddArmorScreen from "../screens/AddArmorScreen"
 import AddPossessionScreen from "../screens/AddPossessionScreen"
+import AddSpellScreen from "../screens/AddSpellScreen"
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -78,6 +79,10 @@ export default function AppStack() {
         <Stack.Screen name="AddPossession" component={AddPossessionScreen}
                       options={{
                           title: "Add Possession",
+                      }}/>
+        <Stack.Screen name="AddSpell" component={AddSpellScreen}
+                      options={{
+                          title: "Add Spell",
                       }}/>
     </Stack.Navigator>
   );

@@ -63,5 +63,17 @@
   "SP": 0,
   "EP": 0,
   "GP": 0,
-  "PP": 0
+  "PP": 0,
+  "spellcasting_ability": "",
+  "spell_save_DC": 0,
+  "spell_attack_bonus": 0,
+  "first_level_spell_slots": 0,
+  "second_level_spell_slots": 0,
+  "third_level_spell_slots": 0,
+  "fourth_level_spell_slots": 0,
+  "fifth_level_spell_slots": 0,
+  "sixth_level_spell_slots": 0,
+  "seventh_level_spell_slots": 0,
+  "eighth_level_spell_slots": 0,
+  "ninth_level_spell_slots": 0
 }

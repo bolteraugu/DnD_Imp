@@ -19,7 +19,6 @@ export default function MainScreen({route, navigation}) {
             getCharacter();
             route.params.updateCharData()
         });
-        getCharacter();
         if (loading) {
             setLoading(false);
         }
@@ -1675,7 +1674,7 @@ export default function MainScreen({route, navigation}) {
                             props.style,
                             props.multiline
                                 ? {
-                                    paddingTop: 30,
+                                    paddingTop: 35,
                                     paddingLeft: 25,
                                     paddingRight: 25,
                                     paddingBottom: 8,

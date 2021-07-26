@@ -17,7 +17,9 @@ export default function InventoryScreen({route, navigation}) {
     const [possessions, setPossessions] = useState([]);
 
     useEffect(() => {
-        getCharacter();
+        const unsubscribe = navigation.addListener('focus', e => {
+            getCharacter();
+        });
         global.charaRef.collection("weapons").onSnapshot(
             (querySnapshot) => {
                 const weapons = querySnapshot.docs.map((doc) => {
@@ -75,8 +77,9 @@ export default function InventoryScreen({route, navigation}) {
                 alert(error);
             }
         );
+        return unsubscribe;
 
-    }, [])
+    }, [navigation])
 
     if (loading) {
         return <Spinner />;
@@ -110,7 +113,7 @@ export default function InventoryScreen({route, navigation}) {
         if (fieldName === 'CP') {
             global.charaRef
                 .update({
-                    CP: value
+                    CP: Number(value)
                 })
                 .then(console.log('Successfully updated character'), (error) =>
                     console.log('Failed to update character: ' + error)
@@ -118,7 +121,7 @@ export default function InventoryScreen({route, navigation}) {
         } else if (fieldName === 'SP') {
             global.charaRef
                 .update({
-                    SP: value
+                    SP: Number(value)
                 })
                 .then(console.log('Successfully updated character'), (error) =>
                     console.log('Failed to update character: ' + error)
@@ -126,7 +129,7 @@ export default function InventoryScreen({route, navigation}) {
         } else if (fieldName === 'EP') {
             global.charaRef
                 .update({
-                    EP: value
+                    EP: Number(value)
                 })
                 .then(console.log('Successfully updated character'), (error) =>
                     console.log('Failed to update character: ' + error)
@@ -134,7 +137,7 @@ export default function InventoryScreen({route, navigation}) {
         } else if (fieldName === 'GP') {
             global.charaRef
                 .update({
-                    GP: value
+                    GP: Number(value)
                 })
                 .then(console.log('Successfully updated character'), (error) =>
                     console.log('Failed to update character: ' + error)
@@ -142,7 +145,7 @@ export default function InventoryScreen({route, navigation}) {
         } else if (fieldName === 'PP') {
             global.charaRef
                 .update({
-                    PP: value
+                    PP: Number(value)
                 })
                 .then(console.log('Successfully updated character'), (error) =>
                     console.log('Failed to update character: ' + error)
@@ -174,7 +177,8 @@ export default function InventoryScreen({route, navigation}) {
                                 <TextInput
                                     style = {styles.currencyTypeInput}
                                     underlineColor="transparent"
-                                    defaultValue = {charData["CP"]}
+                                    keyboardType="number-pad"
+                                    defaultValue = {String(charData["CP"])}
                                     onChangeText = {(text) => {
                                         updateCharacter('CP', text);
                                         getCharacter()
@@ -190,7 +194,8 @@ export default function InventoryScreen({route, navigation}) {
                                 <TextInput
                                     style = {styles.currencyTypeInput}
                                     underlineColor="transparent"
-                                    defaultValue = {charData["SP"]}
+                                    keyboardType="number-pad"
+                                    defaultValue = {String(charData["SP"])}
                                     onChangeText = {(text) => {
                                         updateCharacter('SP', text);
                                         getCharacter()
@@ -206,7 +211,8 @@ export default function InventoryScreen({route, navigation}) {
                                 <TextInput
                                     style = {styles.currencyTypeInput}
                                     underlineColor="transparent"
-                                    defaultValue = {charData["EP"]}
+                                    keyboardType="number-pad"
+                                    defaultValue = {String(charData["EP"])}
                                     onChangeText = {(text) => {
                                         updateCharacter('EP', text);
                                         getCharacter()
@@ -222,7 +228,8 @@ export default function InventoryScreen({route, navigation}) {
                                 <TextInput
                                     style = {styles.currencyTypeInput}
                                     underlineColor="transparent"
-                                    defaultValue = {charData["GP"]}
+                                    keyboardType="number-pad"
+                                    defaultValue = {String(charData["GP"])}
                                     onChangeText = {(text) => {
                                         updateCharacter('GP', text);
                                         getCharacter()
@@ -238,7 +245,8 @@ export default function InventoryScreen({route, navigation}) {
                                 <TextInput
                                     style = {styles.currencyTypeInput}
                                     underlineColor="transparent"
-                                    defaultValue = {charData["PP"]}
+                                    keyboardType="number-pad"
+                                    defaultValue = {String(charData["PP"])}
                                     onChangeText = {(text) => {
                                         updateCharacter('PP', text);
                                         getCharacter()
@@ -360,7 +368,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     addButton: {
-      width: 220,
+        width: 220,
         marginTop: 5
     },
     addPossessionButton: {
