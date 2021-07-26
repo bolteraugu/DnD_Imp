@@ -4,16 +4,31 @@ import ModalDropdown from 'react-native-modal-dropdown';
 import firebase from "firebase";
 import {AuthUserContext} from "../navigation/AuthUserProvider";
 import {TextInput, Text, Button} from "react-native-paper"; //Probably will need text...
+import colors from '../utils/colors';
+import Spinner from "../components/Spinner";
 
 export default function MainScreen({route, navigation}) {
     const charRef = route.params.charRef;
     const [charData, setCharData] = useState(route.params.charData);
+    const [loading, setLoading] = useState(true);
     global.charaRef = charRef;
     global.charaData = charData;
 
     useEffect(() => {
+        const unsubscribe = navigation.addListener('focus', e => {
+            getCharacter();
+            route.params.updateCharData()
+        });
         getCharacter();
-    }, [])
+        if (loading) {
+            setLoading(false);
+        }
+        return unsubscribe;
+    }, [navigation])
+
+    if (loading) {
+        return <Spinner />;
+    }
 
     function getCharacter() {
         charRef.onSnapshot( (snapshot) => {
@@ -502,8 +517,36 @@ export default function MainScreen({route, navigation}) {
         }
     }
 
+    // function tabNavigator() {
+    //     return (
+    //         <View style = {styles.tabContainer}>
+    //             <TouchableOpacity
+    //                 style = {styles.currentTab}
+    //             >
+    //                 <Text style = {styles.mainTabText}>MAIN</Text>
+    //             </TouchableOpacity>
+    //             <TouchableOpacity
+    //                 style = {styles.otherTab}
+    //             >
+    //                 <Text style = {styles.otherTabText}>BIOGRAPHY</Text>
+    //             </TouchableOpacity>
+    //             <TouchableOpacity
+    //                 style = {styles.otherTab}
+    //             >
+    //                 <Text style = {styles.otherTabText}>INVENTORY</Text>
+    //             </TouchableOpacity>
+    //             <TouchableOpacity
+    //                 style = {styles.otherTab}
+    //             >
+    //                 <Text style = {styles.otherTabText}>SPELLS</Text>
+    //             </TouchableOpacity>
+    //         </View>
+    //     )
+    // }
+
     return (
         <View>
+            {/*{tabNavigator()}*/}
             <View style = {styles.imageAndAbilitiesContainer}>
                 <Image
                     source={require('./../../assets/default_character.png')}
@@ -1668,9 +1711,37 @@ export default function MainScreen({route, navigation}) {
     // IDEALLY NOT HAVING TO BE RELOADED EACH TIME
 }
 const styles = StyleSheet.create({
+    tabContainer: {
+        flexDirection: 'row',
+        width: "100%",
+        height: "5%",
+        backgroundColor: "#ffffff"
+    },
+    currentTab: {
+        flex: 1,
+        borderBottomWidth: 2,
+        borderColor: colors.primary,
+        justifyContent: 'center'
+    },
+    otherTab: {
+        flex: 1,
+        justifyContent: 'center',
+        borderBottomWidth: 1,
+        borderColor: "#ededed",
+    },
+    otherTabText: {
+        fontSize: 13,
+        color: "#ffc58a",
+        textAlign: 'center'
+    },
+    mainTabText: {
+        fontSize: 13,
+        color: colors.primary,
+        textAlign: 'center'
+    },
     profAndLanguages: {
         width: 360,
-        height: 449,
+        height: 450.4,
         position: 'absolute',
         top: 164,
         left: 470,
@@ -1773,7 +1844,7 @@ const styles = StyleSheet.create({
     STContainer: {
         backgroundColor: "#e8e8e8",
         width: 240,
-        height: 451.5,
+        height: 452.5,
         flexDirection: 'column',
         borderWidth: 1,
         position: 'absolute',
@@ -1783,7 +1854,7 @@ const styles = StyleSheet.create({
     skillsContainer: {
         backgroundColor: "#e8e8e8",
         width: 484,
-        height: 371.5,
+        height: 372.5,
         flexDirection: 'column',
         borderWidth: 1,
         position: 'absolute',
