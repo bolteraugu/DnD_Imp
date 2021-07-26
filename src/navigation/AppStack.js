@@ -16,6 +16,8 @@ import {StyleSheet} from 'react-native';
 import colors from '../utils/colors';
 import MainScreen from "../screens/MainScreen";
 import AddWeaponScreen from "../screens/AddWeaponScreen"
+import AddArmorScreen from "../screens/AddArmorScreen"
+import AddPossessionScreen from "../screens/AddPossessionScreen"
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -69,6 +71,14 @@ export default function AppStack() {
                       options={{
                           title: "Add Weapon",
                       }}/>
+        <Stack.Screen name="AddArmor" component={AddArmorScreen}
+                      options={{
+                          title: "Add Armor",
+                      }}/>
+        <Stack.Screen name="AddPossession" component={AddPossessionScreen}
+                      options={{
+                          title: "Add Possession",
+                      }}/>
     </Stack.Navigator>
   );
 }
@@ -90,7 +100,6 @@ function CharacterNav() {
             <Tab.Screen name="Inventory" component={InventoryScreen} />
             <Tab.Screen name="Spells" component={SpellsScreen} />
         </Tab.Navigator>
-          <Stack.Screen name="AddWeapon" component={AddWeaponScreen}/>
       </View>
     </View>
   );

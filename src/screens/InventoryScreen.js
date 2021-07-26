@@ -6,11 +6,15 @@ import colors from "../utils/colors";
 import CharacterCard from "../components/CharacterCard";
 import Spinner from "../components/Spinner";
 import Weapon from "../components/Weapon";
+import Armor from "../components/Armor";
+import Possession from "../components/Possession";
 
 export default function InventoryScreen({route, navigation}) {
     const [charData, setCharData] = useState(global.charaData);
     const [loading, setLoading] = useState(true);
     const [weapons, setWeapons] = useState([]);
+    const [armor, setArmor] = useState([]);
+    const [possessions, setPossessions] = useState([]);
 
     useEffect(() => {
         getCharacter();
@@ -24,6 +28,44 @@ export default function InventoryScreen({route, navigation}) {
                     return data;
                 });
                 setWeapons(weapons);
+
+                if (loading) {
+                    setLoading(false);
+                }
+            },
+            (error) => {
+                alert(error);
+            }
+        );
+        global.charaRef.collection("armor").onSnapshot(
+            (querySnapshot) => {
+                const armor = querySnapshot.docs.map((doc) => {
+                    const data = {
+                        _id: doc.id,
+                        ...doc.data(),
+                    };
+                    return data;
+                });
+                setArmor(armor);
+
+                if (loading) {
+                    setLoading(false);
+                }
+            },
+            (error) => {
+                alert(error);
+            }
+        );
+        global.charaRef.collection("possessions").onSnapshot(
+            (querySnapshot) => {
+                const possession = querySnapshot.docs.map((doc) => {
+                    const data = {
+                        _id: doc.id,
+                        ...doc.data(),
+                    };
+                    return data;
+                });
+                setPossessions(possession);
 
                 if (loading) {
                     setLoading(false);
@@ -50,6 +92,18 @@ export default function InventoryScreen({route, navigation}) {
         const newWeapons = [...weapons];
         newWeapons[index][field] = value;
         setWeapons(newWeapons);
+    }
+
+    function updateArmor(index, field, value) {
+        const newArmor = [...armor];
+        newArmor[index][field] = value;
+        setArmor(newArmor);
+    }
+
+    function updatePossession(index, field, value) {
+        const newPossessions = [...possessions];
+        newPossessions[index][field] = value;
+        setPossessions(newPossessions);
     }
 
     function updateCharacter(fieldName, value) {
@@ -96,7 +150,9 @@ export default function InventoryScreen({route, navigation}) {
         }
     }
 
-    let index = 0;
+    let weaponIndex = 0;
+    let armorIndex = 0;
+    let possessionIndex = 0;
     return (
         <KeyboardAvoidingView
             behavior = {'height'}>
@@ -204,7 +260,7 @@ export default function InventoryScreen({route, navigation}) {
                             keyExtractor={(item) => item._id}
                             renderItem={({ item }) => (
                                 <Weapon
-                                    index={index++}
+                                    index={weaponIndex++}
                                     weapon={item}
                                     onChange={updateWeapon}
                                 />
@@ -228,15 +284,15 @@ export default function InventoryScreen({route, navigation}) {
                             Armor
                         </Text>
                         <FlatList
-                            data={weapons}
+                            data={armor}
                             style = {styles.list}
                             removeClippedSubviews={true}
                             keyExtractor={(item) => item._id}
                             renderItem={({ item }) => (
-                                <Weapon
-                                    index={index++}
-                                    weapon={item}
-                                    onChange={updateWeapon}
+                                <Armor
+                                    index={armorIndex++}
+                                    armor={item}
+                                    onChange={updateArmor}
                                 />
                             )}
                             ListFooterComponent={
@@ -244,7 +300,7 @@ export default function InventoryScreen({route, navigation}) {
                                     <Button
                                         mode="contained"
                                         style = {styles.addButton}
-                                        onPress={() => {navigation.navigate('AddWeapon')}}>
+                                        onPress={() => {navigation.navigate('AddArmor')}}>
                                         Add New Armor
                                     </Button>
                                 </View>
@@ -255,18 +311,18 @@ export default function InventoryScreen({route, navigation}) {
                         <Text
                             style = {styles.currencyHeading}
                         >
-                            Possession
+                            Other Possessions
                         </Text>
                         <FlatList
-                            data={weapons}
+                            data={possessions}
                             style = {styles.list}
                             removeClippedSubviews={true}
                             keyExtractor={(item) => item._id}
                             renderItem={({ item }) => (
-                                <Weapon
-                                    index={index++}
-                                    weapon={item}
-                                    onChange={updateWeapon}
+                                <Possession
+                                    index={possessionIndex++}
+                                    possession={item}
+                                    onChange={updatePossession}
                                 />
                             )}
                             ListFooterComponent={
@@ -274,12 +330,15 @@ export default function InventoryScreen({route, navigation}) {
                                     <Button
                                         mode="contained"
                                         style = {styles.addPossessionButton}
-                                        onPress={() => {navigation.navigate('AddWeapon')}}>
+                                        onPress={() => {navigation.navigate('AddPossession')}}>
                                         Add A New Possession
                                     </Button>
                                 </View>
                             }
                         />
+                    </View>
+                    <View style = {styles.gap}>
+
                     </View>
                 </View>
             </ScrollView>
@@ -288,6 +347,9 @@ export default function InventoryScreen({route, navigation}) {
 }
 
 const styles = StyleSheet.create({
+    gap: {
+        height: 100
+    },
     centerButton: {
         width: "100%",
         justifyContent: 'center',
@@ -295,10 +357,10 @@ const styles = StyleSheet.create({
     },
     centerButtonFinal: {
         width: "100%",
-        alignItems: 'center'
+        alignItems: 'center',
     },
     addButton: {
-      width: "20%",
+      width: 220,
         marginTop: 5
     },
     addPossessionButton: {
@@ -306,7 +368,8 @@ const styles = StyleSheet.create({
         marginTop: 5
     },
     list: {
-        marginTop: 50
+        marginTop: 50,
+        width: "86%"
     },
     totalContainer: {
         flexDirection: 'column'
@@ -320,25 +383,37 @@ const styles = StyleSheet.create({
         marginTop: 7,
         marginLeft: 10,
         marginRight: 10,
+        backgroundColor:"#e3e3e3",
+        borderRadius: 4,
+        borderWidth: 1
     },
     weaponContainer: {
         flexDirection: 'column',
+        backgroundColor:"#e3e3e3",
+        borderRadius: 4,
+        borderWidth: 1,
+        marginTop: 10,
         marginLeft: 10,
         marginRight: 10,
+        paddingBottom: 12,
         alignItems: 'center'
     },
     inventoryContainer: {
         flexDirection: 'column',
+        backgroundColor:"#e3e3e3",
+        borderRadius: 4,
+        borderWidth: 1,
         marginLeft: 10,
         marginTop: 10,
         marginRight: 10,
+        paddingBottom: 12,
         alignItems: 'center'
     },
     currencyTypeContainer: {
         flexDirection: 'row',
         flex: 1,
         marginTop: 53,
-        height: 35
+        height: 35,
     },
     currencyTypeHeading: {
         marginLeft: 10,
@@ -350,11 +425,12 @@ const styles = StyleSheet.create({
     },
     currencyTypeInput: {
         borderWidth: 1,
-        backgroundColor: "#e8e8e8",
+        backgroundColor: "#ffffff",
         borderTopRightRadius: 0,
         borderTopLeftRadius: 0,
         height: 30,
-        width: 70
+        width: 70,
+        textAlign: 'center'
     },
     currencyHeading: {
         width: "100%",
@@ -362,7 +438,8 @@ const styles = StyleSheet.create({
         color: "#0038d4",
         position: 'absolute',
         top: 10,
-        fontSize: 17
+        fontSize: 17,
+        fontWeight: "bold"
     },
     armorHeading: {
         width: "100%",
@@ -371,5 +448,6 @@ const styles = StyleSheet.create({
         position: 'absolute',
         top: 10,
         fontSize: 17,
+        fontWeight: "bold"
     }
 })
