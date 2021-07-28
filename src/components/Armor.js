@@ -117,7 +117,6 @@ export default function Armor({
                     </View>
                     <View style = {styles.typeContainer}>
                         <Picker
-                            mode="dropdown"
                             selectedValue={armor.type}
                             onValueChange = {(itemValue, itemIndex) => {
                                 updateArmor('type', itemValue);

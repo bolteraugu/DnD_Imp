@@ -45,7 +45,6 @@ export default function AddArmorScreen({navigation}) {
                     </View>
                     <View style = {styles.typeContainer}>
                         <Picker
-                            mode="dropdown"
                             selectedValue={type}
                             onValueChange = {(itemValue, itemIndex) => {setType(itemValue)}}
                             style = {styles.totalDropdownStyle}

@@ -1,10 +1,11 @@
 import {StyleSheet, Text, TextInput as NativeTextInput, View} from "react-native";
 import {TextInput, Button} from "react-native-paper";
 import React, {useState} from "react";
+import {Picker} from "@react-native-community/picker";
 
 export default function AddSpellScreen({navigation}) {
     const [name, setName] = useState("");
-    const [level, setLevel] = useState("");
+    const [level, setLevel] = useState("Cantrip");
     const [castingTime, setCastingTime] = useState("");
     const [range, setRange] = useState("");
     const [components, setComponents] = useState("");
@@ -37,14 +38,35 @@ export default function AddSpellScreen({navigation}) {
                                 Level:
                             </Text>
                     </View>
-                    <TextInput
-                        style={styles.inputContainer}
-                        keyboardType="number-pad"
-                        placeholder={"Enter level..."}
-                        onChangeText={(text) => {
-                            setLevel(Number(text))
-                        }}
-                    />
+                    <View style = {styles.typeContainer}>
+                        <Picker
+                            selectedValue={level}
+                            onValueChange = {(itemValue, itemIndex) => {
+                                setLevel(itemValue);
+                            }}
+                            style = {styles.totalDropdownStyle}
+                        >
+                            <Picker.Item label = "Cantrip" value = "Cantrip" key="0" />
+                            <Picker.Item label = "0" value = "0" key="1" />
+                            <Picker.Item label = "1" value = "1" key="2" />
+                            <Picker.Item label = "2" value = "2" key="3" />
+                            <Picker.Item label = "3" value = "3" key="4" />
+                            <Picker.Item label = "4" value = "4" key="5" />
+                            <Picker.Item label = "5" value = "5" key="6" />
+                            <Picker.Item label = "6" value = "6" key="7" />
+                            <Picker.Item label = "7" value = "7" key="8" />
+                            <Picker.Item label = "8" value = "8" key="9" />
+                            <Picker.Item label = "9" value = "9" key="10" />
+                        </Picker>
+                    </View>
+                    {/*<TextInput*/}
+                    {/*    style={styles.inputContainer}*/}
+                    {/*    keyboardType="number-pad"*/}
+                    {/*    placeholder={"Enter level..."}*/}
+                    {/*    onChangeText={(text) => {*/}
+                    {/*        setLevel(Number(text))*/}
+                    {/*    }}*/}
+                    {/*/>*/}
                 </View>
                 <View style = {styles.row}>
                     <View style = {styles.headingContainer}>
@@ -172,6 +194,25 @@ export default function AddSpellScreen({navigation}) {
 }
 
 const styles = StyleSheet.create({
+    totalDropdownStyle: {
+        width: 120,
+        height: 45,
+        flex: 1,
+        color: "#787878"
+    },
+    typeContainer: {
+        margin: 2,
+        width: 113,
+        height: 45,
+        marginBottom: 7.5,
+        borderBottomWidth: 1,
+        borderTopRightRadius: 4,
+        borderTopLeftRadius: 4,
+        borderColor: "#adadad",
+        backgroundColor: "#e0e0de",
+        fontFamily: 'sans-serif',
+        flex: 1,
+    },
     gap: {
       height: 240
     },

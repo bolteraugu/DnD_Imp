@@ -485,7 +485,8 @@ const styles = StyleSheet.create({
     bottomRow: {
         borderWidth: 1,
         margin: 10,
-        marginLeft: 60,
+        marginLeft: 27,
+        width: "96%",
         marginRight: 60,
         backgroundColor: "#e8e8e8",
         paddingBottom: 12,

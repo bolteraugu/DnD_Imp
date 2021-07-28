@@ -2,6 +2,7 @@ import {IconButton, TextInput} from "react-native-paper";
 import React from "react";
 import {Surface} from "react-native-paper";
 import {StyleSheet, Text, TextInput as NativeTextInput, View} from "react-native";
+import {Picker} from "@react-native-community/picker";
 
 export default function Spell({
                                    spell,
@@ -114,17 +115,28 @@ export default function Spell({
                             Level
                         </Text>
                     </View>
-                    <TextInput
-                        style={styles.levelContainer}
-                        value={String(spell.level)}
-                        keyboardType="number-pad"
-                        placeholder={"Enter level..."}
-                        onChangeText={(text) => {
-                            updateSpell('level', text);
-                            onChange(index, 'level', text);
-                        }
-                        }
-                    />
+                    <View style = {styles.typeContainer}>
+                        <Picker
+                            selectedValue={spell.level}
+                            onValueChange = {(itemValue, itemIndex) => {
+                                updateSpell('level', itemValue);
+                                onChange(index, 'level', itemValue);
+                            }}
+                            style = {styles.totalDropdownStyle}
+                        >
+                            <Picker.Item label = "Cantrip" value = "Cantrip" key="0" />
+                            <Picker.Item label = "0" value = "0" key="1" />
+                            <Picker.Item label = "1" value = "1" key="2" />
+                            <Picker.Item label = "2" value = "2" key="3" />
+                            <Picker.Item label = "3" value = "3" key="4" />
+                            <Picker.Item label = "4" value = "4" key="5" />
+                            <Picker.Item label = "5" value = "5" key="6" />
+                            <Picker.Item label = "6" value = "6" key="7" />
+                            <Picker.Item label = "7" value = "7" key="8" />
+                            <Picker.Item label = "8" value = "8" key="9" />
+                            <Picker.Item label = "9" value = "9" key="10" />
+                        </Picker>
+                    </View>
                 </View>
                 <View>
                     <View style = {styles.castingTimeHeadingContainer}>
@@ -253,6 +265,24 @@ export default function Spell({
 }
 
 const styles = StyleSheet.create({
+    totalDropdownStyle: {
+        width: 120,
+        height: 30,
+        flex: 1,
+        color: "#787878"
+    },
+    typeContainer: {
+        margin: 2,
+        width: 113,
+        height: 30,
+        borderBottomWidth: 1,
+        borderTopRightRadius: 4,
+        borderTopLeftRadius: 4,
+        borderColor: "#adadad",
+        backgroundColor: "#e0e0de",
+        fontFamily: 'sans-serif',
+        flex: 1,
+    },
     nameHeadingContainer: {
         width: 203,
         height: 30,
@@ -358,6 +388,7 @@ const styles = StyleSheet.create({
         elevation: 4,
         margin: 5,
         color: "#ffffff",
+        marginLeft: 11,
         width: "98.2%"
     },
     row: {
