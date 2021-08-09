@@ -51,10 +51,10 @@ export default function LoginScreen({navigation}) {
       <View style={styles.checkboxContainer}>
         <Text style={styles.checkboxText}>Remember Me</Text>
         <Checkbox.Android
-          status={rememberMe ? 'checked' : 'unchecked'}
-          onPress={() => {
-            setRememberMe(!rememberMe);
-          }}
+            status={rememberMe ? 'checked' : 'unchecked'}
+            onPress={() => {
+              setRememberMe(!rememberMe);
+            }}
         />
         <TouchableWithoutFeedback
           onPress={() => navigation.navigate('ForgotPassword')}
@@ -117,19 +117,19 @@ const styles = StyleSheet.create({
 
   forgotPasswordButton: {
     marginLeft: 6,
-    marginTop: 6,
+    marginTop: screenHeight * 0.0079787234042553,
     fontSize: 14,
     color: '#6231de',
   },
 
   passwordContainer: {
     justifyContent: 'center',
-    height: 60,
+    height: screenHeight * 0.0797872340425532,
     margin: 5,
   },
 
   passwordField: {
-    height: 60,
+    height: screenHeight * 0.0797872340425532,
   },
 
   visibilityIcon: {
@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
   },
 
   checkboxText: {
-    marginTop: 6,
+    marginTop: screenHeight * 0.0079787234042553,
     marginLeft: 6,
   },
 
@@ -169,20 +169,20 @@ const styles = StyleSheet.create({
   },
   container: {
     alignSelf: 'center',
-    marginTop: 200,
-    width: 500,
+    marginTop: screenHeight * 0.2659574468085106,
+    width: screenWidth * 0.3750937734433608,
   },
 
     body: {
         alignSelf: 'center',
-        width: 500,
-        marginTop: 50
+      width: screenWidth * 0.3750937734433608,
+        marginTop: screenHeight * 0.0664893617021277
     },
 
     titleBox: {
         alignSelf: 'center',
-        marginTop: 100,
-        width: 500,
+        marginTop: screenHeight * 0.1329787234042553,
+        width: screenWidth * 0.3750937734433608,
     },
 
     titleText: {
@@ -191,7 +191,7 @@ const styles = StyleSheet.create({
     },
 
   input: {
-    height: 60,
+    height: screenHeight * 0.0797872340425532,
     margin: 5,
   },
 });

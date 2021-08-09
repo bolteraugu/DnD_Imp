@@ -8,11 +8,7 @@ import Spinner from "../components/Spinner";
 
 export default function MainScreen({route, navigation}) {
     const charRef = route.params.charRef;
-    // const [charData, setCharData] = useState(route.params.charData);
-    const [strength, setStrength] = useState("");
-    const [constitution, setConstitution] = useState([]);
-    const [name, setName] = useState("");
-    const [charData, setCharData] = useState([]);
+    const [charData, setCharData] = useState(route.params.charData);
     const [loading, setLoading] = useState(true);
     global.charaRef = charRef;
     global.charaData = charData;
@@ -26,19 +22,14 @@ export default function MainScreen({route, navigation}) {
             setLoading(false);
         }
         return unsubscribe;
-    }, [navigation, charData])
+    }, [navigation])
 
     if (loading) {
         return <Spinner />;
     }
 
     function getCharacter() {
-        // charRef.onSnapshot( (snapshot) => {
-        //     setCharData(snapshot.data())
-        // });
         charRef.onSnapshot( (snapshot) => {
-            setName(snapshot.get('name'))
-            setStrength(String(snapshot.get('strength')))
             setCharData(snapshot.data())
         });
         global.charaData = charData;
@@ -575,15 +566,12 @@ export default function MainScreen({route, navigation}) {
                                 style={styles.abilityScoresStyle}
                                 keyboardType="number-pad"
                                 underlineColor="transparent"
-                                value={strength}
+                                defaultValue={String(charData['strength'])}
                                 onChangeText={(text) => {
-                                    setStrength(text);
-                                    //setCharData(character);
                                     updateCharacter('strength', text);
-                                    //getCharacter();
-                                    route.params.onFSChange('strength', text, false);
-                                    route.params.updateCharData();
-                                    console.log(name);
+                                    getCharacter()
+                                    route.params.onFSChange('strength', text, true);
+                                    route.params.updateCharData()
                                 }}
                             />
                             <Text
@@ -715,17 +703,14 @@ export default function MainScreen({route, navigation}) {
                 <View>
                     <TextInput
                         style={styles.nameRaceClass}
-                        value={name}
+                        defaultValue={charData['name']}
                         underlineColor="transparent"
                         placeholder={"Enter name..."}
                         onChangeText={(text) => {
-                            setName(text);
-                            //setCharData(character);
                             updateCharacter('name', text);
-                            //getCharacter();
+                            getCharacter()
                             route.params.onFSChange('name', text, false);
-                            route.params.updateCharData();
-                            console.log(name);
+                            route.params.updateCharData()
                         }}
                     />
                     <Text
@@ -1200,123 +1185,123 @@ export default function MainScreen({route, navigation}) {
                     </View>
                 </View>
             </View>
-                <View style = {styles.STContainer}>
-                    <Text
-                        style = {styles.STHeading}
-                    >
-                        Saving Throws
-                    </Text>
-                    <View style = {styles.STValuesContainer}>
-                        <View style = {styles.STHeadingValueContainer}>
-                            <View style = {styles.STTitles}>
-                                <Text style = {styles.STTitleValue}>
-                                    Strength
-                                </Text>
-                            </View>
-                            <TextInput
-                                style = {styles.STValue}
-                                defaultValue = {String(charData["ST_strength"])}
-                                underlineColor="transparent"
-                                onChangeText = {(text) => {
-                                    updateCharacter('ST_strength', text);
-                                    getCharacter()
-                                    route.params.onFSChange('ST_strength', text, true);
-                                    route.params.updateCharData()
-                                }}
-                            />
+            <View style = {styles.STContainer}>
+                <Text
+                    style = {styles.STHeading}
+                >
+                    Saving Throws
+                </Text>
+                <View style = {styles.STValuesContainer}>
+                    <View style = {styles.STHeadingValueContainer}>
+                        <View style = {styles.STTitles}>
+                            <Text style = {styles.STTitleValue}>
+                                Strength
+                            </Text>
                         </View>
-                        <View style = {styles.STHeadingValueContainer}>
-                            <View style = {styles.STTitles}>
-                                <Text style = {styles.STTitleValue}>
-                                    Dexterity
-                                </Text>
-                            </View>
-                            <TextInput
-                                style = {styles.STValue}
-                                defaultValue = {String(charData["ST_dexterity"])}
-                                underlineColor="transparent"
-                                onChangeText = {(text) => {
-                                    updateCharacter('ST_dexterity', text);
-                                    getCharacter()
-                                    route.params.onFSChange('ST_dexterity', text, true);
-                                    route.params.updateCharData()
-                                }}
-                            />
+                        <TextInput
+                            style = {styles.STValue}
+                            defaultValue = {String(charData["ST_strength"])}
+                            underlineColor="transparent"
+                            onChangeText = {(text) => {
+                                updateCharacter('ST_strength', text);
+                                getCharacter()
+                                route.params.onFSChange('ST_strength', text, true);
+                                route.params.updateCharData()
+                            }}
+                        />
+                    </View>
+                    <View style = {styles.STHeadingValueContainer}>
+                        <View style = {styles.STTitles}>
+                            <Text style = {styles.STTitleValue}>
+                                Dexterity
+                            </Text>
                         </View>
-                        <View style = {styles.STHeadingValueContainer}>
-                            <View style = {styles.STTitles}>
-                                <Text style = {styles.STTitleValue}>
-                                    Constitution
-                                </Text>
-                            </View>
-                            <TextInput
-                                style = {styles.STValue}
-                                defaultValue = {String(charData["ST_constitution"])}
-                                underlineColor="transparent"
-                                onChangeText = {(text) => {
-                                    updateCharacter('ST_constitution', text);
-                                    getCharacter()
-                                    route.params.onFSChange('ST_constitution', text, true);
-                                    route.params.updateCharData()
-                                }}
-                            />
+                        <TextInput
+                            style = {styles.STValue}
+                            defaultValue = {String(charData["ST_dexterity"])}
+                            underlineColor="transparent"
+                            onChangeText = {(text) => {
+                                updateCharacter('ST_dexterity', text);
+                                getCharacter()
+                                route.params.onFSChange('ST_dexterity', text, true);
+                                route.params.updateCharData()
+                            }}
+                        />
+                    </View>
+                    <View style = {styles.STHeadingValueContainer}>
+                        <View style = {styles.STTitles}>
+                            <Text style = {styles.STTitleValue}>
+                                Constitution
+                            </Text>
                         </View>
-                        <View style = {styles.STHeadingValueContainer}>
-                            <View style = {styles.STTitles}>
-                                <Text style = {styles.STTitleValue}>
-                                    Intelligence
-                                </Text>
-                            </View>
-                            <TextInput
-                                style = {styles.STValue}
-                                defaultValue = {String(charData["ST_intelligence"])}
-                                underlineColor="transparent"
-                                onChangeText = {(text) => {
-                                    updateCharacter('ST_intelligence', text);
-                                    getCharacter()
-                                    route.params.onFSChange('ST_intelligence', text, true);
-                                    route.params.updateCharData()
-                                }}
-                            />
+                        <TextInput
+                            style = {styles.STValue}
+                            defaultValue = {String(charData["ST_constitution"])}
+                            underlineColor="transparent"
+                            onChangeText = {(text) => {
+                                updateCharacter('ST_constitution', text);
+                                getCharacter()
+                                route.params.onFSChange('ST_constitution', text, true);
+                                route.params.updateCharData()
+                            }}
+                        />
+                    </View>
+                    <View style = {styles.STHeadingValueContainer}>
+                        <View style = {styles.STTitles}>
+                            <Text style = {styles.STTitleValue}>
+                                Intelligence
+                            </Text>
                         </View>
-                        <View style = {styles.STHeadingValueContainer}>
-                            <View style = {styles.STTitles}>
-                                <Text style = {styles.STTitleValue}>
-                                    Wisdom
-                                </Text>
-                            </View>
-                            <TextInput
-                                style = {styles.STValue}
-                                defaultValue = {String(charData["ST_wisdom"])}
-                                underlineColor="transparent"
-                                onChangeText = {(text) => {
-                                    updateCharacter('ST_wisdom', text);
-                                    getCharacter()
-                                    route.params.onFSChange('ST_wisdom', text, true);
-                                    route.params.updateCharData()
-                                }}
-                            />
+                        <TextInput
+                            style = {styles.STValue}
+                            defaultValue = {String(charData["ST_intelligence"])}
+                            underlineColor="transparent"
+                            onChangeText = {(text) => {
+                                updateCharacter('ST_intelligence', text);
+                                getCharacter()
+                                route.params.onFSChange('ST_intelligence', text, true);
+                                route.params.updateCharData()
+                            }}
+                        />
+                    </View>
+                    <View style = {styles.STHeadingValueContainer}>
+                        <View style = {styles.STTitles}>
+                            <Text style = {styles.STTitleValue}>
+                                Wisdom
+                            </Text>
                         </View>
-                        <View style = {styles.STHeadingValueContainer}>
-                            <View style = {styles.STTitles}>
-                                <Text style = {styles.STTitleValue}>
-                                    Charisma
-                                </Text>
-                            </View>
-                            <TextInput
-                                style = {styles.STValue}
-                                defaultValue = {String(charData["ST_charisma"])}
-                                underlineColor="transparent"
-                                onChangeText = {(text) => {
-                                    updateCharacter('ST_charisma', text);
-                                    getCharacter()
-                                    route.params.onFSChange('ST_charisma', text, true);
-                                    route.params.updateCharData()
-                                }}
-                            />
+                        <TextInput
+                            style = {styles.STValue}
+                            defaultValue = {String(charData["ST_wisdom"])}
+                            underlineColor="transparent"
+                            onChangeText = {(text) => {
+                                updateCharacter('ST_wisdom', text);
+                                getCharacter()
+                                route.params.onFSChange('ST_wisdom', text, true);
+                                route.params.updateCharData()
+                            }}
+                        />
+                    </View>
+                    <View style = {styles.STHeadingValueContainer}>
+                        <View style = {styles.STTitles}>
+                            <Text style = {styles.STTitleValue}>
+                                Charisma
+                            </Text>
                         </View>
+                        <TextInput
+                            style = {styles.STValue}
+                            defaultValue = {String(charData["ST_charisma"])}
+                            underlineColor="transparent"
+                            onChangeText = {(text) => {
+                                updateCharacter('ST_charisma', text);
+                                getCharacter()
+                                route.params.onFSChange('ST_charisma', text, true);
+                                route.params.updateCharData()
+                            }}
+                        />
                     </View>
                 </View>
+            </View>
             <View style = {styles.skillsContainer}>
                 <Text
                     style = {styles.skillsHeading}
@@ -1324,16 +1309,6 @@ export default function MainScreen({route, navigation}) {
                     Skills
                 </Text>
                 <View style = {styles.skillsSubHeadingContainer}>
-                <Text
-                    style = {styles.skillsSubHeading}
-                >
-                    Skill
-                </Text>
-                <Text
-                    style = {styles.bonusSubHeading}
-                >
-                    Bonus
-                </Text>
                     <Text
                         style = {styles.skillsSubHeading}
                     >
@@ -1344,336 +1319,346 @@ export default function MainScreen({route, navigation}) {
                     >
                         Bonus
                     </Text>
-            </View>
+                    <Text
+                        style = {styles.skillsSubHeading}
+                    >
+                        Skill
+                    </Text>
+                    <Text
+                        style = {styles.bonusSubHeading}
+                    >
+                        Bonus
+                    </Text>
+                </View>
                 <View style = {styles.skillsSections}>
-                <View style = {styles.skillsSection1}>
-                    <View style = {styles.skillsHeadingValueContainer}>
-                        <View style = {styles.skillsTitles}>
-                            <Text style = {styles.skillsTitleValue}>
-                                Acrobatics (Dex)
-                            </Text>
+                    <View style = {styles.skillsSection1}>
+                        <View style = {styles.skillsHeadingValueContainer}>
+                            <View style = {styles.skillsTitles}>
+                                <Text style = {styles.skillsTitleValue}>
+                                    Acrobatics (Dex)
+                                </Text>
+                            </View>
+                            <TextInput
+                                style = {styles.skillsValue}
+                                defaultValue = {String(charData["acrobatics"])}
+                                underlineColor="transparent"
+                                onChangeText = {(text) => {
+                                    updateCharacter('acrobatics', text);
+                                    getCharacter()
+                                    route.params.onFSChange('acrobatics', text, true);
+                                    route.params.updateCharData()
+                                }}
+                            />
                         </View>
-                        <TextInput
-                            style = {styles.skillsValue}
-                            defaultValue = {String(charData["acrobatics"])}
-                            underlineColor="transparent"
-                            onChangeText = {(text) => {
-                                updateCharacter('acrobatics', text);
-                                getCharacter()
-                                route.params.onFSChange('acrobatics', text, true);
-                                route.params.updateCharData()
-                            }}
-                        />
-                    </View>
-                    <View style = {styles.skillsHeadingValueContainer}>
-                        <View style = {styles.skillsTitles}>
-                            <Text style = {styles.skillsTitleValue}>
-                                Animal Handling (Wis)
-                            </Text>
+                        <View style = {styles.skillsHeadingValueContainer}>
+                            <View style = {styles.skillsTitles}>
+                                <Text style = {styles.skillsTitleValue}>
+                                    Animal Handling (Wis)
+                                </Text>
+                            </View>
+                            <TextInput
+                                style = {styles.skillsValue}
+                                defaultValue = {String(charData["animal_handling"])}
+                                underlineColor="transparent"
+                                onChangeText = {(text) => {
+                                    updateCharacter('animal_handling', text);
+                                    getCharacter()
+                                    route.params.onFSChange('animal_handling', text, true);
+                                    route.params.updateCharData()
+                                }}
+                            />
                         </View>
-                        <TextInput
-                            style = {styles.skillsValue}
-                            defaultValue = {String(charData["animal_handling"])}
-                            underlineColor="transparent"
-                            onChangeText = {(text) => {
-                                updateCharacter('animal_handling', text);
-                                getCharacter()
-                                route.params.onFSChange('animal_handling', text, true);
-                                route.params.updateCharData()
-                            }}
-                        />
-                    </View>
-                    <View style = {styles.skillsHeadingValueContainer}>
-                        <View style = {styles.skillsTitles}>
-                            <Text style = {styles.skillsTitleValue}>
-                                Arcana (Int)
-                            </Text>
+                        <View style = {styles.skillsHeadingValueContainer}>
+                            <View style = {styles.skillsTitles}>
+                                <Text style = {styles.skillsTitleValue}>
+                                    Arcana (Int)
+                                </Text>
+                            </View>
+                            <TextInput
+                                style = {styles.skillsValue}
+                                defaultValue = {String(charData["arcana"])}
+                                underlineColor="transparent"
+                                onChangeText = {(text) => {
+                                    updateCharacter('arcana', text);
+                                    getCharacter()
+                                    route.params.onFSChange('arcana', text, true);
+                                    route.params.updateCharData()
+                                }}
+                            />
                         </View>
-                        <TextInput
-                            style = {styles.skillsValue}
-                            defaultValue = {String(charData["arcana"])}
-                            underlineColor="transparent"
-                            onChangeText = {(text) => {
-                                updateCharacter('arcana', text);
-                                getCharacter()
-                                route.params.onFSChange('arcana', text, true);
-                                route.params.updateCharData()
-                            }}
-                        />
-                    </View>
-                    <View style = {styles.skillsHeadingValueContainer}>
-                        <View style = {styles.skillsTitles}>
-                            <Text style = {styles.skillsTitleValue}>
-                                Athletics (Str)
-                            </Text>
+                        <View style = {styles.skillsHeadingValueContainer}>
+                            <View style = {styles.skillsTitles}>
+                                <Text style = {styles.skillsTitleValue}>
+                                    Athletics (Str)
+                                </Text>
+                            </View>
+                            <TextInput
+                                style = {styles.skillsValue}
+                                defaultValue = {String(charData["athletics"])}
+                                underlineColor="transparent"
+                                onChangeText = {(text) => {
+                                    updateCharacter('athletics', text);
+                                    getCharacter()
+                                    route.params.onFSChange('athletics', text, true);
+                                    route.params.updateCharData()
+                                }}
+                            />
                         </View>
-                        <TextInput
-                            style = {styles.skillsValue}
-                            defaultValue = {String(charData["athletics"])}
-                            underlineColor="transparent"
-                            onChangeText = {(text) => {
-                                updateCharacter('athletics', text);
-                                getCharacter()
-                                route.params.onFSChange('athletics', text, true);
-                                route.params.updateCharData()
-                            }}
-                        />
-                    </View>
-                    <View style = {styles.skillsHeadingValueContainer}>
-                        <View style = {styles.skillsTitles}>
-                            <Text style = {styles.skillsTitleValue}>
-                                Deception (Cha)
-                            </Text>
+                        <View style = {styles.skillsHeadingValueContainer}>
+                            <View style = {styles.skillsTitles}>
+                                <Text style = {styles.skillsTitleValue}>
+                                    Deception (Cha)
+                                </Text>
+                            </View>
+                            <TextInput
+                                style = {styles.skillsValue}
+                                defaultValue = {String(charData["deception"])}
+                                underlineColor="transparent"
+                                onChangeText = {(text) => {
+                                    updateCharacter('deception', text);
+                                    getCharacter()
+                                    route.params.onFSChange('deception', text, true);
+                                    route.params.updateCharData()
+                                }}
+                            />
                         </View>
-                        <TextInput
-                            style = {styles.skillsValue}
-                            defaultValue = {String(charData["deception"])}
-                            underlineColor="transparent"
-                            onChangeText = {(text) => {
-                                updateCharacter('deception', text);
-                                getCharacter()
-                                route.params.onFSChange('deception', text, true);
-                                route.params.updateCharData()
-                            }}
-                        />
-                    </View>
-                    <View style = {styles.skillsHeadingValueContainer}>
-                        <View style = {styles.skillsTitles}>
-                            <Text style = {styles.skillsTitleValue}>
-                                History (Int)
-                            </Text>
+                        <View style = {styles.skillsHeadingValueContainer}>
+                            <View style = {styles.skillsTitles}>
+                                <Text style = {styles.skillsTitleValue}>
+                                    History (Int)
+                                </Text>
+                            </View>
+                            <TextInput
+                                style = {styles.skillsValue}
+                                defaultValue = {String(charData["history"])}
+                                underlineColor="transparent"
+                                onChangeText = {(text) => {
+                                    updateCharacter('history', text);
+                                    getCharacter()
+                                    route.params.onFSChange('history', text, true);
+                                    route.params.updateCharData()
+                                }}
+                            />
                         </View>
-                        <TextInput
-                            style = {styles.skillsValue}
-                            defaultValue = {String(charData["history"])}
-                            underlineColor="transparent"
-                            onChangeText = {(text) => {
-                                updateCharacter('history', text);
-                                getCharacter()
-                                route.params.onFSChange('history', text, true);
-                                route.params.updateCharData()
-                            }}
-                        />
-                    </View>
-                    <View style = {styles.skillsHeadingValueContainer}>
-                        <View style = {styles.skillsTitles}>
-                            <Text style = {styles.skillsTitleValue}>
-                                Insight (Wis)
-                            </Text>
+                        <View style = {styles.skillsHeadingValueContainer}>
+                            <View style = {styles.skillsTitles}>
+                                <Text style = {styles.skillsTitleValue}>
+                                    Insight (Wis)
+                                </Text>
+                            </View>
+                            <TextInput
+                                style = {styles.skillsValue}
+                                defaultValue = {String(charData["insight"])}
+                                underlineColor="transparent"
+                                onChangeText = {(text) => {
+                                    updateCharacter('insight', text);
+                                    getCharacter()
+                                    route.params.onFSChange('insight', text, true);
+                                    route.params.updateCharData()
+                                }}
+                            />
                         </View>
-                        <TextInput
-                            style = {styles.skillsValue}
-                            defaultValue = {String(charData["insight"])}
-                            underlineColor="transparent"
-                            onChangeText = {(text) => {
-                                updateCharacter('insight', text);
-                                getCharacter()
-                                route.params.onFSChange('insight', text, true);
-                                route.params.updateCharData()
-                            }}
-                        />
-                    </View>
-                    <View style = {styles.skillsHeadingValueContainer}>
-                        <View style = {styles.skillsTitles}>
-                            <Text style = {styles.skillsTitleValue}>
-                                Intimidation (Cha)
-                            </Text>
+                        <View style = {styles.skillsHeadingValueContainer}>
+                            <View style = {styles.skillsTitles}>
+                                <Text style = {styles.skillsTitleValue}>
+                                    Intimidation (Cha)
+                                </Text>
+                            </View>
+                            <TextInput
+                                style = {styles.skillsValue}
+                                defaultValue = {String(charData["intimidation"])}
+                                underlineColor="transparent"
+                                onChangeText = {(text) => {
+                                    updateCharacter('intimidation', text);
+                                    getCharacter()
+                                    route.params.onFSChange('intimidation', text, true);
+                                    route.params.updateCharData()
+                                }}
+                            />
                         </View>
-                        <TextInput
-                            style = {styles.skillsValue}
-                            defaultValue = {String(charData["intimidation"])}
-                            underlineColor="transparent"
-                            onChangeText = {(text) => {
-                                updateCharacter('intimidation', text);
-                                getCharacter()
-                                route.params.onFSChange('intimidation', text, true);
-                                route.params.updateCharData()
-                            }}
-                        />
-                    </View>
-                    <View style = {styles.skillsHeadingValueContainer}>
-                        <View style = {styles.skillsTitles}>
-                            <Text style = {styles.skillsTitleValue}>
-                                Investigation (Int)
-                            </Text>
+                        <View style = {styles.skillsHeadingValueContainer}>
+                            <View style = {styles.skillsTitles}>
+                                <Text style = {styles.skillsTitleValue}>
+                                    Investigation (Int)
+                                </Text>
+                            </View>
+                            <TextInput
+                                style = {styles.skillsValue}
+                                defaultValue = {String(charData["investigation"])}
+                                underlineColor="transparent"
+                                onChangeText = {(text) => {
+                                    updateCharacter('investigation', text);
+                                    getCharacter()
+                                    route.params.onFSChange('investigation', text, true);
+                                    route.params.updateCharData()
+                                }}
+                            />
                         </View>
-                        <TextInput
-                            style = {styles.skillsValue}
-                            defaultValue = {String(charData["investigation"])}
-                            underlineColor="transparent"
-                            onChangeText = {(text) => {
-                                updateCharacter('investigation', text);
-                                getCharacter()
-                                route.params.onFSChange('investigation', text, true);
-                                route.params.updateCharData()
-                            }}
-                        />
                     </View>
-                </View>
-                <View style = {styles.skillsSection2}>
-                    <View style = {styles.skillsHeadingValueContainer}>
-                        <View style = {styles.skillsTitles}>
-                            <Text style = {styles.skillsTitleValue}>
-                                Medicine (Wis)
-                            </Text>
+                    <View style = {styles.skillsSection2}>
+                        <View style = {styles.skillsHeadingValueContainer}>
+                            <View style = {styles.skillsTitles}>
+                                <Text style = {styles.skillsTitleValue}>
+                                    Medicine (Wis)
+                                </Text>
+                            </View>
+                            <TextInput
+                                style = {styles.skillsValue}
+                                defaultValue = {String(charData["medicine"])}
+                                underlineColor="transparent"
+                                onChangeText = {(text) => {
+                                    updateCharacter('medicine', text);
+                                    getCharacter()
+                                    route.params.onFSChange('medicine', text, true);
+                                    route.params.updateCharData()
+                                }}
+                            />
                         </View>
-                        <TextInput
-                            style = {styles.skillsValue}
-                            defaultValue = {String(charData["medicine"])}
-                            underlineColor="transparent"
-                            onChangeText = {(text) => {
-                                updateCharacter('medicine', text);
-                                getCharacter()
-                                route.params.onFSChange('medicine', text, true);
-                                route.params.updateCharData()
-                            }}
-                        />
-                    </View>
-                    <View style = {styles.skillsHeadingValueContainer}>
-                        <View style = {styles.skillsTitles}>
-                            <Text style = {styles.skillsTitleValue}>
-                                Nature (Int)
-                            </Text>
+                        <View style = {styles.skillsHeadingValueContainer}>
+                            <View style = {styles.skillsTitles}>
+                                <Text style = {styles.skillsTitleValue}>
+                                    Nature (Int)
+                                </Text>
+                            </View>
+                            <TextInput
+                                style = {styles.skillsValue}
+                                defaultValue = {String(charData["nature"])}
+                                underlineColor="transparent"
+                                onChangeText = {(text) => {
+                                    updateCharacter('nature', text);
+                                    getCharacter()
+                                    route.params.onFSChange('nature', text, true);
+                                    route.params.updateCharData()
+                                }}
+                            />
                         </View>
-                        <TextInput
-                            style = {styles.skillsValue}
-                            defaultValue = {String(charData["nature"])}
-                            underlineColor="transparent"
-                            onChangeText = {(text) => {
-                                updateCharacter('nature', text);
-                                getCharacter()
-                                route.params.onFSChange('nature', text, true);
-                                route.params.updateCharData()
-                            }}
-                        />
-                    </View>
-                    <View style = {styles.skillsHeadingValueContainer}>
-                        <View style = {styles.skillsTitles}>
-                            <Text style = {styles.skillsTitleValue}>
-                                Perception (Wis)
-                            </Text>
+                        <View style = {styles.skillsHeadingValueContainer}>
+                            <View style = {styles.skillsTitles}>
+                                <Text style = {styles.skillsTitleValue}>
+                                    Perception (Wis)
+                                </Text>
+                            </View>
+                            <TextInput
+                                style = {styles.skillsValue}
+                                defaultValue = {String(charData["perception"])}
+                                underlineColor="transparent"
+                                onChangeText = {(text) => {
+                                    updateCharacter('perception', text);
+                                    getCharacter()
+                                    route.params.onFSChange('perception', text, true);
+                                    route.params.updateCharData()
+                                }}
+                            />
                         </View>
-                        <TextInput
-                            style = {styles.skillsValue}
-                            defaultValue = {String(charData["perception"])}
-                            underlineColor="transparent"
-                            onChangeText = {(text) => {
-                                updateCharacter('perception', text);
-                                getCharacter()
-                                route.params.onFSChange('perception', text, true);
-                                route.params.updateCharData()
-                            }}
-                        />
-                    </View>
-                    <View style = {styles.skillsHeadingValueContainer}>
-                        <View style = {styles.skillsTitles}>
-                            <Text style = {styles.skillsTitleValue}>
-                                Performance (Cha)
-                            </Text>
+                        <View style = {styles.skillsHeadingValueContainer}>
+                            <View style = {styles.skillsTitles}>
+                                <Text style = {styles.skillsTitleValue}>
+                                    Performance (Cha)
+                                </Text>
+                            </View>
+                            <TextInput
+                                style = {styles.skillsValue}
+                                defaultValue = {String(charData["performance"])}
+                                underlineColor="transparent"
+                                onChangeText = {(text) => {
+                                    updateCharacter('performance', text);
+                                    getCharacter()
+                                    route.params.onFSChange('performance', text, true);
+                                    route.params.updateCharData()
+                                }}
+                            />
                         </View>
-                        <TextInput
-                            style = {styles.skillsValue}
-                            defaultValue = {String(charData["performance"])}
-                            underlineColor="transparent"
-                            onChangeText = {(text) => {
-                                updateCharacter('performance', text);
-                                getCharacter()
-                                route.params.onFSChange('performance', text, true);
-                                route.params.updateCharData()
-                            }}
-                        />
-                    </View>
-                    <View style = {styles.skillsHeadingValueContainer}>
-                        <View style = {styles.skillsTitles}>
-                            <Text style = {styles.skillsTitleValue}>
-                                Persuasion (Cha)
-                            </Text>
+                        <View style = {styles.skillsHeadingValueContainer}>
+                            <View style = {styles.skillsTitles}>
+                                <Text style = {styles.skillsTitleValue}>
+                                    Persuasion (Cha)
+                                </Text>
+                            </View>
+                            <TextInput
+                                style = {styles.skillsValue}
+                                defaultValue = {String(charData["persuasion"])}
+                                underlineColor="transparent"
+                                onChangeText = {(text) => {
+                                    updateCharacter('persuasion', text);
+                                    getCharacter()
+                                    route.params.onFSChange('persuasion', text, true);
+                                    route.params.updateCharData()
+                                }}
+                            />
                         </View>
-                        <TextInput
-                            style = {styles.skillsValue}
-                            defaultValue = {String(charData["persuasion"])}
-                            underlineColor="transparent"
-                            onChangeText = {(text) => {
-                                updateCharacter('persuasion', text);
-                                getCharacter()
-                                route.params.onFSChange('persuasion', text, true);
-                                route.params.updateCharData()
-                            }}
-                        />
-                    </View>
-                    <View style = {styles.skillsHeadingValueContainer}>
-                        <View style = {styles.skillsTitles}>
-                            <Text style = {styles.skillsTitleValue}>
-                                Religion (Int)
-                            </Text>
+                        <View style = {styles.skillsHeadingValueContainer}>
+                            <View style = {styles.skillsTitles}>
+                                <Text style = {styles.skillsTitleValue}>
+                                    Religion (Int)
+                                </Text>
+                            </View>
+                            <TextInput
+                                style = {styles.skillsValue}
+                                defaultValue = {String(charData["religion"])}
+                                underlineColor="transparent"
+                                onChangeText = {(text) => {
+                                    updateCharacter('religion', text);
+                                    getCharacter()
+                                    route.params.onFSChange('religion', text, true);
+                                    route.params.updateCharData()
+                                }}
+                            />
                         </View>
-                        <TextInput
-                            style = {styles.skillsValue}
-                            defaultValue = {String(charData["religion"])}
-                            underlineColor="transparent"
-                            onChangeText = {(text) => {
-                                updateCharacter('religion', text);
-                                getCharacter()
-                                route.params.onFSChange('religion', text, true);
-                                route.params.updateCharData()
-                            }}
-                        />
-                    </View>
-                    <View style = {styles.skillsHeadingValueContainer}>
-                        <View style = {styles.skillsTitles}>
-                            <Text style = {styles.skillsTitleValue}>
-                                Sleight of Hand (Dex)
-                            </Text>
+                        <View style = {styles.skillsHeadingValueContainer}>
+                            <View style = {styles.skillsTitles}>
+                                <Text style = {styles.skillsTitleValue}>
+                                    Sleight of Hand (Dex)
+                                </Text>
+                            </View>
+                            <TextInput
+                                style = {styles.skillsValue}
+                                underlineColor="transparent"
+                                defaultValue = {String(charData["sleight_of_hand"])}
+                                onChangeText = {(text) => {
+                                    updateCharacter('sleight_of_hand', text);
+                                    getCharacter()
+                                    route.params.onFSChange('sleight_of_hand', text, true);
+                                    route.params.updateCharData()
+                                }}
+                            />
                         </View>
-                        <TextInput
-                            style = {styles.skillsValue}
-                            underlineColor="transparent"
-                            defaultValue = {String(charData["sleight_of_hand"])}
-                            onChangeText = {(text) => {
-                                updateCharacter('sleight_of_hand', text);
-                                getCharacter()
-                                route.params.onFSChange('sleight_of_hand', text, true);
-                                route.params.updateCharData()
-                            }}
-                        />
-                    </View>
-                    <View style = {styles.skillsHeadingValueContainer}>
-                        <View style = {styles.skillsTitles}>
-                            <Text style = {styles.skillsTitleValue}>
-                                Stealth (Dex)
-                            </Text>
+                        <View style = {styles.skillsHeadingValueContainer}>
+                            <View style = {styles.skillsTitles}>
+                                <Text style = {styles.skillsTitleValue}>
+                                    Stealth (Dex)
+                                </Text>
+                            </View>
+                            <TextInput
+                                style = {styles.skillsValue}
+                                underlineColor="transparent"
+                                defaultValue = {String(charData["stealth"])}
+                                onChangeText = {(text) => {
+                                    updateCharacter("Stealth", text);
+                                    getCharacter()
+                                    route.params.onFSChange("Stealth", text, true);
+                                    route.params.updateCharData()
+                                }}
+                            />
                         </View>
-                        <TextInput
-                            style = {styles.skillsValue}
-                            underlineColor="transparent"
-                            defaultValue = {String(charData["stealth"])}
-                            onChangeText = {(text) => {
-                                updateCharacter("Stealth", text);
-                                getCharacter()
-                                route.params.onFSChange("Stealth", text, true);
-                                route.params.updateCharData()
-                            }}
-                        />
-                    </View>
-                    <View style = {styles.skillsHeadingValueContainer}>
-                        <View style = {styles.skillsTitles}>
-                            <Text style = {styles.skillsTitleValue}>
-                                Survival (Wis)
-                            </Text>
+                        <View style = {styles.skillsHeadingValueContainer}>
+                            <View style = {styles.skillsTitles}>
+                                <Text style = {styles.skillsTitleValue}>
+                                    Survival (Wis)
+                                </Text>
+                            </View>
+                            <TextInput
+                                style = {styles.skillsValue}
+                                underlineColor="transparent"
+                                defaultValue = {String(charData["survival"])}
+                                onChangeText = {(text) => {
+                                    updateCharacter("Survival", text);
+                                    getCharacter()
+                                    route.params.onFSChange("Survival", text, true);
+                                    route.params.updateCharData()
+                                }}
+                            />
                         </View>
-                        <TextInput
-                            style = {styles.skillsValue}
-                            underlineColor="transparent"
-                            defaultValue = {String(charData["survival"])}
-                            onChangeText = {(text) => {
-                                updateCharacter("Survival", text);
-                                getCharacter()
-                                route.params.onFSChange("Survival", text, true);
-                                route.params.updateCharData()
-                            }}
-                        />
                     </View>
-                </View>
                 </View>
             </View>
             <TextInput
@@ -1753,11 +1738,11 @@ const styles = StyleSheet.create({
         textAlign: 'center'
     },
     profAndLanguages: {
-        width: 360,
-        height: 450.4,
+        width: screenWidth * 0.2700675168792198,
+        height: screenHeight * 0.598936170212766,
         position: 'absolute',
-        top: 164,
-        left: 470,
+        top: screenHeight * 0.2180851063829787,
+        left: screenWidth * 0.3525881470367592,
         borderWidth: 1,
         backgroundColor: "#e8e8e8",
         borderTopRightRadius: 0,
@@ -1765,9 +1750,9 @@ const styles = StyleSheet.create({
     },
     profAndLanguagesHeading: {
         position: "absolute",
-        top: 169,
-        left: 470,
-        width: 360,
+        top: screenHeight * 0.2247340425531915,
+        left: screenWidth * 0.3525881470367592,
+        width: screenWidth * 0.2700675168792198,
         textAlign: "center",
         color: "#0038d4"
     },
@@ -1776,31 +1761,31 @@ const styles = StyleSheet.create({
     },
     skillsSection1: {
         flexDirection: 'column',
-        marginLeft: -9
+        marginLeft: screenWidth * -0.0067516879219805
     },
     skillsSection2: {
         flexDirection: 'column',
-        marginLeft: -10
+        marginLeft: screenWidth * -0.0075018754688672
     },
     skillsSubHeadingContainer: {
         flexDirection: 'row',
-        marginTop: 30,
-        width: 300,
-        marginLeft: 158,
+        marginTop: screenHeight * 0.0398936170212766,
+        width: screenWidth * 0.2250562640660165,
+        marginLeft: screenWidth * 0.118529632408102,
         justifyContent: 'center'
     },
     skillsSubHeading: {
         fontSize: 14,
-        marginRight: 75
+        marginRight: screenWidth * 0.0562640660165041
     },
     bonusSubHeading: {
-        marginRight: 85
+        marginRight: screenWidth * 0.0637659414853713
     },
     skillsTitles: {
         borderWidth: 1,
-        height: 28,
+        height: screenHeight * 0.0372340425531915,
         paddingTop: 3,
-        width: 156,
+        width: screenWidth * 0.1170292573143286,
         backgroundColor: "#c1c1c1"
     },
     skillsTitleValue: {
@@ -1809,25 +1794,25 @@ const styles = StyleSheet.create({
     },
     skillsValue: {
         borderWidth: 1,
-        height: 26,
-        width: 70,
+        height: screenHeight * 0.0525131282820705,
+        width: screenWidth * 0.0525131282820705,
         textAlign: 'center',
         backgroundColor: "#ffffff",
         borderTopLeftRadius: 0,
         borderTopRightRadius: 0,
-        marginLeft: -2
+        marginLeft: screenWidth * -0.0015003750937734
     },
     skillsHeadingValueContainer: {
         flexDirection: 'row',
-        marginTop: 6,
-        marginLeft: 19,
+        marginTop: screenHeight * 0.0079787234042553,
+        marginLeft: screenWidth * 0.0142535633908477,
     },
     STTitles: {
-        marginBottom: 15,
+        marginBottom: screenHeight * 0.0199468085106383,
         borderWidth: 1,
-        height: 42,
-        paddingTop: 5,
-        width: 130,
+        height: screenHeight * 0.0558510638297872,
+        paddingTop: screenHeight * 0.0066489361702128,
+        width: screenWidth * 0.0975243810952738,
         backgroundColor: "#c1c1c1"
     },
     STTitleValue: {
@@ -1835,56 +1820,56 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     STValue: {
-        marginBottom: 15,
+        marginBottom: screenHeight * 0.0199468085106383,
         borderWidth: 1,
-        height: 40,
-        width: 70,
+        height: screenHeight * 0.0531914893617021,
+        width: screenWidth * 0.0525131282820705,
         textAlign: 'center',
         backgroundColor: "#ffffff",
         borderTopLeftRadius: 0,
         borderTopRightRadius: 0,
-        marginLeft: -2
+        marginLeft: screenWidth * -0.0015003750937734
     },
     STHeadingValueContainer: {
         flexDirection: 'row',
-        marginTop: 6,
-        marginLeft: 19,
+        marginTop: screenHeight * 0.0079787234042553,
+        marginLeft: screenWidth * 0.0142535633908477,
     },
     STValuesContainer: {
         flexDirection: 'column',
-        marginTop: 40,
+        marginTop: screenHeight * 0.0531914893617021,
     },
     STContainer: {
         backgroundColor: "#e8e8e8",
-        width: 240,
-        height: 452.5,
+        width: screenWidth * 0.1800450112528132,
+        height: screenHeight * 0.6017287234042553,
         flexDirection: 'column',
         borderWidth: 1,
         position: 'absolute',
-        top: 164,
-        left: 220
+        top: screenHeight * 0.2180851063829787,
+        left: screenWidth * 0.1650412603150788
     },
     skillsContainer: {
         backgroundColor: "#e8e8e8",
-        width: 484,
-        height: 372.5,
+        width: screenWidth * 0.3630907726931733,
+        height: screenHeight * 0.4953457446808511,
         flexDirection: 'column',
         borderWidth: 1,
         position: 'absolute',
-        top: 244,
-        left: 835
+        top: screenHeight * 0.324468085106383,
+        left: screenWidth * 0.6264066016504126
     },
     skillsHeading: {
         position: "absolute",
-        top: 5,
-        width: 484,
+        top: screenHeight * 0.0066489361702128,
+        width: screenWidth * 0.3630907726931733,
         textAlign: "center",
         color: "#0038d4"
     },
     STHeading: {
         position: "absolute",
-        top: 5,
-        width: 235,
+        top: screenHeight * 0.0066489361702128,
+        width: screenWidth * 0.1762940735183796,
         textAlign: "center",
         color: "#0038d4"
     },
@@ -1892,43 +1877,43 @@ const styles = StyleSheet.create({
         flexDirection: 'row'
     },
     circleContainer: {
-        marginLeft: 8,
+        marginLeft: screenWidth * 0.0060015003750938,
         flexDirection: 'row'
     },
     line: {
-        width: 8.25,
-        height: 1,
-        marginLeft: -1,
-        marginTop: 13,
+        width: screenWidth * 0.0061890472618155,
+        height: screenHeight * 0.0013297872340426,
+        marginLeft: screenWidth * -0.0007501875468867217,
+        marginTop: screenHeight * 0.0172872340425532,
         borderBottomWidth: 1,
     },
     circlesContainer: {
         flexDirection: 'row',
-        marginTop: 26,
-        marginLeft: 1.5,
-        height:30,
-        width: 120
+        marginTop: screenHeight * 0.0345744680851064,
+        marginLeft: screenWidth * 0.0011252813203301,
+        height: screenHeight * 0.0398936170212766,
+        width: screenWidth * 0.0900225056264066
     },
     deathSavesContainer: {
         flexDirection: 'column',
-        width: 116,
-        height: 149,
-        marginLeft: 9,
+        width: screenWidth * 0.0870217554388597,
+        height: screenHeight * 0.1981382978723404,
+        marginLeft: screenWidth * 0.0067516879219805,
         backgroundColor: "#e8e8e8",
         borderWidth: 1,
         borderRadius: 0
     },
     deathSavesSubHeading: {
         position: "absolute",
-        width: 116,
-        top: 4,
+        width: screenWidth * 0.0870217554388597,
+        top: screenHeight * 0.0053191489361702,
         textAlign: "center",
         color: "#000000",
         fontSize: 11
     },
     deathSavesHeading: {
         position: "absolute",
-        top: 5,
+        top: screenHeight * 0.0066489361702128,
         width: 116,
         textAlign: "center",
         color: "#0038d4"
@@ -1938,28 +1923,28 @@ const styles = StyleSheet.create({
     },
     passiveSkillsContainer: {
         flexDirection: 'column',
-        width: 235,
-        height: 149.5,
-        marginLeft: 5,
+        width: screenWidth * 0.1762940735183796,
+        height: screenHeight * 0.1988031914893617,
+        marginLeft: screenWidth * 0.0037509377344336,
         borderRadius: 8,
         backgroundColor: "#e8e8e8",
         borderWidth: 1
     },
     passiveSkills: {
-        marginTop: 30
+        marginTop: screenHeight * 0.0398936170212766
     },
     passiveSkillsHeading: {
         position: "absolute",
-        top: 5,
-        width: 235,
+        top: screenHeight * 0.0066489361702128,
+        width: screenWidth * 0.1762500044062501,
         textAlign: "center",
         color: "#0038d4"
     },
     passiveInputs: {
-        marginBottom: 10,
-        marginLeft: 176,
-        width: 50,
-        height: 27,
+        marginBottom: screenHeight * 0.0132978723404255,
+        marginLeft: screenWidth * 0.13200000033,
+        width: screenWidth * 0.03750000009375,
+        height: screenHeight * 0.0359042553191489,
         textAlign: "center",
         fontSize: 10,
         borderWidth: 1,
@@ -1969,83 +1954,83 @@ const styles = StyleSheet.create({
     },
     passiveInputsHeading: {
         position: "absolute",
-        left: 6,
-        width: 173,
-        height: 29,
+        left: screenWidth * 0.0045000001125,
+        width: screenWidth * 0.129750000324375,
+        height: screenHeight * 0.038563829787234,
         textAlign: "center",
-        paddingTop: 5,
+        paddingTop: screenHeight * 0.0066489361702128,
         backgroundColor: "#c1c1c1",
         color: "#000000",
         fontSize: 11,
         borderWidth: 1
     },
     nameRaceClass: {
-        marginBottom: 10,
-        marginLeft: 10,
-        width: 235,
-        height: 47,
+        marginBottom: screenHeight * 0.0132978723404255,
+        marginLeft: screenWidth * 0.00750000001875,
+        width: screenWidth * 0.1762500044062501,
+        height: screenHeight * 0.0625,
         textAlign: "center",
-        paddingTop: 20,
+        paddingTop: screenHeight * 0.0265957446808511,
         backgroundColor: "#e8e8e8",
         borderWidth: 1,
         borderTopRightRadius: 0,
         borderTopLeftRadius: 0
     },
     secondRowFirstHalf: {
-        height: 100,
+        height: screenHeight * 0.450000001125,
         flexDirection: "row",
-        width: 600,
+        width: screenWidth * 0.450000001125,
         position: 'absolute',
-        top: 87,
-        left: 210
+        top: screenHeight * 0.1156914893617021,
+        left: screenWidth * 0.15750000039375
     },
     secondRowSecondHalf: {
-        height: 200,
+        height: screenHeight * 0.265957446808511,
         flexDirection: "row",
-        width: 1000,
+        width: screenWidth * 0.750000001875,
         position: 'absolute',
-        top: 87,
-        left: 830
+        top: screenHeight * 0.1156914893617021,
+        left: screenWidth * 0.62250000155625
     },
     nameRaceClassHeading: {
         position: "absolute",
-        left: 10,
-        top: 5,
-        width: 235,
+        left: screenWidth * 0.00750000001875,
+        top: screenHeight * 0.0066489361702128,
+        width: screenWidth * 0.1762500000440625,
         textAlign: "center",
         color: "#0038d4"
     },
     levelCurrentHPHitDice: {
-        marginBottom: 10,
-        marginLeft: 10,
-        width: 115,
-        height: 47,
+        marginBottom: screenHeight * 0.0132978723404255,
+        marginLeft: screenWidth * 0.00750000001875,
+        width: screenWidth * 0.086250000215625,
+        height: screenHeight * 0.0625,
         textAlign: "center",
-        paddingTop: 20,
+        paddingTop: screenHeight * 0.0265957446808511,
         backgroundColor: "#e8e8e8",
         borderWidth: 1,
         borderTopRightRadius: 0,
         borderTopLeftRadius: 0
     },
     maxHPInputs: {
-        marginBottom: 10,
-        marginLeft: 10,
-        width: 115,
-        height: 47,
+        marginBottom: screenHeight * 0.0132978723404255,
+        marginLeft: screenWidth * 0.00750000001875,
+        width: screenWidth * 0.086250000215625,
+        height: screenHeight * 0.0625,
         textAlign: "center",
-        paddingTop: 20,
+        paddingTop: screenHeight * 0.0265957446808511,
         backgroundColor: "#e8e8e8",
         borderWidth: 1,
         borderTopRightRadius: 0,
         borderTopLeftRadius: 0
     },
     tempHPInputs: {
-        marginBottom: 10,
-        marginLeft: 10,
-        width: 115,
-        height: 47,
+        marginBottom: screenHeight * 0.0132978723404255,
+        marginLeft: screenWidth * 0.00750000001875,
+        width: screenWidth * 0.086250000215625,
+        height: screenHeight * 0.0265957446808511,
         textAlign: "center",
-        paddingTop: 20,
+        paddingTop: screenHeight * 0.0265957446808511,
         backgroundColor: "#e8e8e8",
         borderWidth: 1,
         borderTopRightRadius: 0,
@@ -2053,24 +2038,24 @@ const styles = StyleSheet.create({
     },
     levelCurrentHPHitDiceHeading: {
         position: "absolute",
-        left: 10,
-        top: 5,
-        width: 115,
+        left: screenWidth * 0.0075000000001875,
+        top: screenHeight * 0.0066489361702128,
+        width: screenWidth * 0.086250000215625,
         textAlign: "center",
         color: "#0038d4"
     },
     topRow: {
         flexDirection: "row",
-        width: 1000,
-        height: 67,
+        width: screenWidth * 0.7500000001875,
+        height: screenHeight * 0.0890957446808511,
         position: 'absolute',
-        top: 10,
-        left: 210
+        top: screenHeight * 0.0132978723404255,
+        left: screenWidth * 0.157500000039375
     },
     textInputHeading: {
         position: "absolute",
         left: 10,
-        top: 5,
+        top: screenHeight * 0.0066489361702128,
         width: 95,
         textAlign: "center",
         color: "#0038d4",
@@ -2078,30 +2063,30 @@ const styles = StyleSheet.create({
     profInputHeading: {
         position: "absolute",
         left: 10,
-        top: 5,
+        top: screenHeight * 0.0066489361702128,
         width: 200,
         textAlign: "center",
         color: "#0038d4"
     },
     charImage: {
-        width: 200,
-        height: 200,
-        marginTop: 10,
-        marginLeft: 10,
-        marginBottom: 10
+        width: screenWidth * 0.15000000000000,
+        height: screenHeight * 0.2659574468085106,
+        marginTop: screenHeight * 0.0132978723404255,
+        marginLeft: screenWidth * 0.007500000001875,
+        marginBottom: screenHeight * 0.0132978723404255
     },
     imageAndAbilitiesContainer: {
         flexDirection: "column",
-        height: 1000,
-        width: 250,
+        height: screenHeight * 1.329787234042553,
+        width: screenWidth * 0.187500000046875,
     },
     abilityScoresStyle: {
-        marginBottom: 10,
-        marginLeft: 10,
-        width: 95,
-        height: 62,
+        marginBottom: screenHeight * 0.0132978723404255,
+        marginLeft: screenWidth * 0.007500000001875,
+        width: screenWidth * 0.0712500000178125,
+        height: screenHeight * 0.0824468085106383,
         textAlign: "center",
-        paddingTop: 15,
+        paddingTop: screenHeight * 0.0199468085106383,
         backgroundColor: "#e8e8e8",
         borderWidth: 1,
         borderTopRightRadius: 0,
@@ -2117,20 +2102,20 @@ const styles = StyleSheet.create({
         flexDirection: "column"
     },
     proficiencyStyle: {
-        marginBottom: 10,
-        marginLeft: 10,
-        width: 200,
-        height: 62,
+        marginBottom: screenHeight * 0.0132978723404255,
+        marginLeft: screenWidth * 0.007500000001875,
+        width: screenWidth * 0.15000000000000,
+        height: screenHeight * 0.0824468085106383,
         textAlign: "center",
-        paddingTop: 15,
+        paddingTop: screenHeight * 0.0199468085106383,
         backgroundColor: "#e8e8e8",
         borderWidth: 1,
         borderTopRightRadius: 0,
         borderTopLeftRadius: 0
     },
     changeImageStyle: {
-        marginBottom: 10,
-        marginLeft: 10,
-        width: 200
+        marginBottom: screenHeight * 0.0132978723404255,
+        marginLeft: screenWidth * 0.007500000001875,
+        width: screenWidth * 0.15000000000000
     }
 })
