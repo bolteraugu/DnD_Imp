@@ -1,13 +1,24 @@
 import {Button, Text, TextInput} from "react-native-paper";
 import React, {useEffect, useState} from "react"
 import {createMaterialTopTabNavigator} from "@react-navigation/material-top-tabs";
-import {View, StyleSheet, TextInput as NativeTextInput, ScrollView, FlatList, KeyboardAvoidingView} from "react-native";
+import {
+    View,
+    StyleSheet,
+    TextInput as NativeTextInput,
+    ScrollView,
+    FlatList,
+    KeyboardAvoidingView,
+    Dimensions
+} from "react-native";
 import colors from "../utils/colors";
 import CharacterCard from "../components/CharacterCard";
 import Spinner from "../components/Spinner";
 import Weapon from "../components/Weapon";
 import Armor from "../components/Armor";
 import Possession from "../components/Possession";
+
+global.screenWidth = Dimensions.get("window").width;
+global.screenHeight = Dimensions.get("window").height;
 
 export default function InventoryScreen({route, navigation}) {
     const [charData, setCharData] = useState(global.charaData);
@@ -264,7 +275,6 @@ export default function InventoryScreen({route, navigation}) {
                         <FlatList
                             data={weapons}
                             style = {styles.list}
-                            removeClippedSubviews={true}
                             keyExtractor={(item) => item._id}
                             renderItem={({ item }) => (
                                 <Weapon
@@ -294,7 +304,6 @@ export default function InventoryScreen({route, navigation}) {
                         <FlatList
                             data={armor}
                             style = {styles.list}
-                            removeClippedSubviews={true}
                             keyExtractor={(item) => item._id}
                             renderItem={({ item }) => (
                                 <Armor
@@ -324,7 +333,6 @@ export default function InventoryScreen({route, navigation}) {
                         <FlatList
                             data={possessions}
                             style = {styles.list}
-                            removeClippedSubviews={true}
                             keyExtractor={(item) => item._id}
                             renderItem={({ item }) => (
                                 <Possession

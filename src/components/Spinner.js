@@ -1,8 +1,11 @@
 import React from 'react';
-import {ActivityIndicator, StyleSheet} from 'react-native';
+import {ActivityIndicator, Dimensions, StyleSheet} from 'react-native';
 
 import SafeView from './SafeView';
 import Colors from '../utils/colors';
+
+global.screenWidth = Dimensions.get("window").width;
+global.screenHeight = Dimensions.get("window").height;
 
 export default function Spinner() {
   return (

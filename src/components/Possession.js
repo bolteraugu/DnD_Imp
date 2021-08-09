@@ -1,7 +1,10 @@
 import {IconButton, TextInput} from "react-native-paper";
 import React from "react";
 import {Surface} from "react-native-paper";
-import {StyleSheet, Text, TextInput as NativeTextInput, View} from "react-native";
+import {Dimensions, StyleSheet, Text, TextInput as NativeTextInput, View} from "react-native";
+
+global.screenWidth = Dimensions.get("window").width;
+global.screenHeight = Dimensions.get("window").height;
 
 export default function Possession({
                                    possession,

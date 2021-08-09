@@ -1,7 +1,7 @@
 import React, {createContext, useState} from 'react';
 import firebase from 'firebase';
 import 'firebase/auth';
-import {Alert} from 'react-native';
+import {Alert, Dimensions} from 'react-native';
 
 /**
  * This provider is created
@@ -9,6 +9,9 @@ import {Alert} from 'react-native';
  */
 
 export const AuthUserContext = createContext({});
+
+global.screenWidth = Dimensions.get("window").width;
+global.screenHeight = Dimensions.get("window").height;
 
 export const AuthUserProvider = ({children}) => {
   const [user, setUser] = useState(null);

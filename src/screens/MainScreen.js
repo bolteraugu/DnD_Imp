@@ -1,6 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react'; //Will need react
 import {Image, StyleSheet, TouchableOpacity, View, TextInput as NativeTextInput} from 'react-native';
-import ModalDropdown from 'react-native-modal-dropdown';
 import firebase from "firebase";
 import {AuthUserContext} from "../navigation/AuthUserProvider";
 import {TextInput, Text, Button} from "react-native-paper"; //Probably will need text...
@@ -9,7 +8,11 @@ import Spinner from "../components/Spinner";
 
 export default function MainScreen({route, navigation}) {
     const charRef = route.params.charRef;
-    const [charData, setCharData] = useState(route.params.charData);
+    // const [charData, setCharData] = useState(route.params.charData);
+    const [strength, setStrength] = useState("");
+    const [constitution, setConstitution] = useState([]);
+    const [name, setName] = useState("");
+    const [charData, setCharData] = useState([]);
     const [loading, setLoading] = useState(true);
     global.charaRef = charRef;
     global.charaData = charData;
@@ -23,14 +26,19 @@ export default function MainScreen({route, navigation}) {
             setLoading(false);
         }
         return unsubscribe;
-    }, [navigation])
+    }, [navigation, charData])
 
     if (loading) {
         return <Spinner />;
     }
 
     function getCharacter() {
+        // charRef.onSnapshot( (snapshot) => {
+        //     setCharData(snapshot.data())
+        // });
         charRef.onSnapshot( (snapshot) => {
+            setName(snapshot.get('name'))
+            setStrength(String(snapshot.get('strength')))
             setCharData(snapshot.data())
         });
         global.charaData = charData;
@@ -567,12 +575,15 @@ export default function MainScreen({route, navigation}) {
                                 style={styles.abilityScoresStyle}
                                 keyboardType="number-pad"
                                 underlineColor="transparent"
-                                defaultValue={String(charData['strength'])}
+                                value={strength}
                                 onChangeText={(text) => {
+                                    setStrength(text);
+                                    //setCharData(character);
                                     updateCharacter('strength', text);
-                                    getCharacter()
-                                    route.params.onFSChange('strength', text, true);
-                                    route.params.updateCharData()
+                                    //getCharacter();
+                                    route.params.onFSChange('strength', text, false);
+                                    route.params.updateCharData();
+                                    console.log(name);
                                 }}
                             />
                             <Text
@@ -704,14 +715,17 @@ export default function MainScreen({route, navigation}) {
                 <View>
                     <TextInput
                         style={styles.nameRaceClass}
-                        defaultValue={charData['name']}
+                        value={name}
                         underlineColor="transparent"
                         placeholder={"Enter name..."}
                         onChangeText={(text) => {
+                            setName(text);
+                            //setCharData(character);
                             updateCharacter('name', text);
-                            getCharacter()
+                            //getCharacter();
                             route.params.onFSChange('name', text, false);
-                            route.params.updateCharData()
+                            route.params.updateCharData();
+                            console.log(name);
                         }}
                     />
                     <Text

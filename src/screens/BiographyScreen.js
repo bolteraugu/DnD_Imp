@@ -1,8 +1,11 @@
 import {Text, TextInput} from "react-native-paper";
 import React, {useEffect, useState} from "react"
 import {createMaterialTopTabNavigator} from "@react-navigation/material-top-tabs";
-import {View, StyleSheet, TextInput as NativeTextInput} from "react-native";
+import {View, StyleSheet, TextInput as NativeTextInput, Dimensions} from "react-native";
 import colors from "../utils/colors";
+
+global.screenWidth = Dimensions.get("window").width;
+global.screenHeight = Dimensions.get("window").height;
 
 export default function BiographyScreen({route}) {
     const [charData, setCharData] = useState(global.charaData);

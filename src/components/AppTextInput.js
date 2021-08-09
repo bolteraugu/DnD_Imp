@@ -1,8 +1,11 @@
 import React from 'react';
-import {View, StyleSheet, TextInput, TouchableOpacity} from 'react-native';
+import {View, StyleSheet, TextInput, TouchableOpacity, Dimensions} from 'react-native';
 import {MaterialCommunityIcons} from '@expo/vector-icons';
 
 import Colors from '../utils/colors';
+
+global.screenWidth = Dimensions.get("window").width;
+global.screenHeight = Dimensions.get("window").height;
 
 export default function AppTextInput({
   leftIcon,

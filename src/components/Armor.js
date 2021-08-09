@@ -1,8 +1,11 @@
 import {IconButton, TextInput} from "react-native-paper";
 import React from "react";
 import {Surface} from "react-native-paper";
-import {StyleSheet, Text, View} from "react-native";
+import {Dimensions, StyleSheet, Text, View} from "react-native";
 import {Picker} from "@react-native-community/picker";
+
+global.screenWidth = Dimensions.get("window").width;
+global.screenHeight = Dimensions.get("window").height;
 
 export default function Armor({
                                    armor,

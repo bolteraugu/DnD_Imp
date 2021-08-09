@@ -1,7 +1,10 @@
-import {StyleSheet, Text, TextInput as NativeTextInput, View} from "react-native";
+import {Dimensions, StyleSheet, Text, TextInput as NativeTextInput, View} from "react-native";
 import {TextInput, Button} from "react-native-paper";
 import React, {useState} from "react";
 import {Picker} from "@react-native-community/picker";
+
+global.screenWidth = Dimensions.get("window").width;
+global.screenHeight = Dimensions.get("window").height;
 
 export default function AddSpellScreen({navigation}) {
     const [name, setName] = useState("");

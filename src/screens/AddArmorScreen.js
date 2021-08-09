@@ -1,7 +1,10 @@
-import {StyleSheet, Text, View} from "react-native";
+import {Dimensions, StyleSheet, Text, View} from "react-native";
 import {Picker} from '@react-native-community/picker'
 import {TextInput, Button} from "react-native-paper";
 import React, {useState} from "react";
+
+global.screenWidth = Dimensions.get("window").width;
+global.screenHeight = Dimensions.get("window").height;
 
 export default function AddArmorScreen({navigation}) {
     const [name, setName] = useState("");
@@ -267,7 +270,8 @@ const styles = StyleSheet.create({
         width: 155,
         height: 50,
         flex: 1,
-        color: "#787878"
+        color: "#787878",
+        backgroundColor: "#e0e0de",
     },
     addButton: {
         width: "17%",

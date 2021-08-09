@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet} from 'react-native';
+import {Dimensions, StyleSheet} from 'react-native';
 import {Card, Paragraph, Button} from 'react-native-paper';
 
 export default function NoteCard({title, content}) {
@@ -16,6 +16,9 @@ export default function NoteCard({title, content}) {
     </Card>
   );
 }
+
+global.screenWidth = Dimensions.get("window").width;
+global.screenHeight = Dimensions.get("window").height;
 
 const styles = StyleSheet.create({
   card: {

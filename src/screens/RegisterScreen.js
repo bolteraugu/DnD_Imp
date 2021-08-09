@@ -1,8 +1,11 @@
 import React, {useState, useContext} from 'react'; //Getting the ability to get state and context
-import {View, StyleSheet} from 'react-native'; //Getting view component and style sheet component from react native
+import {View, StyleSheet, Dimensions} from 'react-native'; //Getting view component and style sheet component from react native
 import {Title, Text, TextInput, Button, IconButton} from 'react-native-paper'; //Getting title, text input, button and icon button from react native paper (since this is the library being followed)
 import {AuthUserContext} from '../navigation/AuthUserProvider'; //Getting AuthUserContext from AuthUserProvider
 import colorScheme from '../utils/colors.js';
+
+global.screenWidth = Dimensions.get("window").width;
+global.screenHeight = Dimensions.get("window").height;
 
 //Gets the navigation prop since the sign upscreen is StackScreen part of the stack navigator, the two props passed to any stackscreen is navigation and route.
 export default function SignupScreen({navigation}) {

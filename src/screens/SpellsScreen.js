@@ -1,10 +1,13 @@
 import {useEffect, useState} from "react";
 import React from "react"
-import {FlatList, KeyboardAvoidingView, ScrollView, StyleSheet, View} from "react-native"
+import {Dimensions, FlatList, KeyboardAvoidingView, ScrollView, StyleSheet, View} from "react-native"
 import {Button, Text, TextInput} from "react-native-paper";
 import Weapon from "../components/Weapon";
 import Spinner from "../components/Spinner";
 import Spell from "../components/Spell";
+
+global.screenWidth = Dimensions.get("window").width;
+global.screenHeight = Dimensions.get("window").height;
 
 export default function SpellsScreen({route, navigation}) {
     const [charData, setCharData] = useState(global.charaData);

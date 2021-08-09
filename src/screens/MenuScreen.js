@@ -1,5 +1,5 @@
 import React, {useState, useContext, useEffect} from 'react';
-import {StyleSheet, FlatList, View} from 'react-native';
+import {StyleSheet, FlatList, View, Dimensions} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 import {AuthUserContext} from '../navigation/AuthUserProvider';
 import {
@@ -16,6 +16,9 @@ import firebase from 'firebase/app';
 import 'firebase/firestore';
 import Spinner from '../components/Spinner';
 import Colors from '../utils/colors';
+
+global.screenWidth = Dimensions.get("window").width;
+global.screenHeight = Dimensions.get("window").height;
 
 export default function MenuScreen({navigation}) {
   const {user} = useContext(AuthUserContext);

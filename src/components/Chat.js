@@ -1,7 +1,7 @@
 import React, {useState, useEffect, useContext} from 'react';
 import DropDownPicker from 'react-native-dropdown-picker';
 import {AuthUserContext} from '../navigation/AuthUserProvider';
-import {ActivityIndicator, StyleSheet, View, Platform} from 'react-native';
+import {ActivityIndicator, StyleSheet, View, Platform, Dimensions} from 'react-native';
 import {
   IconButton,
   Button,
@@ -13,6 +13,9 @@ import {
 import {GiftedChat, Bubble, Send} from 'react-native-gifted-chat';
 import firebase from 'firebase';
 import 'firebase/firestore';
+
+global.screenWidth = Dimensions.get("window").width;
+global.screenHeight = Dimensions.get("window").height;
 
 export default function Chat({groupRef}) {
   useEffect(() => {

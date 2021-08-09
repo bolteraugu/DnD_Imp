@@ -1,7 +1,10 @@
 import React from 'react';
-import {StyleSheet, Text, TouchableOpacity} from 'react-native';
+import {Dimensions, StyleSheet, Text, TouchableOpacity} from 'react-native';
 
 import Colors from '../utils/colors';
+
+global.screenWidth = Dimensions.get("window").width;
+global.screenHeight = Dimensions.get("window").height;
 
 export default function AppButton({title, onPress, color = 'primary'}) {
   return (

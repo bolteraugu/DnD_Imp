@@ -1,6 +1,10 @@
 import {DefaultTheme} from '@react-navigation/native';
 
 import Colors from '../utils/colors';
+import {Dimensions} from "react-native";
+
+global.screenWidth = Dimensions.get("window").width;
+global.screenHeight = Dimensions.get("window").height;
 
 const navigationTheme = {
   ...DefaultTheme,

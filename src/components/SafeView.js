@@ -1,6 +1,9 @@
 import React from 'react';
-import {View, StyleSheet, SafeAreaView} from 'react-native';
+import {View, StyleSheet, SafeAreaView, Dimensions} from 'react-native';
 import Constants from 'expo-constants';
+
+global.screenWidth = Dimensions.get("window").width;
+global.screenHeight = Dimensions.get("window").height;
 
 export default function SafeView({children, style}) {
   return (

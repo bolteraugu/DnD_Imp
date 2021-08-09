@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
-import {View} from 'react-native';
+import {Dimensions, View} from 'react-native';
 import firebase from 'firebase';
 import 'firebase/firestore';
 import MenuScreen from '../screens/MenuScreen';
@@ -20,6 +20,9 @@ import AddArmorScreen from "../screens/AddArmorScreen"
 import AddPossessionScreen from "../screens/AddPossessionScreen"
 import AddSpellScreen from "../screens/AddSpellScreen"
 const Stack = createStackNavigator();
+
+global.screenWidth = Dimensions.get("window").width;
+global.screenHeight = Dimensions.get("window").height;
 
 export default function AppStack() {
   return (

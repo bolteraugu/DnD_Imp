@@ -1,7 +1,10 @@
 import {Button, IconButton, Title, TextInput, Text} from 'react-native-paper';
-import {StyleSheet, View} from 'react-native';
+import {Dimensions, StyleSheet, View} from 'react-native';
 import React, {useContext, useState} from 'react';
 import {AuthUserContext} from '../navigation/AuthUserProvider';
+
+global.screenWidth = Dimensions.get("window").width;
+global.screenHeight = Dimensions.get("window").height;
 
 export default function ForgotPasswordScreen({navigation}) {
     const {forgotPassword} = useContext(AuthUserContext);

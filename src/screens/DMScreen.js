@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useContext} from 'react';
-import {FlatList, ScrollView, StyleSheet, View} from 'react-native';
+import {Dimensions, FlatList, ScrollView, StyleSheet, View} from 'react-native';
 import {Button, Dialog, Portal, Provider, TextInput} from 'react-native-paper';
 import CharacterCard from '../components/CharacterCard';
 import Chat from '../components/Chat';
@@ -7,10 +7,12 @@ import CharacterTemplate from '../utils/character_template.json';
 import Spinner from '../components/Spinner';
 import firebase from 'firebase';
 import 'firebase/firestore';
-import ModalDropdown from "react-native-modal-dropdown";
 import {AuthUserContext} from "../navigation/AuthUserProvider";
 import { KeyboardAvoidingView } from 'react-native';
 import {useFocusEffect} from "@react-navigation/native";
+
+global.screenWidth = Dimensions.get("window").width;
+global.screenHeight = Dimensions.get("window").height;
 
 export default function DMScreen({route, navigation}) {
   const {group} = route.params;

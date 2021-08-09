@@ -1,10 +1,13 @@
 import React, {useState, useContext} from 'react';
-import {View, StyleSheet} from 'react-native';
+import {View, StyleSheet, Dimensions} from 'react-native';
 import {Title, TextInput, Button, Text, IconButton} from 'react-native-paper';
 import {TouchableWithoutFeedback} from 'react-native';
 import {AuthUserContext} from '../navigation/AuthUserProvider';
 import {Checkbox} from 'react-native-paper';
 import {Linking} from 'react-native'
+
+global.screenWidth = Dimensions.get("window").width;
+global.screenHeight = Dimensions.get("window").height;
 
 export default function LoginScreen({navigation}) {
   const [email, setEmail] = useState('');
@@ -47,7 +50,7 @@ export default function LoginScreen({navigation}) {
       </View>
       <View style={styles.checkboxContainer}>
         <Text style={styles.checkboxText}>Remember Me</Text>
-        <Checkbox
+        <Checkbox.Android
           status={rememberMe ? 'checked' : 'unchecked'}
           onPress={() => {
             setRememberMe(!rememberMe);

@@ -1,6 +1,9 @@
-import {StyleSheet, Text, View} from "react-native";
+import {Dimensions, StyleSheet, Text, View} from "react-native";
 import {TextInput, Button} from "react-native-paper";
 import React, {useState} from "react";
+
+global.screenWidth = Dimensions.get("window").width;
+global.screenHeight = Dimensions.get("window").height;
 
 export default function AddWeaponScreen({navigation}) {
     const [name, setName] = useState("");

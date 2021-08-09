@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react'; //If I need revision on what u
 import NoteCard from '../components/NoteCard'; //NoteCard is essentially represents a note after it has been created
 import colors from '../utils/colors'; //Getting colors we are using for the app
 import Spinner from '../components/Spinner'; //Spinner icon that shows
-import {StyleSheet, View, FlatList} from 'react-native'; //FlatList for viewing things in a list, View and Stylesheet we know too
+import {StyleSheet, View, FlatList, Dimensions} from 'react-native'; //FlatList for viewing things in a list, View and Stylesheet we know too
 //Importing everything we need from react native paper. FAB stands for floating action button (represents the primary action in the screen). Portal is for rendering a component at
 //a different place in the parent (component) tree.
 import {
@@ -13,6 +13,9 @@ import {
     FAB,
     Provider,
 } from 'react-native-paper';
+
+global.screenWidth = Dimensions.get("window").width;
+global.screenHeight = Dimensions.get("window").height;
 
 export default function CharacterSheetScreen({route}) {
     const [visible, setVisible] = React.useState(false); //For whether the pop-up will be visible

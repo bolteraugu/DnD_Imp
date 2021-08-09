@@ -1,11 +1,14 @@
 import React, {useContext, useEffect, useRef, useState} from 'react';
-import {Image, StyleSheet, View} from 'react-native';
+import {Image, StyleSheet, View, Dimensions} from 'react-native';
 import {IconButton, Surface, TextInput, Text, Dialog, Portal, Button, Provider} from 'react-native-paper';
 import 'firebase/firestore';
 import firebase from 'firebase';
 import 'firebase/auth';
 // import ModalDropdown from "react-native-modal-dropdown";
 // import {AuthUserContext} from "../navigation/AuthUserProvider";
+
+global.screenWidth = Dimensions.get("window").width;
+global.screenHeight = Dimensions.get("window").height;
 
 export default function CharacterCard({
                                           character, index,
@@ -82,6 +85,8 @@ export default function CharacterCard({
                                 onChange(index, 'name', text, false);
                                 updateCharacter();
                                 getCharacter()
+                                console.log(screenWidth);
+                                console.log(screenHeight);
                             }
                             }
                         />
@@ -390,14 +395,15 @@ export default function CharacterCard({
 
 const styles = StyleSheet.create({
     charImage: {
-        width: 100,
-        height: 100,
+        width: global.screenWidth * 0.0750187546886722,
+        height: global.screenWidth * 0.0750187546886722,
         position: 'absolute',
-        left: 755,
-        top:10
+        left: global.screenWidth * 0.56639,
+        top: global.screenHeight * 0.0132978723404255,
     },
     levelContainer: {
-        width: 110,
+        width: global.screenWidth * 0.082521,
+        height: 63,
         margin: 2
     },
     chevDown: {
@@ -411,7 +417,6 @@ const styles = StyleSheet.create({
     iconGroup: {
         flexDirection: 'row'
     },
-
     raceLabel: {
         position: "absolute",
         left: 210,
@@ -480,30 +485,34 @@ const styles = StyleSheet.create({
     },
     iconRow: {
         flexDirection: 'row',
-        marginTop: 14,
-        marginLeft: 10
+        marginTop: global.screenHeight * 0.0186170212765957,
+        marginLeft: global.screenWidth * 0.00750000001875,
     },
     intContainer: {
         margin: 2,
-        width: 112,
+        width: global.screenWidth * 0.08402,
+        height: 63,
         backgroundColor: "#e0e0de",
         fontFamily: 'sans-serif'
     },
     abilityScoresContainer: {
         margin: 2,
-        width: 88,
+        width: global.screenWidth * 0.06601,
+        height: 63,
         backgroundColor: "#e0e0de",
         fontFamily: 'sans-serif'
     },
     bottomrowIntContainer: {
         margin: 2,
-        width: 87,
+        width: global.screenWidth * 0.06527,
+        height: 63,
         backgroundColor: "#e0e0de",
         fontFamily: 'sans-serif'
     },
     stringContainer: {
         margin: 2,
-        width: 203,
+        width: global.screenWidth * 0.152295,
+        height: 63,
         backgroundColor: "#e0e0de",
         fontFamily: 'sans-serif'
     },

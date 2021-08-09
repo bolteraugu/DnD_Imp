@@ -7,6 +7,10 @@ import AuthStack from './AuthStack';
 import AppStack from './AppStack';
 import {AuthUserContext} from './AuthUserProvider';
 import Spinner from '../components/Spinner';
+import {Dimensions} from "react-native";
+
+global.screenWidth = Dimensions.get("window").width;
+global.screenHeight = Dimensions.get("window").height;
 
 export default function Routes() {
   const {user, setUser} = useContext(AuthUserContext);
