@@ -67,7 +67,7 @@ export default function AppStack() {
                     screenOptions={{
                         headerStyle: {
                             backgroundColor: colors.primary,
-                            height: 70
+                            height: global.screenWidth * 0.0930851063829787
                         }
                     }}
       />

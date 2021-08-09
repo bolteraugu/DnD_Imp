@@ -702,7 +702,7 @@ export default function MainScreen({route, navigation}) {
             <View style = {styles.topRow}>
                 <View>
                     <TextInput
-                        style={styles.nameRaceClass}
+                        style={styles.name}
                         defaultValue={charData['name']}
                         underlineColor="transparent"
                         placeholder={"Enter name..."}
@@ -721,7 +721,7 @@ export default function MainScreen({route, navigation}) {
                 </View>
                 <View>
                     <TextInput
-                        style={styles.nameRaceClass}
+                        style={styles.race}
                         defaultValue={charData['char_race']}
                         underlineColor="transparent"
                         placeholder={"Enter race..."}
@@ -740,7 +740,7 @@ export default function MainScreen({route, navigation}) {
                 </View>
                 <View>
                     <TextInput
-                        style={styles.nameRaceClass}
+                        style={styles.class}
                         defaultValue={charData['char_class']}
                         underlineColor="transparent"
                         placeholder={"Enter class..."}
@@ -874,7 +874,7 @@ export default function MainScreen({route, navigation}) {
                 </View>
                 <View>
                     <TextInput
-                        style= {styles.nameRaceClass}
+                        style= {styles.class}
                         defaultValue={charData['alignment']}
                         underlineColor="transparent"
                         placeholder={"Enter alignment..."}
@@ -1677,7 +1677,7 @@ export default function MainScreen({route, navigation}) {
                                     paddingLeft: 25,
                                     paddingRight: 25,
                                     paddingBottom: 8,
-                                    height: 100,
+                                    height: screenHeight * 0.1329787234042553,
                                 }
                                 : null,
                         ]}
@@ -1794,7 +1794,7 @@ const styles = StyleSheet.create({
     },
     skillsValue: {
         borderWidth: 1,
-        height: screenHeight * 0.0525131282820705,
+        height: screenHeight * 0.0345744680851064,
         width: screenWidth * 0.0525131282820705,
         textAlign: 'center',
         backgroundColor: "#ffffff",
@@ -1964,10 +1964,34 @@ const styles = StyleSheet.create({
         fontSize: 11,
         borderWidth: 1
     },
-    nameRaceClass: {
+    name: {
         marginBottom: screenHeight * 0.0132978723404255,
         marginLeft: screenWidth * 0.00750000001875,
-        width: screenWidth * 0.1762500044062501,
+        width: screenWidth * 0.1799940735183796,
+        height: screenHeight * 0.0625,
+        textAlign: "center",
+        paddingTop: screenHeight * 0.0265957446808511,
+        backgroundColor: "#e8e8e8",
+        borderWidth: 1,
+        borderTopRightRadius: 0,
+        borderTopLeftRadius: 0
+    },
+    race: {
+        marginBottom: screenHeight * 0.0132978723404255,
+        marginLeft: screenWidth * 0.00750000001875,
+        width: screenWidth * 0.1725940735183796,
+        height: screenHeight * 0.0625,
+        textAlign: "center",
+        paddingTop: screenHeight * 0.0265957446808511,
+        backgroundColor: "#e8e8e8",
+        borderWidth: 1,
+        borderTopRightRadius: 0,
+        borderTopLeftRadius: 0
+    },
+    class: {
+        marginBottom: screenHeight * 0.0132978723404255,
+        marginLeft: screenWidth * 0.00750000001875,
+        width: screenWidth * 0.1762940735183796,
         height: screenHeight * 0.0625,
         textAlign: "center",
         paddingTop: screenHeight * 0.0265957446808511,
@@ -2028,7 +2052,7 @@ const styles = StyleSheet.create({
         marginBottom: screenHeight * 0.0132978723404255,
         marginLeft: screenWidth * 0.00750000001875,
         width: screenWidth * 0.086250000215625,
-        height: screenHeight * 0.0265957446808511,
+        height: screenHeight * 0.0625,
         textAlign: "center",
         paddingTop: screenHeight * 0.0265957446808511,
         backgroundColor: "#e8e8e8",
@@ -2054,17 +2078,18 @@ const styles = StyleSheet.create({
     },
     textInputHeading: {
         position: "absolute",
-        left: 10,
+        left: screenWidth * 0.0075018754688672,
         top: screenHeight * 0.0066489361702128,
-        width: 95,
+        width: screenWidth * 0.0712678169542386,
+        fontSize: 12,
         textAlign: "center",
         color: "#0038d4",
     },
     profInputHeading: {
         position: "absolute",
-        left: 10,
+        left: screenWidth * 0.0075018754688672,
         top: screenHeight * 0.0066489361702128,
-        width: 200,
+        width: screenWidth * 0.1500375093773443,
         textAlign: "center",
         color: "#0038d4"
     },

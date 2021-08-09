@@ -181,33 +181,33 @@ export default function Weapon({
 
 const styles = StyleSheet.create({
     nameHeadingContainer: {
-        width: 203,
-        height: 30,
-        marginBottom: 5,
+        width: screenWidth * 0.1522880720180045,
+        height: screenHeight * 0.0398936170212766,
+        marginBottom: (screenHeight * (0.0132978723404255/2)),
         alignItems: 'center',
     },
     costHeadingContainer: {
-        width: 103,
-        height: 30,
-        marginBottom: 5,
+        width: screenWidth * 0.0772693173293323,
+        height: screenHeight * 0.0398936170212766,
+        marginBottom: (screenHeight * (0.0132978723404255/2)),
         alignItems: 'center',
     },
     damageHeadingContainer: {
-        width: 223,
-        height: 30,
-        marginBottom: 5,
+        width: screenWidth * 0.1672918229557389,
+        height: screenHeight * 0.0398936170212766,
+        marginBottom: (screenHeight * (0.0132978723404255/2)),
         alignItems: 'center',
     },
     weightHeadingContainer: {
-        width: 123,
-        height: 30,
-        marginBottom: 5,
+        width: screenWidth * 0.0922730682670668,
+        height: screenHeight * 0.0398936170212766,
+        marginBottom: (screenHeight * (0.0132978723404255/2)),
         alignItems: 'center',
     },
     propertiesHeadingContainer: {
-        width: 383,
-        height: 30,
-        marginBottom: 5,
+        width: screenWidth * 0.2873218304576144,
+        height: screenHeight * 0.0398936170212766,
+        marginBottom: (screenHeight * (0.0132978723404255/2)),
         alignItems: 'center',
     },
     typeLabel: {
@@ -215,54 +215,75 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontFamily: 'sans-serif',
         fontWeight: "bold",
-        marginBottom: 2,
+        marginBottom: (screenHeight * (0.0132978723404255/5)),
     },
     deleteButton: {
-        marginTop: 36,
-        marginRight: 10
+        marginTop: screenHeight * 0.0478723404255319,
+        marginLeft: 0
     },
     nameContainer: {
-        margin: 2,
-        width: 203,
-        height: 45,
+        marginLeft: (screenWidth * (0.0075018754688672/5)),
+        marginRight: (screenWidth * (0.0075018754688672/5)),
+        marginTop: (screenHeight * (0.0132978723404255/5)),
+        marginBottom: (screenHeight * (0.0132978723404255/5)),
+        width: screenWidth * 0.1522880720180045,
+        height: screenHeight * 0.0598404255319149,
         backgroundColor: "#e0e0de",
         fontFamily: 'sans-serif'
     },
     costContainer: {
-        margin: 2,
-        width: 103,
-        height: 45,
+        marginLeft: (screenWidth * (0.0075018754688672/5)),
+        marginRight: (screenWidth * (0.0075018754688672/5)),
+        marginTop: (screenHeight * (0.0132978723404255/5)),
+        marginBottom: (screenHeight * (0.0132978723404255/5)),
+        width: screenWidth * 0.0772693173293323,
+        height: screenHeight * 0.0598404255319149,
         backgroundColor: "#e0e0de",
         fontFamily: 'sans-serif'
     },
     damageContainer: {
-        margin: 2,
-        width: 223,
-        height: 45,
+        marginLeft: (screenWidth * (0.0075018754688672/5)),
+        marginRight: (screenWidth * (0.0075018754688672/5)),
+        marginTop: (screenHeight * (0.0132978723404255/5)),
+        marginBottom: (screenHeight * (0.0132978723404255/5)),
+        width: screenWidth * 0.1672918229557389,
+        height: screenHeight * 0.0598404255319149,
         backgroundColor: "#e0e0de",
         fontFamily: 'sans-serif'
     },
     weightContainer: {
-        margin: 2,
-        width: 123,
-        height: 45,
+        marginLeft: (screenWidth * (0.0075018754688672/5)),
+        marginRight: (screenWidth * (0.0075018754688672/5)),
+        marginTop: (screenHeight * (0.0132978723404255/5)),
+        marginBottom: (screenHeight * (0.0132978723404255/5)),
+        width: screenWidth * 0.0922730682670668,
+        height: screenHeight * 0.0598404255319149,
         backgroundColor: "#e0e0de",
         fontFamily: 'sans-serif'
     },
     propertiesContainer: {
-        margin: 2,
-        width: 383,
-        height: 45,
+        marginLeft: (screenWidth * (0.0075018754688672/5)),
+        marginRight: (screenWidth * (0.0075018754688672/5)),
+        marginTop: (screenHeight * (0.0132978723404255/5)),
+        marginBottom: (screenHeight * (0.0132978723404255/5)),
+        width: screenWidth * 0.2873218304576144,
+        height: screenHeight * 0.0598404255319149,
         backgroundColor: "#e0e0de",
         fontFamily: 'sans-serif'
     },
     surface: {
         elevation: 4,
-        margin: 5,
+        marginLeft: (screenWidth * (0.0075018754688672/2)),
+        marginRight: (screenWidth * (0.0075018754688672/2)),
+        marginTop: (screenHeight * (0.0132978723404255/2)),
+        marginBottom: (screenHeight * (0.0132978723404255/2)),
         color: "#ffffff"
     },
     row: {
         flexDirection: 'row',
-        margin: 10
+        marginLeft: screenWidth * 0.0075018754688672,
+        marginRight: screenWidth * 0.0075018754688672,
+        marginTop: screenHeight * 0.0132978723404255,
+        marginBottom: screenHeight * 0.0132978723404255
     }
 })
