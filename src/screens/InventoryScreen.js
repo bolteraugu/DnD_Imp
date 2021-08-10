@@ -408,10 +408,10 @@ const styles = StyleSheet.create({
         backgroundColor:"#e3e3e3",
         borderRadius: 4,
         borderWidth: 1,
-        marginTop: 10,
-        marginLeft: 10,
-        marginRight: 10,
-        paddingBottom: 12,
+        marginTop: screenHeight * 0.0132978723404255,
+        marginLeft: screenWidth * 0.0075018754688672,
+        marginRight: screenWidth * 0.0075018754688672,
+        paddingBottom: screenHeight * 0.0159574468085106,
         alignItems: 'center'
     },
     inventoryContainer: {

@@ -702,7 +702,7 @@ export default function MainScreen({route, navigation}) {
             <View style = {styles.topRow}>
                 <View>
                     <TextInput
-                        style={styles.nameRaceClass}
+                        style={styles.name}
                         defaultValue={charData['name']}
                         underlineColor="transparent"
                         placeholder={"Enter name..."}
@@ -721,7 +721,7 @@ export default function MainScreen({route, navigation}) {
                 </View>
                 <View>
                     <TextInput
-                        style={styles.nameRaceClass}
+                        style={styles.race}
                         defaultValue={charData['char_race']}
                         underlineColor="transparent"
                         placeholder={"Enter race..."}
@@ -740,7 +740,7 @@ export default function MainScreen({route, navigation}) {
                 </View>
                 <View>
                     <TextInput
-                        style={styles.nameRaceClass}
+                        style={styles.class}
                         defaultValue={charData['char_class']}
                         underlineColor="transparent"
                         placeholder={"Enter class..."}
@@ -874,7 +874,7 @@ export default function MainScreen({route, navigation}) {
                 </View>
                 <View>
                     <TextInput
-                        style= {styles.nameRaceClass}
+                        style= {styles.class}
                         defaultValue={charData['alignment']}
                         underlineColor="transparent"
                         placeholder={"Enter alignment..."}
@@ -1964,10 +1964,10 @@ const styles = StyleSheet.create({
         fontSize: 11,
         borderWidth: 1
     },
-    nameRaceClass: {
+    name: {
         marginBottom: screenHeight * 0.0132978723404255,
         marginLeft: screenWidth * 0.00750000001875,
-        width: screenWidth * 0.1762500044062501,
+        width: screenWidth * 0.1799940735183796,
         height: screenHeight * 0.0625,
         textAlign: "center",
         paddingTop: screenHeight * 0.0265957446808511,
@@ -1976,6 +1976,31 @@ const styles = StyleSheet.create({
         borderTopRightRadius: 0,
         borderTopLeftRadius: 0
     },
+    race: {
+        marginBottom: screenHeight * 0.0132978723404255,
+        marginLeft: screenWidth * 0.00750000001875,
+        width: screenWidth * 0.1725940735183796,
+        height: screenHeight * 0.0625,
+        textAlign: "center",
+        paddingTop: screenHeight * 0.0265957446808511,
+        backgroundColor: "#e8e8e8",
+        borderWidth: 1,
+        borderTopRightRadius: 0,
+        borderTopLeftRadius: 0
+    },
+    class: {
+        marginBottom: screenHeight * 0.0132978723404255,
+        marginLeft: screenWidth * 0.00750000001875,
+        width: screenWidth * 0.1762940735183796,
+        height: screenHeight * 0.0625,
+        textAlign: "center",
+        paddingTop: screenHeight * 0.0265957446808511,
+        backgroundColor: "#e8e8e8",
+        borderWidth: 1,
+        borderTopRightRadius: 0,
+        borderTopLeftRadius: 0
+    },
+
     secondRowFirstHalf: {
         height: screenHeight * 0.450000001125,
         flexDirection: "row",

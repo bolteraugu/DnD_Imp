@@ -376,24 +376,26 @@ const styles = StyleSheet.create({
         height: "65%",
     },
     appearanceContainer: {
-        marginTop: 10,
-        marginLeft: 10,
-        marginRight: 10,
+        marginTop: screenHeight * 0.0132978723404255,
+        marginLeft: screenWidth * 0.0075018754688672,
+        marginRight: screenWidth * 0.0075018754688672,
         marginBottom: screenHeight * 0.0033244680851064,
         width: "97%",
         height: "100%"
     },
     backstoryContainer: {
         marginTop: screenHeight * 0.0033244680851064,
-        marginLeft: 10,
-        marginRight: 10,
-        marginBottom: 10,
+        marginLeft: screenWidth * 0.0075018754688672,
+        marginRight: screenWidth * 0.0075018754688672,
+        marginBottom: screenHeight * 0.0075018754688672,
         width: "97%",
         height: "100%"
     },
     featuresAndTraitsContainer: {
-        margin: 10,
-        marginTop: 30,
+        marginBottom: screenHeight * 0.0075018754688672,
+        marginLeft: screenWidth * 0.0075018754688672,
+        marginRight: screenWidth * 0.0075018754688672,
+        marginTop: screenHeight * 0.0348936170212766,
         width: "98.5%",
         height: "100%"
     },
@@ -401,25 +403,25 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         width: "98.5%",
         marginBottom: screenHeight * 0.0066489361702128,
-        marginRight: 5,
-        marginTop: 10,
-        marginLeft: 10
+        marginRight: screenWidth * 0.0037509377344336,
+        marginTop: screenHeight * 0.0132978723404255,
+        marginLeft: screenWidth * 0.0075018754688672
     },
     bondsFlawsContainer: {
         flexDirection: 'row',
         width: "98.5%",
         marginTop: screenHeight * 0.0066489361702128,
-        marginLeft: 10,
+        marginLeft: screenWidth * 0.0075018754688672,
         marginBottom: screenHeight * 0.0066489361702128,
-        marginRight: 5,
+        marginRight: screenWidth * 0.0037509377344336,
     },
     personalityTraitsContainer: {
         flex: 1,
-        marginRight: 5
+        marginRight: screenWidth * 0.0037509377344336
     },
     personalityTraitsInput: {
         width: "100%",
-        height: 149,
+        height: screenHeight * 0.2,
         borderWidth: 1,
         backgroundColor: "#e8e8e8",
         borderTopRightRadius: 0,
@@ -434,11 +436,11 @@ const styles = StyleSheet.create({
     },
     idealsContainer: {
         flex: 1,
-        marginLeft: 5
+        marginLeft: screenWidth * 0.0037509377344336
     },
     idealsInput: {
         width: "100%",
-        height: 149,
+        height: screenHeight * 0.2,
         borderWidth: 1,
         backgroundColor: "#e8e8e8",
         borderTopRightRadius: 0,
@@ -446,7 +448,7 @@ const styles = StyleSheet.create({
     },
     bondsInput: {
         width: "100%",
-        height: 159,
+        height: screenHeight * 0.2,
         borderWidth: 1,
         backgroundColor: "#e8e8e8",
         borderTopRightRadius: 0,
@@ -454,7 +456,7 @@ const styles = StyleSheet.create({
     },
     flawsInput: {
         width: "100%",
-        height: 159,
+        height: screenHeight * 0.2,
         borderWidth: 1,
         backgroundColor: "#e8e8e8",
         borderTopRightRadius: 0,
@@ -462,7 +464,7 @@ const styles = StyleSheet.create({
     },
     appearanceInput: {
         width: "100%",
-        height: 199,
+        height: screenHeight * 0.2646276595744681,
         borderWidth: 1,
         backgroundColor: "#e8e8e8",
         borderTopRightRadius: 0,
@@ -470,7 +472,7 @@ const styles = StyleSheet.create({
     },
     backstoryInput: {
         width: "100%",
-        height: 390,
+        height: screenHeight * 0.5186170212765957,
         borderWidth: 1,
         backgroundColor: "#e8e8e8",
         borderTopRightRadius: 0,
@@ -478,7 +480,7 @@ const styles = StyleSheet.create({
     },
     featuresAndTraitsInput: {
         width: "100%",
-        height: screenHeight * 0.3577127659574468,
+        height: screenHeight * 0.3626127659574468,
         borderWidth: 1,
         backgroundColor: "#e8e8e8",
         borderTopRightRadius: 0,
@@ -489,6 +491,7 @@ const styles = StyleSheet.create({
         textAlign: "center",
         color: "#0038d4",
         position: 'absolute',
-        top: screenHeight * 0.0066489361702128
+        top: 5
     },
 })
+
