@@ -1,4 +1,4 @@
-import {Dimensions, StyleSheet, Text, TextInput as NativeTextInput, View} from "react-native";
+import {Dimensions, StyleSheet, Text, TextInput as NativeTextInput, View, Platform} from "react-native";
 import {TextInput, Button} from "react-native-paper";
 import React, {useState} from "react";
 import {Picker} from "@react-native-community/picker";
@@ -14,194 +14,392 @@ export default function AddSpellScreen({navigation}) {
     const [components, setComponents] = useState("");
     const [duration, setDuration] = useState("");
     const [description, setDescription] = useState("");
-    return (
-        <View style = {styles.totalContainer}>
-            <View style={styles.column}>
-                <View style = {styles.row}>
-                    <View style = {styles.headingContainer}>
+    if (Platform.OS === "ios") {
+        return (
+            <View style = {styles.totalContainer}>
+                <View style={styles.column}>
+                    <View style = {styles.row}>
+                        <View style = {styles.headingContainer}>
                             <Text
                                 style={styles.typeLabel}
                             >
                                 Name:
                             </Text>
+                        </View>
+                        <TextInput
+                            style={styles.inputContainer}
+                            placeholder={"Enter name..."}
+                            onChangeText={(text) => {
+                                setName(text)
+                            }}
+                        />
                     </View>
-                    <TextInput
-                        style={styles.inputContainer}
-                        placeholder={"Enter name..."}
-                        onChangeText={(text) => {
-                            setName(text)
-                        }}
-                    />
-                </View>
-                <View style = {styles.row}>
-                    <View style = {styles.headingContainer}>
+                    <View style = {styles.row}>
+                        <View style = {styles.headingContainerIOS}>
                             <Text
                                 style={styles.typeLabel}
                             >
                                 Level:
                             </Text>
+                        </View>
+                            <Picker
+                                selectedValue={level}
+                                onValueChange = {(itemValue, itemIndex) => {
+                                    setLevel(itemValue);
+                                }}
+                                style = {styles.iosDropdownStyle}
+                            >
+                                <Picker.Item label = "Cantrip" value = "Cantrip" key="0" />
+                                <Picker.Item label = "0" value = "0" key="1" />
+                                <Picker.Item label = "1" value = "1" key="2" />
+                                <Picker.Item label = "2" value = "2" key="3" />
+                                <Picker.Item label = "3" value = "3" key="4" />
+                                <Picker.Item label = "4" value = "4" key="5" />
+                                <Picker.Item label = "5" value = "5" key="6" />
+                                <Picker.Item label = "6" value = "6" key="7" />
+                                <Picker.Item label = "7" value = "7" key="8" />
+                                <Picker.Item label = "8" value = "8" key="9" />
+                                <Picker.Item label = "9" value = "9" key="10" />
+                            </Picker>
+                        {/*<TextInput*/}
+                        {/*    style={styles.inputContainer}*/}
+                        {/*    keyboardType="number-pad"*/}
+                        {/*    placeholder={"Enter level..."}*/}
+                        {/*    onChangeText={(text) => {*/}
+                        {/*        setLevel(Number(text))*/}
+                        {/*    }}*/}
+                        {/*/>*/}
                     </View>
-                    <View style = {styles.typeContainer}>
-                        <Picker
-                            selectedValue={level}
-                            onValueChange = {(itemValue, itemIndex) => {
-                                setLevel(itemValue);
-                            }}
-                            style = {styles.totalDropdownStyle}
-                        >
-                            <Picker.Item label = "Cantrip" value = "Cantrip" key="0" />
-                            <Picker.Item label = "0" value = "0" key="1" />
-                            <Picker.Item label = "1" value = "1" key="2" />
-                            <Picker.Item label = "2" value = "2" key="3" />
-                            <Picker.Item label = "3" value = "3" key="4" />
-                            <Picker.Item label = "4" value = "4" key="5" />
-                            <Picker.Item label = "5" value = "5" key="6" />
-                            <Picker.Item label = "6" value = "6" key="7" />
-                            <Picker.Item label = "7" value = "7" key="8" />
-                            <Picker.Item label = "8" value = "8" key="9" />
-                            <Picker.Item label = "9" value = "9" key="10" />
-                        </Picker>
-                    </View>
-                    {/*<TextInput*/}
-                    {/*    style={styles.inputContainer}*/}
-                    {/*    keyboardType="number-pad"*/}
-                    {/*    placeholder={"Enter level..."}*/}
-                    {/*    onChangeText={(text) => {*/}
-                    {/*        setLevel(Number(text))*/}
-                    {/*    }}*/}
-                    {/*/>*/}
-                </View>
-                <View style = {styles.row}>
-                    <View style = {styles.headingContainer}>
+                    <View style = {styles.row}>
+                        <View style = {styles.headingContainer}>
                             <Text
                                 style={styles.typeLabel}
                             >
                                 Casting Time:
                             </Text>
+                        </View>
+                        <TextInput
+                            style={styles.inputContainer}
+                            placeholder={"Enter casting time..."}
+                            onChangeText={(text) => {
+                                setCastingTime(text)
+                            }}
+                        />
                     </View>
-                    <TextInput
-                        style={styles.inputContainer}
-                        placeholder={"Enter casting time..."}
-                        onChangeText={(text) => {
-                            setCastingTime(text)
-                        }}
-                    />
-                </View>
-                <View style = {styles.row}>
-                    <View style = {styles.headingContainer}>
+                    <View style = {styles.row}>
+                        <View style = {styles.headingContainer}>
                             <Text
                                 style={styles.typeLabel}
                             >
                                 Range:
                             </Text>
+                        </View>
+                        <TextInput
+                            style={styles.inputContainer}
+                            placeholder={"Enter range..."}
+                            onChangeText={(text) => {
+                                setRange(text)
+                            }}
+                        />
                     </View>
-                    <TextInput
-                        style={styles.inputContainer}
-                        placeholder={"Enter range..."}
-                        onChangeText={(text) => {
-                            setRange(text)
-                        }}
-                    />
-                </View>
-                <View style = {styles.row}>
-                    <View style = {styles.headingContainer}>
+                    <View style = {styles.row}>
+                        <View style = {styles.headingContainer}>
                             <Text
                                 style={styles.typeLabel}
                             >
                                 Components:
                             </Text>
+                        </View>
+                        <TextInput
+                            style={styles.inputContainer}
+                            placeholder={"Enter components..."}
+                            onChangeText={(text) => {
+                                setComponents(text)
+                            }}
+                        />
                     </View>
-                    <TextInput
-                        style={styles.inputContainer}
-                        placeholder={"Enter components..."}
-                        onChangeText={(text) => {
-                            setComponents(text)
-                        }}
-                    />
-                </View>
-                <View style = {styles.row}>
-                    <View style = {styles.headingContainer}>
-                        <Text
-                            style={styles.typeLabel}
-                        >
-                            Duration:
-                        </Text>
+                    <View style = {styles.row}>
+                        <View style = {styles.headingContainer}>
+                            <Text
+                                style={styles.typeLabel}
+                            >
+                                Duration:
+                            </Text>
+                        </View>
+                        <TextInput
+                            style={styles.inputContainer}
+                            placeholder={"Enter duration..."}
+                            onChangeText={(text) => {
+                                setDuration(text)
+                            }}
+                        />
                     </View>
-                    <TextInput
-                        style={styles.inputContainer}
-                        placeholder={"Enter duration..."}
-                        onChangeText={(text) => {
-                            setDuration(text)
-                        }}
-                    />
-                </View>
-                <View style = {styles.row}>
-                    <View style = {styles.headingContainer}>
-                        <Text
-                            style={styles.typeLabel}
-                        >
-                            Description:
-                        </Text>
+                    <View style = {styles.row}>
+                        <View style = {styles.headingContainer}>
+                            <Text
+                                style={styles.typeLabel}
+                            >
+                                Description:
+                            </Text>
+                        </View>
+                        <TextInput
+                            style={styles.descriptionContainer}
+                            multiline={true}
+                            render={props => (
+                                <NativeTextInput
+                                    {...props}
+                                    style={[
+                                        props.style,
+                                        props.multiline
+                                            ? {
+                                                paddingTop: screenHeight * 0.0132978723404255,
+                                                paddingLeft: screenWidth * 0.0090022505626407,
+                                                paddingRight: screenWidth * 0.018754688672168,
+                                                paddingBottom: screenHeight * 0.0106382978723404,
+                                                height: screenHeight * 0.1329787234042553,
+                                            }
+                                            : null,
+                                    ]}
+                                    placeholder={"Enter description..."}
+                                />
+                            )}
+                            onChangeText={(text) => {
+                                setDescription(text)
+                            }}
+                        />
                     </View>
-                    <TextInput
-                        style={styles.descriptionContainer}
-                        multiline={true}
-                        render={props => (
-                            <NativeTextInput
-                                {...props}
-                                style={[
-                                    props.style,
-                                    props.multiline
-                                        ? {
-                                            paddingTop: screenHeight * 0.0132978723404255,
-                                            paddingLeft: screenWidth * 0.0090022505626407,
-                                            paddingRight: screenWidth * 0.018754688672168,
-                                            paddingBottom: screenHeight * 0.0106382978723404,
-                                            height: screenHeight * 0.1329787234042553,
-                                        }
-                                        : null,
-                                ]}
-                                placeholder={"Enter description..."}
-                            />
-                        )}
-                        onChangeText={(text) => {
-                            setDescription(text)
-                        }}
-                    />
                 </View>
+                <Button
+                    mode = "contained"
+                    style = {styles.addButton}
+                    disabled={name.length === 0}
+                    onPress = {() => {
+                        global.charaRef.collection("spells").add({
+                            name: name,
+                            level: level,
+                            casting_time: castingTime,
+                            range: range,
+                            components: components,
+                            duration: duration,
+                            description: description
+                        });
+                        navigation.navigate('CharacterSheet', {
+                            screen: 'Spells'
+                        })
+                    }}
+                >
+                    Add
+                </Button>
+                <View style = {styles.gap}/>
             </View>
-            <Button
-                mode = "contained"
-                style = {styles.addButton}
-                disabled={name.length === 0}
-                onPress = {() => {
-                    global.charaRef.collection("spells").add({
-                        name: name,
-                        level: level,
-                        casting_time: castingTime,
-                        range: range,
-                        components: components,
-                        duration: duration,
-                        description: description
-                    });
-                    navigation.navigate('CharacterSheet', {
-                        screen: 'Spells'
-                    })
-                }}
-            >
-                Add
-            </Button>
-            <View style = {styles.gap}/>
-        </View>
-    );
+        );
+    }
+    else {
+        return (
+            <View style = {styles.totalContainer}>
+                <View style={styles.column}>
+                    <View style = {styles.row}>
+                        <View style = {styles.headingContainer}>
+                            <Text
+                                style={styles.typeLabel}
+                            >
+                                Name:
+                            </Text>
+                        </View>
+                        <TextInput
+                            style={styles.inputContainer}
+                            placeholder={"Enter name..."}
+                            onChangeText={(text) => {
+                                setName(text)
+                            }}
+                        />
+                    </View>
+                    <View style = {styles.row}>
+                        <View style = {styles.headingContainer}>
+                            <Text
+                                style={styles.typeLabel}
+                            >
+                                Level:
+                            </Text>
+                        </View>
+                        <View style = {styles.typeContainer}>
+                            <Picker
+                                selectedValue={level}
+                                onValueChange = {(itemValue, itemIndex) => {
+                                    setLevel(itemValue);
+                                }}
+                                style = {styles.totalDropdownStyle}
+                            >
+                                <Picker.Item label = "Cantrip" value = "Cantrip" key="0" />
+                                <Picker.Item label = "0" value = "0" key="1" />
+                                <Picker.Item label = "1" value = "1" key="2" />
+                                <Picker.Item label = "2" value = "2" key="3" />
+                                <Picker.Item label = "3" value = "3" key="4" />
+                                <Picker.Item label = "4" value = "4" key="5" />
+                                <Picker.Item label = "5" value = "5" key="6" />
+                                <Picker.Item label = "6" value = "6" key="7" />
+                                <Picker.Item label = "7" value = "7" key="8" />
+                                <Picker.Item label = "8" value = "8" key="9" />
+                                <Picker.Item label = "9" value = "9" key="10" />
+                            </Picker>
+                        </View>
+                        {/*<TextInput*/}
+                        {/*    style={styles.inputContainer}*/}
+                        {/*    keyboardType="number-pad"*/}
+                        {/*    placeholder={"Enter level..."}*/}
+                        {/*    onChangeText={(text) => {*/}
+                        {/*        setLevel(Number(text))*/}
+                        {/*    }}*/}
+                        {/*/>*/}
+                    </View>
+                    <View style = {styles.row}>
+                        <View style = {styles.headingContainer}>
+                            <Text
+                                style={styles.typeLabel}
+                            >
+                                Casting Time:
+                            </Text>
+                        </View>
+                        <TextInput
+                            style={styles.inputContainer}
+                            placeholder={"Enter casting time..."}
+                            onChangeText={(text) => {
+                                setCastingTime(text)
+                            }}
+                        />
+                    </View>
+                    <View style = {styles.row}>
+                        <View style = {styles.headingContainer}>
+                            <Text
+                                style={styles.typeLabel}
+                            >
+                                Range:
+                            </Text>
+                        </View>
+                        <TextInput
+                            style={styles.inputContainer}
+                            placeholder={"Enter range..."}
+                            onChangeText={(text) => {
+                                setRange(text)
+                            }}
+                        />
+                    </View>
+                    <View style = {styles.row}>
+                        <View style = {styles.headingContainer}>
+                            <Text
+                                style={styles.typeLabel}
+                            >
+                                Components:
+                            </Text>
+                        </View>
+                        <TextInput
+                            style={styles.inputContainer}
+                            placeholder={"Enter components..."}
+                            onChangeText={(text) => {
+                                setComponents(text)
+                            }}
+                        />
+                    </View>
+                    <View style = {styles.row}>
+                        <View style = {styles.headingContainer}>
+                            <Text
+                                style={styles.typeLabel}
+                            >
+                                Duration:
+                            </Text>
+                        </View>
+                        <TextInput
+                            style={styles.inputContainer}
+                            placeholder={"Enter duration..."}
+                            onChangeText={(text) => {
+                                setDuration(text)
+                            }}
+                        />
+                    </View>
+                    <View style = {styles.row}>
+                        <View style = {styles.headingContainer}>
+                            <Text
+                                style={styles.typeLabel}
+                            >
+                                Description:
+                            </Text>
+                        </View>
+                        <TextInput
+                            style={styles.descriptionContainer}
+                            multiline={true}
+                            render={props => (
+                                <NativeTextInput
+                                    {...props}
+                                    style={[
+                                        props.style,
+                                        props.multiline
+                                            ? {
+                                                paddingTop: screenHeight * 0.0132978723404255,
+                                                paddingLeft: screenWidth * 0.0090022505626407,
+                                                paddingRight: screenWidth * 0.018754688672168,
+                                                paddingBottom: screenHeight * 0.0106382978723404,
+                                                height: screenHeight * 0.1329787234042553,
+                                            }
+                                            : null,
+                                    ]}
+                                    placeholder={"Enter description..."}
+                                />
+                            )}
+                            onChangeText={(text) => {
+                                setDescription(text)
+                            }}
+                        />
+                    </View>
+                </View>
+                <Button
+                    mode = "contained"
+                    style = {styles.addButton}
+                    disabled={name.length === 0}
+                    onPress = {() => {
+                        global.charaRef.collection("spells").add({
+                            name: name,
+                            level: level,
+                            casting_time: castingTime,
+                            range: range,
+                            components: components,
+                            duration: duration,
+                            description: description
+                        });
+                        navigation.navigate('CharacterSheet', {
+                            screen: 'Spells'
+                        })
+                    }}
+                >
+                    Add
+                </Button>
+                <View style = {styles.gap}/>
+            </View>
+        );
+    }
 }
 
 const styles = StyleSheet.create({
+    iosDropdownStyle: {
+        width: screenWidth * 0.3345843960990248,
+        height: screenHeight * 0.0598404255319149,
+        marginTop: screenHeight * -0.12,
+        marginBottom: screenHeight * 0.12,
+        flex: 1,
+        color: "#787878"
+    },
+    headingContainerIOS: {
+        width: screenWidth * 0.1275318829707427,
+        height: screenHeight * 0.0398936170212766,
+        marginBottom: screenHeight * 0.0096489361702128,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: screenHeight * -0.004968085106383
+    },
     totalDropdownStyle: {
         width: screenWidth * 0.3345843960990248,
         height: screenHeight * 0.0598404255319149,
         flex: 1,
-        color: "#787878"
+        color: "#787878",
     },
     typeContainer: {
         marginTop: screenHeight * 0.0026595744680851,

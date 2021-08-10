@@ -1,4 +1,4 @@
-import {Dimensions, StyleSheet, Text, TextInput as NativeTextInput, View} from "react-native";
+import {Dimensions, StyleSheet, Text, TextInput as NativeTextInput, View, Platform} from "react-native";
 import {TextInput, Button} from "react-native-paper";
 import React, {useState} from "react";
 import {Picker} from "@react-native-community/picker";
@@ -15,153 +15,307 @@ export default function AddArmorScreen({navigation}) {
     const [stealth, setStealth] = useState("");
     const [weight, setWeight] = useState("");
 
-    return (
-        <View style = {styles.totalContainer}>
-            <View style={styles.column}>
-                <View style = {styles.row}>
-                    <View style = {styles.headingContainer}>
-                        <Text
-                            style={styles.typeLabel}
-                        >
-                            Name:
-                        </Text>
+    if (Platform.OS === "ios") {
+        return (
+            <View style = {styles.totalContainer}>
+                <View style={styles.column}>
+                    <View style = {styles.row}>
+                        <View style = {styles.headingContainer}>
+                            <Text
+                                style={styles.typeLabel}
+                            >
+                                Name:
+                            </Text>
+                        </View>
+                        <TextInput
+                            style={styles.inputContainer}
+                            placeholder={"Enter name..."}
+                            onChangeText={(text) => {
+                                setName(text)
+                            }}
+                        />
                     </View>
-                    <TextInput
-                        style={styles.inputContainer}
-                        placeholder={"Enter name..."}
-                        onChangeText={(text) => {
-                            setName(text)
-                        }}
-                    />
+                    <View style = {styles.row}>
+                        <View style = {styles.headingContainerIOS}>
+                            <Text
+                                style={styles.typeLabel}
+                            >
+                                Type:
+                            </Text>
+                        </View>
+                            <Picker
+                                selectedValue={type}
+                                onValueChange = {(itemValue, itemIndex) => {setType(itemValue)}}
+                                style = {styles.iosDropdownStyle}
+                            >
+                                <Picker.Item label = "Light" value = "Light" key="0" />
+                                <Picker.Item label = "Medium" value = "Medium" key="1" />
+                                <Picker.Item label = "Heavy" value = "Heavy" key="2" />
+                            </Picker>
+                    </View>
+                    <View style = {styles.row}>
+                        <View style = {styles.headingContainer}>
+                            <Text
+                                style={styles.typeLabel}
+                            >
+                                Cost:
+                            </Text>
+                        </View>
+                        <TextInput
+                            style={styles.inputContainer}
+                            placeholder={"Enter cost..."}
+                            onChangeText={(text) => {
+                                setCost(text)
+                            }}
+                        />
+                    </View>
+                    <View style = {styles.row}>
+                        <View style = {styles.headingContainer}>
+                            <Text
+                                style={styles.typeLabel}
+                            >
+                                Armor Class:
+                            </Text>
+                        </View>
+                        <TextInput
+                            style={styles.inputContainer}
+                            placeholder={"Enter armor class..."}
+                            onChangeText={(text) => {
+                                setArmorClass(text)
+                            }}
+                        />
+                    </View>
+                    <View style = {styles.row}>
+                        <View style = {styles.headingContainer}>
+                            <Text
+                                style={styles.typeLabel}
+                            >
+                                Strength:
+                            </Text>
+                        </View>
+                        <TextInput
+                            style={styles.inputContainer}
+                            placeholder={"Enter strength..."}
+                            onChangeText={(text) => {
+                                setStrength(text)
+                            }}
+                        />
+                    </View>
+                    <View style = {styles.row}>
+                        <View style = {styles.headingContainer}>
+                            <Text
+                                style={styles.typeLabel}
+                            >
+                                Stealth:
+                            </Text>
+                        </View>
+                        <TextInput
+                            style={styles.inputContainer}
+                            placeholder={"Enter stealth..."}
+                            onChangeText={(text) => {
+                                setStealth(text)
+                            }}
+                        />
+                    </View>
+                    <View style = {styles.row}>
+                        <View style = {styles.headingContainer}>
+                            <Text
+                                style={styles.typeLabel}
+                            >
+                                Weight:
+                            </Text>
+                        </View>
+                        <TextInput
+                            style={styles.inputContainer}
+                            placeholder={"Enter weight..."}
+                            onChangeText={(text) => {
+                                setWeight(text)
+                            }}
+                        />
+                    </View>
                 </View>
-                <View style = {styles.row}>
-                    <View style = {styles.headingContainer}>
-                        <Text
-                            style={styles.typeLabel}
-                        >
-                            Type:
-                        </Text>
-                    </View>
-                    <View style = {styles.typeContainer}>
-                        <Picker
-                            selectedValue={type}
-                            onValueChange = {(itemValue, itemIndex) => {setType(itemValue)}}
-                            style = {styles.totalDropdownStyle}
-                        >
-                            <Picker.Item label = "Light" value = "Light" key="0" />
-                            <Picker.Item label = "Medium" value = "Medium" key="1" />
-                            <Picker.Item label = "Heavy" value = "Heavy" key="2" />
-                        </Picker>
-                    </View>
-                </View>
-                <View style = {styles.row}>
-                    <View style = {styles.headingContainer}>
-                        <Text
-                            style={styles.typeLabel}
-                        >
-                            Cost:
-                        </Text>
-                    </View>
-                    <TextInput
-                        style={styles.inputContainer}
-                        placeholder={"Enter cost..."}
-                        onChangeText={(text) => {
-                            setCost(text)
-                        }}
-                    />
-                </View>
-                <View style = {styles.row}>
-                    <View style = {styles.headingContainer}>
-                        <Text
-                            style={styles.typeLabel}
-                        >
-                            Armor Class:
-                        </Text>
-                    </View>
-                    <TextInput
-                        style={styles.inputContainer}
-                        placeholder={"Enter armor class..."}
-                        onChangeText={(text) => {
-                            setArmorClass(text)
-                        }}
-                    />
-                </View>
-                <View style = {styles.row}>
-                    <View style = {styles.headingContainer}>
-                        <Text
-                            style={styles.typeLabel}
-                        >
-                            Strength:
-                        </Text>
-                    </View>
-                    <TextInput
-                        style={styles.inputContainer}
-                        placeholder={"Enter strength..."}
-                        onChangeText={(text) => {
-                            setStrength(text)
-                        }}
-                    />
-                </View>
-                <View style = {styles.row}>
-                    <View style = {styles.headingContainer}>
-                        <Text
-                            style={styles.typeLabel}
-                        >
-                            Stealth:
-                        </Text>
-                    </View>
-                    <TextInput
-                        style={styles.inputContainer}
-                        placeholder={"Enter stealth..."}
-                        onChangeText={(text) => {
-                            setStealth(text)
-                        }}
-                    />
-                </View>
-                <View style = {styles.row}>
-                    <View style = {styles.headingContainer}>
-                        <Text
-                            style={styles.typeLabel}
-                        >
-                            Weight:
-                        </Text>
-                    </View>
-                    <TextInput
-                        style={styles.inputContainer}
-                        placeholder={"Enter weight..."}
-                        onChangeText={(text) => {
-                            setWeight(text)
-                        }}
-                    />
-                </View>
+                <Button
+                    mode = "contained"
+                    style = {styles.addButton}
+                    disabled={name.length === 0}
+                    onPress = {() => {
+                        global.charaRef.collection("armor").add({
+                            name: name,
+                            type: type,
+                            cost: cost,
+                            strength: strength,
+                            stealth: stealth,
+                            armor_class: armorClass,
+                            weight: weight,
+                        });
+                        navigation.navigate('CharacterSheet', {
+                            screen: 'Inventory'
+                        })
+                    }}
+                >
+                    Add
+                </Button>
+                <View style = {styles.gap}/>
             </View>
-            <Button
-                mode = "contained"
-                style = {styles.addButton}
-                disabled={name.length === 0}
-                onPress = {() => {
-                    global.charaRef.collection("armor").add({
-                        name: name,
-                        type: type,
-                        cost: cost,
-                        strength: strength,
-                        stealth: stealth,
-                        armor_class: armorClass,
-                        weight: weight,
-                    });
-                    navigation.navigate('CharacterSheet', {
-                        screen: 'Inventory'
-                    })
-                }}
-            >
-                Add
-            </Button>
-            <View style = {styles.gap}/>
-        </View>
-    );
+        );
+    }
+    else {
+        return (
+            <View style = {styles.totalContainer}>
+                <View style={styles.column}>
+                    <View style = {styles.row}>
+                        <View style = {styles.headingContainer}>
+                            <Text
+                                style={styles.typeLabel}
+                            >
+                                Name:
+                            </Text>
+                        </View>
+                        <TextInput
+                            style={styles.inputContainer}
+                            placeholder={"Enter name..."}
+                            onChangeText={(text) => {
+                                setName(text)
+                            }}
+                        />
+                    </View>
+                    <View style = {styles.row}>
+                        <View style = {styles.headingContainer}>
+                            <Text
+                                style={styles.typeLabel}
+                            >
+                                Type:
+                            </Text>
+                        </View>
+                        <View style = {styles.typeContainer}>
+                            <Picker
+                                selectedValue={type}
+                                onValueChange = {(itemValue, itemIndex) => {setType(itemValue)}}
+                                style = {styles.totalDropdownStyle}
+                            >
+                                <Picker.Item label = "Light" value = "Light" key="0" />
+                                <Picker.Item label = "Medium" value = "Medium" key="1" />
+                                <Picker.Item label = "Heavy" value = "Heavy" key="2" />
+                            </Picker>
+                        </View>
+                    </View>
+                    <View style = {styles.row}>
+                        <View style = {styles.headingContainer}>
+                            <Text
+                                style={styles.typeLabel}
+                            >
+                                Cost:
+                            </Text>
+                        </View>
+                        <TextInput
+                            style={styles.inputContainer}
+                            placeholder={"Enter cost..."}
+                            onChangeText={(text) => {
+                                setCost(text)
+                            }}
+                        />
+                    </View>
+                    <View style = {styles.row}>
+                        <View style = {styles.headingContainer}>
+                            <Text
+                                style={styles.typeLabel}
+                            >
+                                Armor Class:
+                            </Text>
+                        </View>
+                        <TextInput
+                            style={styles.inputContainer}
+                            placeholder={"Enter armor class..."}
+                            onChangeText={(text) => {
+                                setArmorClass(text)
+                            }}
+                        />
+                    </View>
+                    <View style = {styles.row}>
+                        <View style = {styles.headingContainer}>
+                            <Text
+                                style={styles.typeLabel}
+                            >
+                                Strength:
+                            </Text>
+                        </View>
+                        <TextInput
+                            style={styles.inputContainer}
+                            placeholder={"Enter strength..."}
+                            onChangeText={(text) => {
+                                setStrength(text)
+                            }}
+                        />
+                    </View>
+                    <View style = {styles.row}>
+                        <View style = {styles.headingContainer}>
+                            <Text
+                                style={styles.typeLabel}
+                            >
+                                Stealth:
+                            </Text>
+                        </View>
+                        <TextInput
+                            style={styles.inputContainer}
+                            placeholder={"Enter stealth..."}
+                            onChangeText={(text) => {
+                                setStealth(text)
+                            }}
+                        />
+                    </View>
+                    <View style = {styles.row}>
+                        <View style = {styles.headingContainer}>
+                            <Text
+                                style={styles.typeLabel}
+                            >
+                                Weight:
+                            </Text>
+                        </View>
+                        <TextInput
+                            style={styles.inputContainer}
+                            placeholder={"Enter weight..."}
+                            onChangeText={(text) => {
+                                setWeight(text)
+                            }}
+                        />
+                    </View>
+                </View>
+                <Button
+                    mode = "contained"
+                    style = {styles.addButton}
+                    disabled={name.length === 0}
+                    onPress = {() => {
+                        global.charaRef.collection("armor").add({
+                            name: name,
+                            type: type,
+                            cost: cost,
+                            strength: strength,
+                            stealth: stealth,
+                            armor_class: armorClass,
+                            weight: weight,
+                        });
+                        navigation.navigate('CharacterSheet', {
+                            screen: 'Inventory'
+                        })
+                    }}
+                >
+                    Add
+                </Button>
+                <View style = {styles.gap}/>
+            </View>
+        );
+    }
 }
 
 const styles = StyleSheet.create({
+    iosDropdownStyle: {
+        width: screenWidth * 0.3345843960990248,
+        height: screenHeight * 0.0598404255319149,
+        marginTop: screenHeight * -0.12,
+        marginBottom: screenHeight * 0.12,
+        flex: 1,
+        color: "#787878"
+    },
     totalDropdownStyle: {
         width: screenWidth * 0.3345843960990248,
         height: screenHeight * 0.0598404255319149,
@@ -200,6 +354,14 @@ const styles = StyleSheet.create({
         fontFamily: 'sans-serif',
         fontWeight: "bold",
         marginBottom: screenHeight * 0.0026595744680851,
+    },
+    headingContainerIOS: {
+        width: screenWidth * 0.1275318829707427,
+        height: screenHeight * 0.0398936170212766,
+        marginBottom: screenHeight * 0.0096489361702128,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: screenHeight * -0.004968085106383
     },
     addButton: {
         width: "17%",

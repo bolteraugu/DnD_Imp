@@ -413,7 +413,7 @@ export default function SpellsScreen({route, navigation}) {
                         <FlatList
                             data={spells}
                             style = {styles.list}
-                            removeClippedSubviews={true}
+                            removeClippedSubviews={false}
                             keyExtractor={(item) => item._id}
                             renderItem={({ item }) => (
                                 <Spell

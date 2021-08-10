@@ -119,13 +119,13 @@ const styles = StyleSheet.create({
     nameHeadingContainer: {
         width: screenWidth * 0.2460615153788447,
         height: screenHeight * 0.0398936170212766,
-        marginBottom: screenHeight * 0.0066489361702128,
+        marginTop: screenHeight * 0.0146489361702128,
         alignItems: 'center',
     },
     descriptionHeadingContainer: {
         width: screenWidth * 0.5378844711177794,
         height: screenHeight * 0.0398936170212766,
-        marginBottom: screenHeight * 0.0066489361702128,
+        marginTop: screenHeight * 0.0146489361702128,
         alignItems: 'center',
     },
     typeLabel: {
@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
         marginLeft: screenWidth * 0.0015003750937734,
         marginRight: screenWidth * 0.0015003750937734,
         width: screenWidth * 0.5378844711177794,
-        // height: 45,
+        height: screenHeight * 0.0851063829787234,
         backgroundColor: "#e0e0de",
         fontFamily: 'sans-serif'
     },
