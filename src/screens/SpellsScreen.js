@@ -448,21 +448,21 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     addButton: {
-        width: 220,
-        marginTop: 5
+        width: screenWidth * 0.1650412603150788,
+        marginTop: screenHeight * 0.0066489361702128
     },
     spellsInfoContainer: {
         flexDirection: 'column',
-        marginLeft: 40
+        marginLeft: screenWidth * 0.0300075018754689
     },
     spellsSlotsContainer: {
         flexDirection: 'column',
         borderWidth: 1,
-        marginLeft: 40,
-        marginTop: 10,
+        marginLeft: screenWidth * 0.0300075018754689,
+        marginTop: screenHeight * 0.0132978723404255,
         backgroundColor:"#e3e3e3",
-        paddingBottom: 10.7,
-        width: 909
+        paddingBottom: screenHeight * 0.0142287234042553,
+        width: screenWidth * 0.68192048012003
     },
     spellsContainer: {
         alignItems: 'center'
@@ -470,13 +470,13 @@ const styles = StyleSheet.create({
     spellSlotRow: {
         alignItems: 'center',
         flexDirection: 'row',
-        marginLeft: 20,
+        marginLeft: screenWidth * 0.0150037509377344,
     },
     spellSlotFirstRow: {
         alignItems: 'center',
         flexDirection: 'row',
-        marginLeft: 20,
-        marginTop: 27
+        marginLeft: screenWidth * 0.0150037509377344,
+        marginTop: screenHeight * 0.0359042553191489
     },
     totalContainer: {
         flexDirection: 'column'
@@ -487,82 +487,83 @@ const styles = StyleSheet.create({
     },
     bottomRow: {
         borderWidth: 1,
-        margin: 10,
-        marginLeft: 27,
+        marginTop: screenHeight * 0.0132978723404255,
+        marginBottom: screenHeight * 0.0132978723404255,
+        marginLeft: screenWidth * 0.0202550637659415,
         width: "96%",
-        marginRight: 60,
+        marginRight: screenWidth * 0.0450112528132033,
         backgroundColor: "#e8e8e8",
-        paddingBottom: 12,
+        paddingBottom: screenHeight * 0.0159574468085106,
         alignItems: 'center',
         flexDirection: 'column',
         borderRadius: 4,
     },
     textInputHeading: {
         position: "absolute",
-        top: 15,
-        width: 245,
-        left: 20,
+        top: screenHeight * 0.0199468085106383,
+        width: screenWidth * 0.1837959489872468,
+        left: screenWidth * 0.0150037509377344,
         textAlign: "center",
         color: "#0038d4",
     },
     spellcastingInputHeading: {
         position: "absolute",
-        top: 15,
-        width: 245,
-        left: 20,
+        top: screenHeight * 0.0199468085106383,
+        width: screenWidth * 0.1837959489872468,
+        left: screenWidth * 0.0150037509377344,
         textAlign: "center",
         color: "#0038d4",
     },
     spellSlotHeading: {
-        marginTop: 5,
+        marginTop: screenHeight * 0.0066489361702128,
         position: "absolute",
-        width: 909,
+        width: screenWidth * 0.68192048012003,
         textAlign: "center",
         color: "#000000",
         fontSize: 15,
         fontWeight: "bold",
     },
     spellsListHeading: {
-        marginTop: 10,
-        marginBottom: 7,
-        width: 909,
+        marginTop: screenHeight * 0.0132978723404255,
+        marginBottom: screenHeight * 0.0093085106382979,
+        width: screenWidth * 0.68192048012003,
         textAlign: "center",
         fontWeight: "bold",
         color: "#000000",
         fontSize: 17
     },
     spellsInput: {
-        marginTop: 10,
-        marginRight: 20,
-        marginLeft: 20,
-        width: 245,
-        height: 62,
+        marginTop: screenHeight * 0.0132978723404255,
+        marginRight: screenWidth * 0.0150037509377344,
+        marginLeft: screenWidth * 0.0150037509377344,
+        width: screenWidth * 0.1837959489872468,
+        height: screenHeight * 0.0824468085106383,
         textAlign: "center",
-        paddingTop: 15,
+        paddingTop: screenHeight * 0.0199468085106383,
         backgroundColor: "#e8e8e8",
         borderRadius: 4,
         borderWidth: 1
     },
     spellSlotInput: {
-        marginTop: 10,
-        marginRight: 20,
-        marginLeft: 20,
-        width: 245,
-        height: 40,
+        marginTop: screenHeight * 0.0132978723404255,
+        marginRight: screenWidth * 0.0150037509377344,
+        marginLeft: screenWidth * 0.0150037509377344,
+        width: screenWidth * 0.1837959489872468,
+        height: screenHeight * 0.0531914893617021,
         textAlign: "center",
-        paddingTop: 20,
+        paddingTop: screenHeight * 0.0265957446808511,
         backgroundColor: "#ffffff",
         borderRadius: 4,
         borderWidth: 1
     },
     spellcastingInput: {
-        marginTop: 10,
-        marginRight: 20,
-        marginLeft: 20,
-        width: 245,
-        height: 62,
+        marginTop: screenHeight * 0.0132978723404255,
+        marginRight: screenWidth * 0.0150037509377344,
+        marginLeft: screenWidth * 0.0150037509377344,
+        width: screenWidth * 0.1837959489872468,
+        height: screenHeight * 0.0824468085106383,
         textAlign: "center",
-        paddingTop: 15,
+        paddingTop: screenHeight * 0.0199468085106383,
         backgroundColor: "#e8e8e8",
         borderRadius: 4,
         borderWidth: 1

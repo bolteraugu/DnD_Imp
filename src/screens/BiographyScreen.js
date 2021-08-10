@@ -104,11 +104,11 @@ export default function BiographyScreen({route}) {
                                             props.style,
                                             props.multiline
                                                 ? {
-                                                    paddingTop: 30,
-                                                    paddingLeft: 25,
-                                                    paddingRight: 25,
-                                                    paddingBottom: 8,
-                                                    height: 100,
+                                                    paddingTop: screenHeight * 0.0398936170212766,
+                                                    paddingLeft: screenWidth * 0.018754688672168,
+                                                    paddingRight: screenWidth * 0.018754688672168,
+                                                    paddingBottom: screenHeight * 0.0106382978723404,
+                                                    height: screenHeight * 0.1329787234042553,
                                                 }
                                                 : null,
                                         ]}
@@ -139,11 +139,11 @@ export default function BiographyScreen({route}) {
                                             props.style,
                                             props.multiline
                                                 ? {
-                                                    paddingTop: 30,
-                                                    paddingLeft: 25,
-                                                    paddingRight: 25,
-                                                    paddingBottom: 8,
-                                                    height: 100,
+                                                    paddingTop: screenHeight * 0.0398936170212766,
+                                                    paddingLeft: screenWidth * 0.018754688672168,
+                                                    paddingRight: screenWidth * 0.018754688672168,
+                                                    paddingBottom: screenHeight * 0.0106382978723404,
+                                                    height: screenHeight * 0.1329787234042553,
                                                 }
                                                 : null,
                                         ]}
@@ -176,11 +176,11 @@ export default function BiographyScreen({route}) {
                                             props.style,
                                             props.multiline
                                                 ? {
-                                                    paddingTop: 30,
-                                                    paddingLeft: 25,
-                                                    paddingRight: 25,
-                                                    paddingBottom: 8,
-                                                    height: 100,
+                                                    paddingTop: screenHeight * 0.0398936170212766,
+                                                    paddingLeft: screenWidth * 0.018754688672168,
+                                                    paddingRight: screenWidth * 0.018754688672168,
+                                                    paddingBottom: screenHeight * 0.0106382978723404,
+                                                    height: screenHeight * 0.1329787234042553,
                                                 }
                                                 : null,
                                         ]}
@@ -211,11 +211,11 @@ export default function BiographyScreen({route}) {
                                             props.style,
                                             props.multiline
                                                 ? {
-                                                    paddingTop: 30,
-                                                    paddingLeft: 25,
-                                                    paddingRight: 25,
-                                                    paddingBottom: 8,
-                                                    height: 100,
+                                                    paddingTop: screenHeight * 0.0398936170212766,
+                                                    paddingLeft: screenWidth * 0.018754688672168,
+                                                    paddingRight: screenWidth * 0.018754688672168,
+                                                    paddingBottom: screenHeight * 0.0106382978723404,
+                                                    height: screenHeight * 0.1329787234042553,
                                                 }
                                                 : null,
                                         ]}
@@ -249,11 +249,11 @@ export default function BiographyScreen({route}) {
                                         props.style,
                                         props.multiline
                                             ? {
-                                                paddingTop: 30,
-                                                paddingLeft: 25,
-                                                paddingRight: 25,
-                                                paddingBottom: 8,
-                                                height: 100,
+                                                paddingTop: screenHeight * 0.0398936170212766,
+                                                paddingLeft: screenWidth * 0.018754688672168,
+                                                paddingRight: screenWidth * 0.018754688672168,
+                                                paddingBottom: screenHeight * 0.0106382978723404,
+                                                height: screenHeight * 0.1329787234042553,
                                             }
                                             : null,
                                     ]}
@@ -288,11 +288,11 @@ export default function BiographyScreen({route}) {
                                         props.style,
                                         props.multiline
                                             ? {
-                                                paddingTop: 30,
-                                                paddingLeft: 25,
-                                                paddingRight: 25,
-                                                paddingBottom: 8,
-                                                height: 100,
+                                                paddingTop: screenHeight * 0.0398936170212766,
+                                                paddingLeft: screenWidth * 0.018754688672168,
+                                                paddingRight: screenWidth * 0.018754688672168,
+                                                paddingBottom: screenHeight * 0.0106382978723404,
+                                                height: screenHeight * 0.1329787234042553,
                                             }
                                             : null,
                                     ]}
@@ -325,11 +325,11 @@ export default function BiographyScreen({route}) {
                                         props.style,
                                         props.multiline
                                             ? {
-                                                paddingTop: 30,
-                                                paddingLeft: 25,
-                                                paddingRight: 25,
-                                                paddingBottom: 8,
-                                                height: 100,
+                                                paddingTop: screenHeight * 0.0398936170212766,
+                                                paddingLeft: screenWidth * 0.018754688672168,
+                                                paddingRight: screenWidth * 0.018754688672168,
+                                                paddingBottom: screenHeight * 0.0106382978723404,
+                                                height: screenHeight * 0.1329787234042553,
                                             }
                                             : null,
                                     ]}
@@ -472,7 +472,7 @@ const styles = StyleSheet.create({
     },
     backstoryInput: {
         width: "100%",
-        height: screenHeight * 0.5186170212765957,
+        height: screenHeight * 0.5171170212765957,
         borderWidth: 1,
         backgroundColor: "#e8e8e8",
         borderTopRightRadius: 0,

@@ -165,15 +165,15 @@ DMScreen.navigationOptions = {
 
 const styles = StyleSheet.create({
   gap: {
-    height: 300
+    height: screenHeight * 0.398936170212766
   },
   space: {
-    width: 30,
-    height: 30,
+    width: screenWidth * 0.0225056264066017,
+    height: screenHeight * 0.0398936170212766,
   },
   popUpRaceButtons: {
     width: '25%',
-    marginBottom: -35,
+    marginBottom: screenHeight * -0.0465425531914894,
   },
   charactersContainer: {
     flex: 2,
@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
   },
   popUpCreateRaceWindow: {
     width: '40%',
-    height: 230,
+    height: screenHeight * 0.3058510638297872,
     alignItems: 'center',
     alignSelf: 'center',
   },

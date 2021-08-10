@@ -442,33 +442,36 @@ MenuScreen.navigationOptions = {
 const styles = StyleSheet.create({
   createGroupInput: {
     width: '66.4%',
-    marginLeft: -5.6
+    marginLeft: screenWidth * -0.0042010502625656
   },
 
   createGroupButton: {
-    paddingTop: 10,
-    paddingRight: 7,
+    paddingTop: screenHeight * 0.0132978723404255,
+    paddingRight: screenWidth * 0.0052513128282071,
     width: '34.6%',
   },
 
   createGroupContainer: {
     flexDirection: 'row',
-    marginLeft: 10,
-    marginTop: 5,
+    marginLeft: screenWidth * 0.0075018754688672,
+    marginTop: screenHeight * 0.0066489361702128,
   },
 
   groupContainer: {
     justifyContent: 'center',
-    height: 60,
+    height: screenHeight * 0.0797872340425532,
     width: '65.8%',
     backgroundColor: Colors.white,
     elevation: 4,
-    margin: 5,
+    marginBottom: screenHeight * 0.0066489361702128,
+    marginTop: screenHeight * 0.0066489361702128,
+    marginLeft: screenWidth * 0.0037509377344336,
+    marginRight: screenWidth * 0.0037509377344336,
   },
 
   editIcon: {
     position: 'absolute',
-    right: 10,
+    right: screenWidth * 0.0075018754688672,
   },
 
   popUpContent: {
@@ -477,7 +480,7 @@ const styles = StyleSheet.create({
   },
 
   deleteAccount: {
-    marginTop: 400,
+    marginTop: screenHeight * 0.5319148936170213,
   },
 
   popUpWindow: {
@@ -488,33 +491,33 @@ const styles = StyleSheet.create({
 
   popUpEditWindow: {
     width: '40%',
-    height: 225,
+    height: screenHeight * 0.2992021276595745,
     alignItems: 'center',
     alignSelf: 'center',
   },
 
   warningMessage: {
-    marginBottom: 20,
-    marginLeft: 10,
+    marginBottom: screenHeight * 0.0265957446808511,
+    marginLeft: screenWidth * 0.0075018754688672,
   },
 
   popUpTitle: {
-    marginTop: 10,
+    marginTop: screenHeight * 0.0132978723404255,
   },
 
   space: {
-    width: 30,
-    height: 30,
+    width: screenWidth * 0.0225056264066017,
+    height: screenHeight * 0.0398936170212766,
   },
 
   popUpButtons: {
     width: '25%',
-    marginBottom: 5,
+    marginBottom: screenHeight * 0.0066489361702128,
   },
 
   popUpEditButtons: {
     width: '25%',
-    marginBottom: -35,
+    marginBottom: screenHeight * -0.0465425531914894,
   },
 
   row: {
@@ -526,29 +529,32 @@ const styles = StyleSheet.create({
   buttonItem: {
     width: '34.2%',
     height: '91%',
-    paddingTop: 10,
-    marginTop: 4,
+    paddingTop: screenHeight * 0.0132978723404255,
+    marginTop: screenHeight * 0.0053191489361702,
     position: 'absolute',
     right: 0,
     elevation: 5,
-    paddingVertical: 13,
+    paddingVertical: screenHeight * 0.0172872340425532,
   },
 
   container: {
     width: '80%',
-    margin: 5,
-    paddingHorizontal: 10,
-    paddingVertical: 15,
+    marginBottom: screenHeight * 0.0066489361702128,
+    marginTop: screenHeight * 0.0066489361702128,
+    marginLeft: screenWidth * 0.0037509377344336,
+    marginRight: screenWidth * 0.0037509377344336,
+    paddingHorizontal: screenWidth * 0.0075018754688672,
+    paddingVertical: screenHeight * 0.0199468085106383,
   },
 
   title: {
     alignSelf: 'center',
     fontSize: 26,
-    marginBottom: 50
+    marginBottom: screenHeight * 0.066489361702128
   },
   wrapper: {
     alignSelf: 'center',
-    paddingTop: 100,
-    width: 500,
+    paddingTop: screenHeight * 0.1329787234042553,
+    width: screenWidth * 0.3750937734433608,
   },
 });

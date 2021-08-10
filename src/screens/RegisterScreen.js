@@ -104,17 +104,20 @@ export default function SignupScreen({navigation}) {
 const styles = StyleSheet.create({
   passwordContainer: {
     justifyContent: 'center',
-    height: 60,
-    margin: 5,
+    height: screenHeight * 0.0797872340425532,
+    marginBottom: screenHeight * 0.0066489361702128,
+    marginTop: screenHeight * 0.0066489361702128,
+    marginLeft: screenWidth * 0.0037509377344336,
+    marginRight: screenWidth * 0.0037509377344336,
   },
 
   passwordField: {
-    height: 60,
+    height: screenHeight * 0.0797872340425532,
   },
 
   visibilityIcon: {
     position: 'absolute',
-    right: 10,
+    right: screenWidth * 0.0075018754688672,
   },
 
   errorText: {
@@ -122,17 +125,23 @@ const styles = StyleSheet.create({
   },
   button: {
     flex: 1,
-    margin: 5,
+    marginBottom: screenHeight * 0.0066489361702128,
+    marginTop: screenHeight * 0.0066489361702128,
+    marginLeft: screenWidth * 0.0037509377344336,
+    marginRight: screenWidth * 0.0037509377344336,
   },
   container: {
     //Aligns the content on this screen to the center, sets the content 200 from the top and sets the width of it to 500
     alignSelf: 'center',
-    marginTop: 200,
-    width: 500,
+    marginTop: screenHeight * 0.2659574468085106,
+    width: screenWidth * 0.3750937734433608,
   },
   input: {
-    height: 60,
-    margin: 5,
+    height: screenHeight * 0.0797872340425532,
+    marginBottom: screenHeight * 0.0066489361702128,
+    marginTop: screenHeight * 0.0066489361702128,
+    marginLeft: screenWidth * 0.0037509377344336,
+    marginRight: screenWidth * 0.0037509377344336,
   },
   row: {
     //This is why the back button and the submit button are on the same row.

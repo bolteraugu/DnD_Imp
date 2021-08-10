@@ -87,13 +87,16 @@ export default function LoginScreen({navigation}) {
 
 const styles = StyleSheet.create({
   contactUs: {
-    marginTop:200,
+    marginTop: screenHeight * 0.2659574468085106,
   },
 
   facebookButton: {
     width: '98%',
-    margin: 5,
-    height: 45,
+    marginBottom: screenHeight * 0.0066489361702128,
+    marginTop: screenHeight * 0.0066489361702128,
+    marginLeft: screenWidth * 0.0037509377344336,
+    marginRight: screenWidth * 0.0037509377344336,
+    height: screenHeight * 0.0598404255319149,
     backgroundColor: '#3260a8',
   },
 
@@ -103,20 +106,26 @@ const styles = StyleSheet.create({
 
   appleSignInButton: {
     width: '98%',
-    height: 45,
-    margin: 5,
+    height: screenHeight * 0.0598404255319149,
+    marginBottom: screenHeight * 0.0066489361702128,
+    marginTop: screenHeight * 0.0066489361702128,
+    marginLeft: screenWidth * 0.0037509377344336,
+    marginRight: screenWidth * 0.0037509377344336,
     backgroundColor: '#000000',
   },
 
   googleSignInButton: {
     width: '98%',
-    height: 45,
-    margin: 5,
+    height: screenHeight * 0.0598404255319149,
+    marginBottom: screenHeight * 0.0066489361702128,
+    marginTop: screenHeight * 0.0066489361702128,
+    marginLeft: screenWidth * 0.0037509377344336,
+    marginRight: screenWidth * 0.0037509377344336,
     backgroundColor: '#2bc26a',
   },
 
   forgotPasswordButton: {
-    marginLeft: 6,
+    marginLeft: screenWidth * 0.0045011252813203,
     marginTop: screenHeight * 0.0079787234042553,
     fontSize: 14,
     color: '#6231de',
@@ -125,7 +134,10 @@ const styles = StyleSheet.create({
   passwordContainer: {
     justifyContent: 'center',
     height: screenHeight * 0.0797872340425532,
-    margin: 5,
+    marginBottom: screenHeight * 0.0066489361702128,
+    marginTop: screenHeight * 0.0066489361702128,
+    marginLeft: screenWidth * 0.0037509377344336,
+    marginRight: screenWidth * 0.0037509377344336,
   },
 
   passwordField: {
@@ -134,24 +146,24 @@ const styles = StyleSheet.create({
 
   visibilityIcon: {
     position: 'absolute',
-    right: 10,
+    right: screenWidth * 0.0075018754688672,
   },
 
   googleIcon: {
     position: 'absolute',
-    right: 10,
-    top: 263,
+    right: screenWidth * 0.0075018754688672,
+    top: screenHeight * 0.3497340425531915,
   },
 
   appleIcon: {
     position: 'absolute',
-    right: 10,
-    top: 316,
+    right: screenWidth * 0.0075018754688672,
+    top: screenHeight * 0.4202127659574468,
   },
 
   facebookIcon: {
     position: 'absolute',
-    right: 10,
+    right: screenWidth * 0.0075018754688672,
     elevation: 2,
   },
 
@@ -161,11 +173,14 @@ const styles = StyleSheet.create({
 
   checkboxText: {
     marginTop: screenHeight * 0.0079787234042553,
-    marginLeft: 6,
+    marginLeft: screenWidth * 0.0045011252813203,
   },
 
   button: {
-    margin: 5,
+    marginBottom: screenHeight * 0.0066489361702128,
+    marginTop: screenHeight * 0.0066489361702128,
+    marginLeft: screenWidth * 0.0037509377344336,
+    marginRight: screenWidth * 0.0037509377344336,
   },
   container: {
     alignSelf: 'center',
@@ -192,6 +207,9 @@ const styles = StyleSheet.create({
 
   input: {
     height: screenHeight * 0.0797872340425532,
-    margin: 5,
+    marginBottom: screenHeight * 0.0066489361702128,
+    marginTop: screenHeight * 0.0066489361702128,
+    marginLeft: screenWidth * 0.0037509377344336,
+    marginRight: screenWidth * 0.0037509377344336,
   },
 });

@@ -364,7 +364,7 @@ export default function InventoryScreen({route, navigation}) {
 
 const styles = StyleSheet.create({
     gap: {
-        height: 100
+        height: screenHeight * 0.1329787234042553
     },
     centerButton: {
         width: "100%",
@@ -376,15 +376,15 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     addButton: {
-        width: 220,
-        marginTop: 5
+        width: screenWidth * 0.1650412603150788,
+        marginTop: screenHeight * 0.00664893617021277
     },
     addPossessionButton: {
         width: "27%",
-        marginTop: 5
+        marginTop: screenHeight * 0.00664893617021277
     },
     list: {
-        marginTop: 50,
+        marginTop: screenHeight * 0.0664893617021277,
         width: "86%"
     },
     totalContainer: {
@@ -392,13 +392,13 @@ const styles = StyleSheet.create({
     },
     currencyTypes: {
         flexDirection: 'row',
-        marginLeft: 100
+        marginLeft: screenWidth * 0.0750187546886722
     },
     currencyContainer: {
-        height: 115,
-        marginTop: 7,
-        marginLeft: 10,
-        marginRight: 10,
+        height: screenHeight * 0.1529255319148936,
+        marginTop: screenHeight * 0.0093085106382979,
+        marginLeft: screenWidth * 0.0075018754688672,
+        marginRight: screenWidth * 0.0075018754688672,
         backgroundColor:"#e3e3e3",
         borderRadius: 4,
         borderWidth: 1
@@ -419,24 +419,24 @@ const styles = StyleSheet.create({
         backgroundColor:"#e3e3e3",
         borderRadius: 4,
         borderWidth: 1,
-        marginLeft: 10,
-        marginTop: 10,
-        marginRight: 10,
-        paddingBottom: 12,
+        marginLeft: screenWidth * 0.0075018754688672,
+        marginTop: screenHeight * 0.0132978723404255,
+        marginRight: screenWidth * 0.0075018754688672,
+        paddingBottom: screenHeight * 0.0159574468085106,
         alignItems: 'center'
     },
     currencyTypeContainer: {
         flexDirection: 'row',
         flex: 1,
-        marginTop: 53,
-        height: 35,
+        marginTop: screenHeight * 0.0704787234042553,
+        height: screenHeight * 0.0465425531914894,
     },
     currencyTypeHeading: {
-        marginLeft: 10,
+        marginLeft: screenWidth * 0.0075018754688672,
         textAlign: 'center',
         height: "100%",
-        marginRight: 10,
-        marginTop: 4,
+        marginRight: screenWidth * 0.0075018754688672,
+        marginTop: 0.0053191489361702,
         fontSize: 16
     },
     currencyTypeInput: {
@@ -444,8 +444,8 @@ const styles = StyleSheet.create({
         backgroundColor: "#ffffff",
         borderTopRightRadius: 0,
         borderTopLeftRadius: 0,
-        height: 30,
-        width: 70,
+        height: screenHeight * 0.0398936170212766,
+        width: screenWidth * 0.0525131282820705,
         textAlign: 'center'
     },
     currencyHeading: {
@@ -453,7 +453,7 @@ const styles = StyleSheet.create({
         textAlign: "center",
         color: "#0038d4",
         position: 'absolute',
-        top: 10,
+        top: screenHeight * 0.0132978723404255,
         fontSize: 17,
         fontWeight: "bold"
     },
@@ -462,7 +462,7 @@ const styles = StyleSheet.create({
         textAlign: "center",
         color: "#0038d4",
         position: 'absolute',
-        top: 10,
+        top: screenHeight * 0.0132978723404255,
         fontSize: 17,
         fontWeight: "bold"
     }

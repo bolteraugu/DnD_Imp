@@ -50,16 +50,16 @@ const styles = StyleSheet.create({
     row: {
         //This is why the back button and the submit button are on the same row.
         flexDirection: 'row',
-        marginTop: 15,
+        marginTop: screenHeight * 0.0199468085106383,
     },
     container: {
         //Aligns the content on this screen to the center, sets the content 200 from the top and sets the width of it to 500
         alignSelf: 'center',
-        marginTop: 200,
-        width: 500,
+        marginTop: screenHeight * 0.0664893617021277,
+        width: screenWidth * 0.3750937734433608,
     },
     input: {
-        marginTop: 10,
+        marginTop: screenHeight * 0.0132978723404255,
     },
     button: {
         justifyContent: 'center',
@@ -68,14 +68,14 @@ const styles = StyleSheet.create({
 
     body: {
         alignSelf: 'center',
-        width: 500,
-        marginTop: 50
+        width: screenWidth * 0.3750937734433608,
+        marginTop: screenHeight * 0.0664893617021277
     },
 
     titleBox: {
         alignSelf: 'center',
-        marginTop: 100,
-        width: 500,
+        marginTop: screenHeight * 0.1329787234042553,
+        width: screenWidth * 0.3750937734433608,
     },
 
     titleText: {

@@ -1673,11 +1673,11 @@ export default function MainScreen({route, navigation}) {
                             props.style,
                             props.multiline
                                 ? {
-                                    paddingTop: 35,
-                                    paddingLeft: 25,
-                                    paddingRight: 25,
-                                    paddingBottom: 8,
-                                    height: 100,
+                                    paddingTop: screenHeight * 0.0465425531914894,
+                                    paddingLeft: screenWidth * 0.018754688672168,
+                                    paddingRight: screenWidth * 0.018754688672168,
+                                    paddingBottom: screenHeight * 0.0106382978723404,
+                                    height: screenHeight * 0.1329787234042553,
                                 }
                                 : null,
                         ]}
@@ -1794,7 +1794,7 @@ const styles = StyleSheet.create({
     },
     skillsValue: {
         borderWidth: 1,
-        height: screenHeight * 0.0525131282820705,
+        height: screenHeight * 0.0345744680851064,
         width: screenWidth * 0.0525131282820705,
         textAlign: 'center',
         backgroundColor: "#ffffff",
@@ -2053,7 +2053,7 @@ const styles = StyleSheet.create({
         marginBottom: screenHeight * 0.0132978723404255,
         marginLeft: screenWidth * 0.00750000001875,
         width: screenWidth * 0.086250000215625,
-        height: screenHeight * 0.0265957446808511,
+        height: screenHeight * 0.0625,
         textAlign: "center",
         paddingTop: screenHeight * 0.0265957446808511,
         backgroundColor: "#e8e8e8",
@@ -2079,17 +2079,17 @@ const styles = StyleSheet.create({
     },
     textInputHeading: {
         position: "absolute",
-        left: 10,
+        left: screenWidth * 0.0075018754688672,
         top: screenHeight * 0.0066489361702128,
-        width: 95,
+        width: screenWidth * 0.0712678169542386,
         textAlign: "center",
         color: "#0038d4",
     },
     profInputHeading: {
         position: "absolute",
-        left: 10,
+        left: screenWidth * 0.0075018754688672,
         top: screenHeight * 0.0066489361702128,
-        width: 200,
+        width: screenWidth * 0.1500375093773443,
         textAlign: "center",
         color: "#0038d4"
     },
