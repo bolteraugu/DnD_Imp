@@ -153,11 +153,11 @@ export default function AddSpellScreen({navigation}) {
                                     props.style,
                                     props.multiline
                                         ? {
-                                            paddingTop: 10,
-                                            paddingLeft: 12,
-                                            paddingRight: 25,
-                                            paddingBottom: 8,
-                                            height: 100,
+                                            paddingTop: screenHeight * 0.0132978723404255,
+                                            paddingLeft: screenWidth * 0.0090022505626407,
+                                            paddingRight: screenWidth * 0.018754688672168,
+                                            paddingBottom: screenHeight * 0.0106382978723404,
+                                            height: screenHeight * 0.1329787234042553,
                                         }
                                         : null,
                                 ]}
@@ -198,7 +198,7 @@ export default function AddSpellScreen({navigation}) {
 
 const styles = StyleSheet.create({
     totalDropdownStyle: {
-        width: screenWidth * 0.0900225056264066,
+        width: screenWidth * 0.3345843960990248,
         height: screenHeight * 0.0598404255319149,
         flex: 1,
         color: "#787878"
@@ -219,7 +219,7 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     gap: {
-      height: screenHeight * 240
+      height: screenHeight * 0.3191489361702128
     },
     headingContainer: {
         width: screenWidth * 0.1275318829707427,
@@ -269,7 +269,7 @@ const styles = StyleSheet.create({
         marginBottom: screenHeight * 0.0132978723404256,
         marginLeft: screenWidth * 0.0075018754688672,
         marginRight: screenWidth * 0.0075018754688672,
-        marginTop: screenHeight * 0.033244680851064,
+        marginTop: screenHeight * 0.1291914893617021,
     },
     row: {
         flexDirection: 'row',
