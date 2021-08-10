@@ -22,8 +22,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 25,
     justifyContent: 'center',
-    marginVertical: 10,
-    padding: 15,
+    marginVertical: screenHeight * 0.0132978723404255,
+    paddingTop: screenHeight * 0.0199468085106383,
+    paddingBottom: screenHeight * 0.0199468085106383,
+    paddingLeft: screenWidth * 0.0112528132033008,
+    paddingRight: screenWidth * 0.0112528132033008,
     width: '100%',
   },
   buttonText: {

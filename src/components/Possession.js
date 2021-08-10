@@ -117,15 +117,15 @@ export default function Possession({
 
 const styles = StyleSheet.create({
     nameHeadingContainer: {
-        width: 328,
-        height: 30,
-        marginBottom: 5,
+        width: screenWidth * 0.2460615153788447,
+        height: screenHeight * 0.0398936170212766,
+        marginBottom: screenHeight * 0.0066489361702128,
         alignItems: 'center',
     },
     descriptionHeadingContainer: {
-        width: 717,
-        height: 30,
-        marginBottom: 5,
+        width: screenWidth * 0.5378844711177794,
+        height: screenHeight * 0.0398936170212766,
+        marginBottom: screenHeight * 0.0066489361702128,
         alignItems: 'center',
     },
     typeLabel: {
@@ -133,33 +133,45 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontFamily: 'sans-serif',
         fontWeight: "bold",
-        marginBottom: 2,
+        marginBottom: screenHeight * 0.0026595744680851,
     },
     deleteButton: {
-        marginTop: 46,
-        marginRight: 10
+        marginTop: screenHeight * 0.0611702127659574,
+        marginLeft: 0
     },
     nameContainer: {
-        margin: 2,
-        width: 328,
-        height: 64,
+        marginBottom: screenHeight * 0.0026595744680851,
+        marginTop: screenHeight * 0.0026595744680851,
+        marginLeft: screenWidth * 0.0015003750937734,
+        marginRight: screenWidth * 0.0015003750937734,
+        width: screenWidth * 0.2460615153788447,
+        height: screenHeight * 0.0851063829787234,
         backgroundColor: "#e0e0de",
         fontFamily: 'sans-serif'
     },
     descriptionContainer: {
-        margin: 2,
-        width: 717,
+        marginBottom: screenHeight * 0.0026595744680851,
+        marginTop: screenHeight * 0.0026595744680851,
+        marginLeft: screenWidth * 0.0015003750937734,
+        marginRight: screenWidth * 0.0015003750937734,
+        width: screenWidth * 0.5378844711177794,
         // height: 45,
         backgroundColor: "#e0e0de",
         fontFamily: 'sans-serif'
     },
     surface: {
         elevation: 4,
-        margin: 5,
+        marginBottom: screenHeight * 0.0026595744680851,
+        marginTop: screenHeight * 0.0026595744680851,
+        marginLeft: screenWidth * 0.0037509377344336,
+        marginRight: screenWidth * 0.0037509377344336,
         color: "#ffffff"
     },
     row: {
         flexDirection: 'row',
-        margin: 10
+        marginBottom: screenHeight * 0.0053191489361702,
+        marginTop: screenHeight * 0.0053191489361702,
+        marginLeft: screenWidth * 0.0075018754688672,
+        marginRight: screenWidth * 0.0075018754688672,
     }
 })

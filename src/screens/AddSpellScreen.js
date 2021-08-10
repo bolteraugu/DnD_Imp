@@ -198,16 +198,18 @@ export default function AddSpellScreen({navigation}) {
 
 const styles = StyleSheet.create({
     totalDropdownStyle: {
-        width: 120,
-        height: 45,
+        width: screenWidth * 0.0900225056264066,
+        height: screenHeight * 0.0598404255319149,
         flex: 1,
         color: "#787878"
     },
     typeContainer: {
-        margin: 2,
-        width: 113,
-        height: 45,
-        marginBottom: 7.5,
+        marginTop: screenHeight * 0.0026595744680851,
+        marginLeft: screenWidth * 0.0015003750937734,
+        marginRight: screenWidth * 0.0015003750937734,
+        width: screenWidth * 0.0847711927981995,
+        height: screenHeight * 0.0598404255319149,
+        marginBottom: screenHeight * 0.033244680851064,
         borderBottomWidth: 1,
         borderTopRightRadius: 4,
         borderTopLeftRadius: 4,
@@ -217,51 +219,57 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     gap: {
-      height: 240
+      height: screenHeight * 240
     },
     headingContainer: {
-        width: 170,
-        height: 30,
-        marginBottom: 5,
+        width: screenWidth * 0.1275318829707427,
+        height: screenHeight * 0.0398936170212766,
+        marginBottom: screenHeight * 0.0066489361702128,
         alignItems: 'center',
         justifyContent: 'center',
-        marginTop: 9
+        marginTop: screenHeight * 0.011968085106383
     },
     typeLabel: {
         color: "#000000",
         fontSize: 16,
         fontFamily: 'sans-serif',
         fontWeight: "bold",
-        marginBottom: 2
+        marginBottom: screenHeight * 0.0026595744680851,
     },
     addButton: {
         width: "17%",
-        marginRight: 55
+        marginRight: screenWidth * 0.0412603150787697
     },
     totalContainer: {
         justifyContent: 'center',
         alignItems: 'center'
     },
     inputContainer: {
-        margin: 2,
-        width: 450,
+        marginTop: screenHeight * 0.0026595744680851,
+        marginLeft: screenWidth * 0.0015003750937734,
+        marginRight: screenWidth * 0.0015003750937734,
+        width: screenWidth * 0.3375843960990248,
         backgroundColor: "#e0e0de",
         fontFamily: 'sans-serif',
-        marginBottom: 7.5,
-        height: 45,
+        marginBottom: screenHeight * 0.033244680851064,
+        height: screenHeight * 0.0598404255319149,
     },
     descriptionContainer: {
-        margin: 2,
-        width: 450,
+        marginTop: screenHeight * 0.0026595744680851,
+        marginLeft: screenWidth * 0.0015003750937734,
+        marginRight: screenWidth * 0.0015003750937734,
+        width: screenWidth * 0.3375843960990248,
         backgroundColor: "#e0e0de",
         fontFamily: 'sans-serif',
-        marginBottom: 7.5,
-        height: 45,
+        marginBottom: screenHeight * 0.033244680851064,
+        height: screenHeight * 0.0598404255319149,
     },
     column: {
         flexDirection: 'column',
-        margin: 10,
-        marginTop: 25
+        marginBottom: screenHeight * 0.0132978723404256,
+        marginLeft: screenWidth * 0.0075018754688672,
+        marginRight: screenWidth * 0.0075018754688672,
+        marginTop: screenHeight * 0.033244680851064,
     },
     row: {
         flexDirection: 'row',

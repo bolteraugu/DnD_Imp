@@ -379,12 +379,12 @@ const styles = StyleSheet.create({
         marginTop: 10,
         marginLeft: 10,
         marginRight: 10,
-        marginBottom: 2.5,
+        marginBottom: screenHeight * 0.0033244680851064,
         width: "97%",
         height: "100%"
     },
     backstoryContainer: {
-        marginTop: 2.5,
+        marginTop: screenHeight * 0.0033244680851064,
         marginLeft: 10,
         marginRight: 10,
         marginBottom: 10,
@@ -400,7 +400,7 @@ const styles = StyleSheet.create({
     personalityTraitsIdealsContainer: {
         flexDirection: 'row',
         width: "98.5%",
-        marginBottom: 5,
+        marginBottom: screenHeight * 0.0066489361702128,
         marginRight: 5,
         marginTop: 10,
         marginLeft: 10
@@ -408,9 +408,9 @@ const styles = StyleSheet.create({
     bondsFlawsContainer: {
         flexDirection: 'row',
         width: "98.5%",
-        marginTop: 5,
+        marginTop: screenHeight * 0.0066489361702128,
         marginLeft: 10,
-        marginBottom: 5,
+        marginBottom: screenHeight * 0.0066489361702128,
         marginRight: 5,
     },
     personalityTraitsContainer: {
@@ -430,7 +430,7 @@ const styles = StyleSheet.create({
         textAlign: "center",
         color: "#0038d4",
         position: 'absolute',
-        top: 5
+        top: screenHeight * 0.0066489361702128
     },
     idealsContainer: {
         flex: 1,
@@ -478,7 +478,7 @@ const styles = StyleSheet.create({
     },
     featuresAndTraitsInput: {
         width: "100%",
-        height: 269,
+        height: screenHeight * 0.3577127659574468,
         borderWidth: 1,
         backgroundColor: "#e8e8e8",
         borderTopRightRadius: 0,
@@ -489,6 +489,6 @@ const styles = StyleSheet.create({
         textAlign: "center",
         color: "#0038d4",
         position: 'absolute',
-        top: 5
+        top: screenHeight * 0.0066489361702128
     },
 })

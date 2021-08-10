@@ -48,11 +48,14 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.lightGrey,
     borderRadius: 25,
     flexDirection: 'row',
-    marginVertical: 10,
-    padding: 15,
+    marginVertical: screenHeight * 0.0132978723404255,
+    paddingTop: screenHeight * 0.0199468085106383,
+    paddingBottom: screenHeight * 0.0199468085106383,
+    paddingLeft: screenWidth * 0.0112528132033008,
+    paddingRight: screenWidth * 0.0112528132033008,
   },
   icon: {
-    marginRight: 10,
+    marginRight: screenWidth * 0.0075018754688672,
   },
   input: {
     color: Colors.black,
@@ -62,6 +65,6 @@ const styles = StyleSheet.create({
   rightIconStyles: {
     alignSelf: 'center',
     position: 'absolute',
-    right: 30,
+    right: screenWidth * 0.0225056264066017,
   },
 });
