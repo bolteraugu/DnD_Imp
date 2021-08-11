@@ -16,7 +16,6 @@ export default function CharacterCard({
                                           //onRacePopUp,
                                           groupRef,
                                           navigation,
-    group
                                       }) {
     // const {user} = useContext(AuthUserContext);
     const [characterData, setCharacterData] = useState([]);
@@ -85,8 +84,6 @@ export default function CharacterCard({
                                 onChange(index, 'name', text, false);
                                 updateCharacter();
                                 getCharacter()
-                                console.log(screenWidth);
-                                console.log(screenHeight);
                             }
                             }
                         />
@@ -379,7 +376,8 @@ export default function CharacterCard({
                                         params: {
                                             charRef: groupRef.collection('characters').doc(character._id),
                                             charData: characterData,
-                                            onFSChange: (fieldName, fieldValue, isNumber) => onChange(index, fieldName, fieldValue, isNumber),
+                                            index: index,
+                                            onFSChange: (index, fieldName, fieldValue, isNumber) => onChange(index, fieldName, fieldValue, isNumber),
                                             updateCharData: () => getCharacter()
                                         },
                                     })

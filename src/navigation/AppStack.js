@@ -19,12 +19,14 @@ import AddWeaponScreen from "../screens/AddWeaponScreen"
 import AddArmorScreen from "../screens/AddArmorScreen"
 import AddPossessionScreen from "../screens/AddPossessionScreen"
 import AddSpellScreen from "../screens/AddSpellScreen"
+import NotesScreen from "../screens/NotesScreen"
+import AddNotesScreen from "../screens/AddNotesScreen"
 const Stack = createStackNavigator();
 
 global.screenWidth = Dimensions.get("window").width;
 global.screenHeight = Dimensions.get("window").height;
 
-export default function AppStack() {
+export default function AppStack({navigation}) {
   return (
     <Stack.Navigator
       screenOptions={{
@@ -56,8 +58,16 @@ export default function AppStack() {
       <Stack.Screen
         name="DM"
         component={DMScreen}
-        options={({route}) => ({
+        options={({route, navigation}) => ({
           title: route.params.group.name,
+
+            headerRight: () => (
+                <IconButton
+                    icon="note-multiple"
+                    size={28}
+                    color="#ffffff"
+                    onPress={() => navigation.navigate('Notes', {group: route.params.group})}
+                />)
         })}
       />
       <Stack.Screen name="CharacterSheet" component={CharacterNav}
@@ -71,6 +81,14 @@ export default function AppStack() {
                         }
                     }}
       />
+        <Stack.Screen name="Notes" component={NotesScreen}
+                      options={{
+                          title: "Notes",
+                      }}/>
+        <Stack.Screen name="AddNote" component={AddNotesScreen}
+                      options={{
+                          title: "Add Note",
+                      }}/>
         <Stack.Screen name="AddWeapon" component={AddWeaponScreen}
                       options={{
                           title: "Add Weapon",

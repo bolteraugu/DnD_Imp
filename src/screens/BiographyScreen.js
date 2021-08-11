@@ -1,23 +1,37 @@
 import {Text, TextInput} from "react-native-paper";
 import React, {useEffect, useState} from "react"
 import {createMaterialTopTabNavigator} from "@react-navigation/material-top-tabs";
-import {View, StyleSheet, TextInput as NativeTextInput, Dimensions} from "react-native";
+import {View, StyleSheet, TextInput as NativeTextInput, Dimensions, Keyboard, TouchableOpacity} from "react-native";
 import colors from "../utils/colors";
 
 global.screenWidth = Dimensions.get("window").width;
 global.screenHeight = Dimensions.get("window").height;
 
-export default function BiographyScreen({route}) {
+export default function BiographyScreen({route, navigation}) {
     const [charData, setCharData] = useState(global.charaData);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        getCharacter();
+        const unsubscribe = navigation.addListener('focus', e => {
+            setLoading(true)
+            getCharacter();
+            if (loading) {
+                setLoading(false);
+            }
+        });
+        return unsubscribe;
     }, [])
 
     function getCharacter() {
         global.charaRef.onSnapshot( (snapshot) => {
             setCharData(snapshot.data())
         });
+    }
+
+    function updateCharacterLocal(fieldName, text, isNumber) {
+        let tempCharData = JSON.parse(JSON.stringify(charData));
+        tempCharData[fieldName] = isNumber ? Number(text) : text;
+        setCharData(tempCharData);
     }
 
     function updateCharacter(fieldName, value) {
@@ -87,7 +101,11 @@ export default function BiographyScreen({route}) {
     }
 
     return (
-        <View style = {styles.totalContainer}>
+        <TouchableOpacity
+            activeOpacity={1}
+            onPress={() => Keyboard.dismiss()}
+            style = {styles.totalContainer}
+        >
             <View style = {styles.side}>
                 <View style = {styles.corner}>
                     <View style = {styles.personalityTraitsIdealsContainer}>
@@ -96,7 +114,7 @@ export default function BiographyScreen({route}) {
                                 style = {styles.personalityTraitsInput}
                                 underlineColor="transparent"
                                 multiline={true}
-                                defaultValue = {charData["personality_traits"]}
+                                value = {charData["personality_traits"]}
                                 render={props => (
                                     <NativeTextInput
                                         {...props}
@@ -115,9 +133,11 @@ export default function BiographyScreen({route}) {
                                         placeholder={"Enter personality traits..."}
                                     />
                                 )}
-                                onChangeText = {(text) => {
-                                    updateCharacter('personality_traits', text);
-                                    getCharacter()
+                                onChangeText={(text) => {
+                                    updateCharacterLocal('personality_traits', text, false);
+                                }}
+                                onBlur = {() => {
+                                    updateCharacter('personality_traits', charData["personality_traits"]);
                                 }}
                             />
                             <Text
@@ -131,7 +151,7 @@ export default function BiographyScreen({route}) {
                                 style = {styles.idealsInput}
                                 underlineColor="transparent"
                                 multiline={true}
-                                defaultValue = {charData["ideals"]}
+                                value = {charData["ideals"]}
                                 render={props => (
                                     <NativeTextInput
                                         {...props}
@@ -150,9 +170,11 @@ export default function BiographyScreen({route}) {
                                         placeholder={"Enter ideals..."}
                                     />
                                 )}
-                                onChangeText = {(text) => {
-                                    updateCharacter('ideals', text);
-                                    getCharacter()
+                                onChangeText={(text) => {
+                                    updateCharacterLocal('ideals', text, false);
+                                }}
+                                onBlur = {() => {
+                                    updateCharacter('ideals', charData["ideals"]);
                                 }}
                             />
                             <Text
@@ -168,7 +190,7 @@ export default function BiographyScreen({route}) {
                                 style = {styles.bondsInput}
                                 underlineColor="transparent"
                                 multiline={true}
-                                defaultValue = {charData["bonds"]}
+                                value = {charData["bonds"]}
                                 render={props => (
                                     <NativeTextInput
                                         {...props}
@@ -187,9 +209,11 @@ export default function BiographyScreen({route}) {
                                         placeholder={"Enter bonds..."}
                                     />
                                 )}
-                                onChangeText = {(text) => {
-                                    updateCharacter('bonds', text);
-                                    getCharacter()
+                                onChangeText={(text) => {
+                                    updateCharacterLocal('bonds', text, false);
+                                }}
+                                onBlur = {() => {
+                                    updateCharacter('bonds', charData["bonds"]);
                                 }}
                             />
                             <Text
@@ -203,7 +227,7 @@ export default function BiographyScreen({route}) {
                                 style = {styles.flawsInput}
                                 underlineColor="transparent"
                                 multiline={true}
-                                defaultValue = {charData["flaws"]}
+                                value = {charData["flaws"]}
                                 render={props => (
                                     <NativeTextInput
                                         {...props}
@@ -222,9 +246,11 @@ export default function BiographyScreen({route}) {
                                         placeholder={"Enter flaws..."}
                                     />
                                 )}
-                                onChangeText = {(text) => {
-                                    updateCharacter('flaws', text);
-                                    getCharacter()
+                                onChangeText={(text) => {
+                                    updateCharacterLocal('flaws', text, false);
+                                }}
+                                onBlur = {() => {
+                                    updateCharacter('flaws', charData["flaws"]);
                                 }}
                             />
                             <Text
@@ -241,7 +267,7 @@ export default function BiographyScreen({route}) {
                             style = {styles.featuresAndTraitsInput}
                             underlineColor="transparent"
                             multiline={true}
-                            defaultValue = {charData["features_and_traits"]}
+                            value = {charData["features_and_traits"]}
                             render={props => (
                                 <NativeTextInput
                                     {...props}
@@ -260,9 +286,11 @@ export default function BiographyScreen({route}) {
                                     placeholder={"Enter features & traits..."}
                                 />
                             )}
-                            onChangeText = {(text) => {
-                                updateCharacter('features_and_traits', text);
-                                getCharacter()
+                            onChangeText={(text) => {
+                                updateCharacterLocal('features_and_traits', text, false);
+                            }}
+                            onBlur = {() => {
+                                updateCharacter('features_and_traits', charData["features_and_traits"]);
                             }}
                         />
                         <Text
@@ -280,7 +308,7 @@ export default function BiographyScreen({route}) {
                             style = {styles.appearanceInput}
                             underlineColor="transparent"
                             multiline={true}
-                            defaultValue = {charData["appearance"]}
+                            value = {charData["appearance"]}
                             render={props => (
                                 <NativeTextInput
                                     {...props}
@@ -299,9 +327,11 @@ export default function BiographyScreen({route}) {
                                     placeholder={"Enter character appearance..."}
                                 />
                             )}
-                            onChangeText = {(text) => {
-                                updateCharacter('appearance', text);
-                                getCharacter()
+                            onChangeText={(text) => {
+                                updateCharacterLocal('appearance', text, false);
+                            }}
+                            onBlur = {() => {
+                                updateCharacter('appearance', charData["appearance"]);
                             }}
                         />
                         <Text
@@ -336,9 +366,11 @@ export default function BiographyScreen({route}) {
                                     placeholder={"Enter character backstory..."}
                                 />
                             )}
-                            onChangeText = {(text) => {
-                                updateCharacter('backstory', text);
-                                getCharacter()
+                            onChangeText={(text) => {
+                                updateCharacterLocal('backstory', text, false);
+                            }}
+                            onBlur = {() => {
+                                updateCharacter('backstory', charData["backstory"]);
                             }}
                         />
                         <Text
@@ -349,7 +381,7 @@ export default function BiographyScreen({route}) {
                     </View>
                 </View>
             </View>
-        </View>
+        </TouchableOpacity>
     );
 }
 

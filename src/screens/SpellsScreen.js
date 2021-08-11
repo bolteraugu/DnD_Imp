@@ -1,6 +1,15 @@
 import {useEffect, useState} from "react";
 import React from "react"
-import {Dimensions, FlatList, KeyboardAvoidingView, ScrollView, StyleSheet, View} from "react-native"
+import {
+    Dimensions,
+    FlatList,
+    Keyboard,
+    KeyboardAvoidingView,
+    ScrollView,
+    StyleSheet,
+    TouchableOpacity,
+    View
+} from "react-native"
 import {Button, Text, TextInput} from "react-native-paper";
 import Weapon from "../components/Weapon";
 import Spinner from "../components/Spinner";
@@ -15,27 +24,29 @@ export default function SpellsScreen({route, navigation}) {
     const [loading, setLoading] = useState(true);
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', e => {
+            setLoading(true)
             getCharacter();
-        });
-        global.charaRef.collection("spells").onSnapshot(
-            (querySnapshot) => {
-                const spells = querySnapshot.docs.map((doc) => {
-                    const data = {
-                        _id: doc.id,
-                        ...doc.data(),
-                    };
-                    return data;
-                });
-                setSpells(spells);
+            global.charaRef.collection("spells").onSnapshot(
+                (querySnapshot) => {
+                    const spells = querySnapshot.docs.map((doc) => {
+                        const data = {
+                            _id: doc.id,
+                            ...doc.data(),
+                        };
+                        return data;
+                    });
+                    setSpells(spells);
 
-                if (loading) {
-                    setLoading(false);
+
+                },
+                (error) => {
+                    alert(error);
                 }
-            },
-            (error) => {
-                alert(error);
+            );
+            if (loading) {
+                setLoading(false);
             }
-        );
+        });
         return unsubscribe
     }, [navigation]);
 
@@ -47,6 +58,12 @@ export default function SpellsScreen({route, navigation}) {
         global.charaRef.onSnapshot( (snapshot) => {
             setCharData(snapshot.data())
         });
+    }
+
+    function updateCharacterLocal(fieldName, text, isNumber) {
+        let tempCharData = JSON.parse(JSON.stringify(charData));
+        tempCharData[fieldName] = isNumber ? Number(text) : text;
+        setCharData(tempCharData);
     }
 
     function updateSpell(index, field, value) {
@@ -168,276 +185,305 @@ export default function SpellsScreen({route, navigation}) {
 
     let index = 0;
     return (
-        <KeyboardAvoidingView
-            behavior = {'height'}>
-            <ScrollView>
-                <View style = {styles.totalContainer}>
-                    <View style = {styles.topRow}>
-                        <View style = {styles.spellsInfoContainer}>
-                            <View style =  {styles.spellsContainer}>
-                                <TextInput
-                                    style={styles.spellcastingInput}
-                                    underlineColor="transparent"
-                                    placeholder={"Enter spellcasting ability..."}
-                                    defaultValue={charData['spellcasting_ability']}
-                                    onChangeText={(text) => {
-                                        updateCharacter('spellcasting_ability', text);
-                                        getCharacter()
-                                    }}
-                                />
-                                <Text
-                                    style = {styles.spellcastingInputHeading}
-                                >
-                                    Spellcasting ability
-                                </Text>
+        <TouchableOpacity
+            activeOpacity={1}
+            onPress={() => Keyboard.dismiss()}
+        >
+            <KeyboardAvoidingView
+                behavior = {'height'}>
+                <ScrollView>
+                    <View style = {styles.totalContainer}>
+                        <View style = {styles.topRow}>
+                            <View style = {styles.spellsInfoContainer}>
+                                <View style =  {styles.spellsContainer}>
+                                    <TextInput
+                                        style={styles.spellcastingInput}
+                                        underlineColor="transparent"
+                                        placeholder={"Enter spellcasting ability..."}
+                                        value={charData['spellcasting_ability']}
+                                        onChangeText={(text) => {
+                                            updateCharacterLocal('spellcasting_ability', text, false);
+                                        }}
+                                        onBlur={() => {
+                                            updateCharacter('spellcasting_ability', charData['spellcasting_ability']);
+                                        }}
+                                    />
+                                    <Text
+                                        style = {styles.spellcastingInputHeading}
+                                    >
+                                        Spellcasting ability
+                                    </Text>
+                                </View>
+                                <View style =  {styles.spellsContainer}>
+                                    <TextInput
+                                        style={styles.spellsInput}
+                                        keyboardType="number-pad"
+                                        placeholder={"Enter spell save DC..."}
+                                        underlineColor="transparent"
+                                        value={String(charData['spell_save_DC'])}
+                                        onChangeText={(text) => {
+                                            updateCharacterLocal('spell_save_DC', text, true);
+                                        }}
+                                        onBlur={() => {
+                                            updateCharacter('spell_save_DC', charData['spell_save_DC']);
+                                        }}
+                                    />
+                                    <Text
+                                        style = {styles.textInputHeading}
+                                    >
+                                        Spell Save DC
+                                    </Text>
+                                </View>
+                                <View style =  {styles.spellsContainer}>
+                                    <TextInput
+                                        style={styles.spellsInput}
+                                        keyboardType="number-pad"
+                                        placeholder={"Enter spell attack bonus..."}
+                                        underlineColor="transparent"
+                                        value={String(charData['spell_attack_bonus'])}
+                                        onChangeText={(text) => {
+                                            updateCharacterLocal('spell_attack_bonus', text, true);
+                                        }}
+                                        onBlur={() => {
+                                            updateCharacter('spell_attack_bonus', charData['spell_attack_bonus']);
+                                        }}
+                                    />
+                                    <Text
+                                        style = {styles.textInputHeading}
+                                    >
+                                        Spell Attack Bonus
+                                    </Text>
+                                </View>
                             </View>
-                            <View style =  {styles.spellsContainer}>
-                                <TextInput
-                                    style={styles.spellsInput}
-                                    keyboardType="number-pad"
-                                    placeholder={"Enter spell save DC..."}
-                                    underlineColor="transparent"
-                                    defaultValue={String(charData['spell_save_DC'])}
-                                    onChangeText={(text) => {
-                                        updateCharacter('spell_save_DC', text);
-                                        getCharacter()
-                                    }}
-                                />
+                            <View style = {styles.spellsSlotsContainer}>
                                 <Text
-                                    style = {styles.textInputHeading}
+                                    style = {styles.spellSlotHeading}
                                 >
-                                    Spell Save DC
+                                    Spell Slots
                                 </Text>
-                            </View>
-                            <View style =  {styles.spellsContainer}>
-                                <TextInput
-                                    style={styles.spellsInput}
-                                    keyboardType="number-pad"
-                                    placeholder={"Enter spell attack bonus..."}
-                                    underlineColor="transparent"
-                                    defaultValue={String(charData['spell_attack_bonus'])}
-                                    onChangeText={(text) => {
-                                        updateCharacter('spell_attack_bonus', text);
-                                        getCharacter()
-                                    }}
-                                />
-                                <Text
-                                    style = {styles.textInputHeading}
-                                >
-                                    Spell Attack Bonus
-                                </Text>
+                                <View style = {styles.spellSlotFirstRow}>
+                                    <View style =  {styles.spellsContainer}>
+                                        <TextInput
+                                            style={styles.spellSlotInput}
+                                            underlineColor="transparent"
+                                            keyboardType="number-pad"
+                                            placeholder={"Enter 1st-level spell slots..."}
+                                            value={String(charData['first_level_spell_slots'])}
+                                            onChangeText={(text) => {
+                                                updateCharacterLocal('first_level_spell_slots', text, true);
+                                            }}
+                                            onBlur={() => {
+                                                updateCharacter('first_level_spell_slots', charData['first_level_spell_slots']);
+                                            }}
+                                        />
+                                        <Text
+                                            style = {styles.textInputHeading}
+                                        >
+                                            1st-level
+                                        </Text>
+                                    </View>
+                                    <View style =  {styles.spellsContainer}>
+                                        <TextInput
+                                            style={styles.spellSlotInput}
+                                            keyboardType="number-pad"
+                                            placeholder={"Enter 2nd-level spell slots..."}
+                                            underlineColor="transparent"
+                                            value={String(charData['second_level_spell_slots'])}
+                                            onChangeText={(text) => {
+                                                updateCharacterLocal('second_level_spell_slots', text, true);
+                                            }}
+                                            onBlur={() => {
+                                                updateCharacter('second_level_spell_slots', charData['second_level_spell_slots']);
+                                            }}
+                                        />
+                                        <Text
+                                            style = {styles.textInputHeading}
+                                        >
+                                            2nd-level
+                                        </Text>
+                                    </View>
+                                    <View style =  {styles.spellsContainer}>
+                                        <TextInput
+                                            style={styles.spellSlotInput}
+                                            keyboardType="number-pad"
+                                            placeholder={"Enter 3rd-level spell slots..."}
+                                            underlineColor="transparent"
+                                            value={String(charData['third_level_spell_slots'])}
+                                            onChangeText={(text) => {
+                                                updateCharacterLocal('third_level_spell_slots', text, true);
+                                            }}
+                                            onBlur={() => {
+                                                updateCharacter('third_level_spell_slots', charData['third_level_spell_slots']);
+                                            }}
+                                        />
+                                        <Text
+                                            style = {styles.textInputHeading}
+                                        >
+                                            3rd-level
+                                        </Text>
+                                    </View>
+                                </View>
+                                <View style = {styles.spellSlotRow}>
+                                    <View style =  {styles.spellsContainer}>
+                                        <TextInput
+                                            style={styles.spellSlotInput}
+                                            underlineColor="transparent"
+                                            keyboardType="number-pad"
+                                            placeholder={"Enter 4th-level spell slots..."}
+                                            value={String(charData['fourth_level_spell_slots'])}
+                                            onChangeText={(text) => {
+                                                updateCharacterLocal('fourth_level_spell_slots', text, true);
+                                            }}
+                                            onBlur={() => {
+                                                updateCharacter('fourth_level_spell_slots', charData['fourth_level_spell_slots']);
+                                            }}
+                                        />
+                                        <Text
+                                            style = {styles.textInputHeading}
+                                        >
+                                            4th-level
+                                        </Text>
+                                    </View>
+                                    <View style =  {styles.spellsContainer}>
+                                        <TextInput
+                                            style={styles.spellSlotInput}
+                                            keyboardType="number-pad"
+                                            placeholder={"Enter 5th-level spell slots..."}
+                                            underlineColor="transparent"
+                                            value={String(charData['fifth_level_spell_slots'])}
+                                            onChangeText={(text) => {
+                                                updateCharacterLocal('fifth_level_spell_slots', text, true);
+                                            }}
+                                            onBlur={() => {
+                                                updateCharacter('fifth_level_spell_slots', charData['fifth_level_spell_slots']);
+                                            }}
+                                        />
+                                        <Text
+                                            style = {styles.textInputHeading}
+                                        >
+                                            5th-level
+                                        </Text>
+                                    </View>
+                                    <View style =  {styles.spellsContainer}>
+                                        <TextInput
+                                            style={styles.spellSlotInput}
+                                            keyboardType="number-pad"
+                                            placeholder={"Enter 6th-level spell slots..."}
+                                            underlineColor="transparent"
+                                            value={String(charData['sixth_level_spell_slots'])}
+                                            onChangeText={(text) => {
+                                                updateCharacterLocal('sixth_level_spell_slots', text, true);
+                                            }}
+                                            onBlur={() => {
+                                                updateCharacter('sixth_level_spell_slots', charData['sixth_level_spell_slots']);
+                                            }}
+                                        />
+                                        <Text
+                                            style = {styles.textInputHeading}
+                                        >
+                                            6th-level
+                                        </Text>
+                                    </View>
+                                </View>
+                                <View style = {styles.spellSlotRow}>
+                                    <View style =  {styles.spellsContainer}>
+                                        <TextInput
+                                            style={styles.spellSlotInput}
+                                            underlineColor="transparent"
+                                            keyboardType="number-pad"
+                                            placeholder={"Enter 7th-level spell slots..."}
+                                            value={String(charData['seventh_level_spell_slots'])}
+                                            onChangeText={(text) => {
+                                                updateCharacterLocal('seventh_level_spell_slots', text, true);
+                                            }}
+                                            onBlur={() => {
+                                                updateCharacter('seventh_level_spell_slots', charData['seventh_level_spell_slots']);
+                                            }}
+                                        />
+                                        <Text
+                                            style = {styles.textInputHeading}
+                                        >
+                                            7th-level
+                                        </Text>
+                                    </View>
+                                    <View style =  {styles.spellsContainer}>
+                                        <TextInput
+                                            style={styles.spellSlotInput}
+                                            keyboardType="number-pad"
+                                            placeholder={"Enter 8th-level spell slots..."}
+                                            underlineColor="transparent"
+                                            value={String(charData['eighth_level_spell_slots'])}
+                                            onChangeText={(text) => {
+                                                updateCharacterLocal('eighth_level_spell_slots', text, true);
+                                            }}
+                                            onBlur={() => {
+                                                updateCharacter('eighth_level_spell_slots', charData['eighth_level_spell_slots']);
+                                            }}
+                                        />
+                                        <Text
+                                            style = {styles.textInputHeading}
+                                        >
+                                            8th-level
+                                        </Text>
+                                    </View>
+                                    <View style =  {styles.spellsContainer}>
+                                        <TextInput
+                                            style={styles.spellSlotInput}
+                                            keyboardType="number-pad"
+                                            placeholder={"Enter 9th-level spell slots..."}
+                                            underlineColor="transparent"
+                                            value={String(charData['ninth_level_spell_slots'])}
+                                            onChangeText={(text) => {
+                                                updateCharacterLocal('ninth_level_spell_slots', text, true);
+                                            }}
+                                            onBlur={() => {
+                                                updateCharacter('ninth_level_spell_slots', charData['ninth_level_spell_slots']);
+                                            }}
+                                        />
+                                        <Text
+                                            style = {styles.textInputHeading}
+                                        >
+                                            9th-level
+                                        </Text>
+                                    </View>
+                                </View>
                             </View>
                         </View>
-                        <View style = {styles.spellsSlotsContainer}>
+                        <View style = {styles.bottomRow}>
                             <Text
-                                style = {styles.spellSlotHeading}
+                                style = {styles.spellsListHeading}
                             >
-                                Spell Slots
+                                Spells
                             </Text>
-                            <View style = {styles.spellSlotFirstRow}>
-                                <View style =  {styles.spellsContainer}>
-                                    <TextInput
-                                        style={styles.spellSlotInput}
-                                        underlineColor="transparent"
-                                        keyboardType="number-pad"
-                                        placeholder={"Enter 1st-level spell slots..."}
-                                        defaultValue={String(charData['first_level_spell_slots'])}
-                                        onChangeText={(text) => {
-                                            updateCharacter('first_level_spell_slots', text);
-                                            getCharacter()
-                                        }}
+                            <FlatList
+                                data={spells}
+                                style = {styles.list}
+                                removeClippedSubviews={false}
+                                keyExtractor={(item) => item._id}
+                                renderItem={({ item }) => (
+                                    <Spell
+                                        index={index++}
+                                        spell={item}
+                                        onChange={updateSpell}
                                     />
-                                    <Text
-                                        style = {styles.textInputHeading}
-                                    >
-                                        1st-level
-                                    </Text>
-                                </View>
-                                <View style =  {styles.spellsContainer}>
-                                    <TextInput
-                                        style={styles.spellSlotInput}
-                                        keyboardType="number-pad"
-                                        placeholder={"Enter 2nd-level spell slots..."}
-                                        underlineColor="transparent"
-                                        defaultValue={String(charData['second_level_spell_slots'])}
-                                        onChangeText={(text) => {
-                                            updateCharacter('second_level_spell_slots', text);
-                                            getCharacter()
-                                        }}
-                                    />
-                                    <Text
-                                        style = {styles.textInputHeading}
-                                    >
-                                        2nd-level
-                                    </Text>
-                                </View>
-                                <View style =  {styles.spellsContainer}>
-                                    <TextInput
-                                        style={styles.spellSlotInput}
-                                        keyboardType="number-pad"
-                                        placeholder={"Enter 3rd-level spell slots..."}
-                                        underlineColor="transparent"
-                                        defaultValue={String(charData['third_level_spell_slots'])}
-                                        onChangeText={(text) => {
-                                            updateCharacter('third_level_spell_slots', text);
-                                            getCharacter()
-                                        }}
-                                    />
-                                    <Text
-                                        style = {styles.textInputHeading}
-                                    >
-                                        3rd-level
-                                    </Text>
-                                </View>
-                            </View>
-                            <View style = {styles.spellSlotRow}>
-                                <View style =  {styles.spellsContainer}>
-                                    <TextInput
-                                        style={styles.spellSlotInput}
-                                        underlineColor="transparent"
-                                        keyboardType="number-pad"
-                                        placeholder={"Enter 4th-level spell slots..."}
-                                        defaultValue={String(charData['fourth_level_spell_slots'])}
-                                        onChangeText={(text) => {
-                                            updateCharacter('fourth_level_spell_slots', text);
-                                            getCharacter()
-                                        }}
-                                    />
-                                    <Text
-                                        style = {styles.textInputHeading}
-                                    >
-                                        4th-level
-                                    </Text>
-                                </View>
-                                <View style =  {styles.spellsContainer}>
-                                    <TextInput
-                                        style={styles.spellSlotInput}
-                                        keyboardType="number-pad"
-                                        placeholder={"Enter 5th-level spell slots..."}
-                                        underlineColor="transparent"
-                                        defaultValue={String(charData['fifth_level_spell_slots'])}
-                                        onChangeText={(text) => {
-                                            updateCharacter('fifth_level_spell_slots', text);
-                                            getCharacter()
-                                        }}
-                                    />
-                                    <Text
-                                        style = {styles.textInputHeading}
-                                    >
-                                        5th-level
-                                    </Text>
-                                </View>
-                                <View style =  {styles.spellsContainer}>
-                                    <TextInput
-                                        style={styles.spellSlotInput}
-                                        keyboardType="number-pad"
-                                        placeholder={"Enter 6th-level spell slots..."}
-                                        underlineColor="transparent"
-                                        defaultValue={String(charData['sixth_level_spell_slots'])}
-                                        onChangeText={(text) => {
-                                            updateCharacter('sixth_level_spell_slots', text);
-                                            getCharacter()
-                                        }}
-                                    />
-                                    <Text
-                                        style = {styles.textInputHeading}
-                                    >
-                                        6th-level
-                                    </Text>
-                                </View>
-                            </View>
-                            <View style = {styles.spellSlotRow}>
-                                <View style =  {styles.spellsContainer}>
-                                    <TextInput
-                                        style={styles.spellSlotInput}
-                                        underlineColor="transparent"
-                                        keyboardType="number-pad"
-                                        placeholder={"Enter 7th-level spell slots..."}
-                                        defaultValue={String(charData['seventh_level_spell_slots'])}
-                                        onChangeText={(text) => {
-                                            updateCharacter('seventh_level_spell_slots', text);
-                                            getCharacter()
-                                        }}
-                                    />
-                                    <Text
-                                        style = {styles.textInputHeading}
-                                    >
-                                        7th-level
-                                    </Text>
-                                </View>
-                                <View style =  {styles.spellsContainer}>
-                                    <TextInput
-                                        style={styles.spellSlotInput}
-                                        keyboardType="number-pad"
-                                        placeholder={"Enter 8th-level spell slots..."}
-                                        underlineColor="transparent"
-                                        defaultValue={String(charData['eighth_level_spell_slots'])}
-                                        onChangeText={(text) => {
-                                            updateCharacter('eighth_level_spell_slots', text);
-                                            getCharacter()
-                                        }}
-                                    />
-                                    <Text
-                                        style = {styles.textInputHeading}
-                                    >
-                                        8th-level
-                                    </Text>
-                                </View>
-                                <View style =  {styles.spellsContainer}>
-                                    <TextInput
-                                        style={styles.spellSlotInput}
-                                        keyboardType="number-pad"
-                                        placeholder={"Enter 9th-level spell slots..."}
-                                        underlineColor="transparent"
-                                        defaultValue={String(charData['ninth_level_spell_slots'])}
-                                        onChangeText={(text) => {
-                                            updateCharacter('ninth_level_spell_slots', text);
-                                            getCharacter()
-                                        }}
-                                    />
-                                    <Text
-                                        style = {styles.textInputHeading}
-                                    >
-                                        9th-level
-                                    </Text>
-                                </View>
-                            </View>
+                                )}
+                                ListFooterComponent={
+                                    <View style = {styles.centerButton}>
+                                        <Button
+                                            mode="contained"
+                                            style = {styles.addButton}
+                                            onPress={() => {navigation.navigate('AddSpell')}}>
+                                            Add A New Spell
+                                        </Button>
+                                    </View>
+                                }
+                            />
                         </View>
+                        <View style = {styles.gap}/>
                     </View>
-                    <View style = {styles.bottomRow}>
-                        <Text
-                            style = {styles.spellsListHeading}
-                        >
-                            Spells
-                        </Text>
-                        <FlatList
-                            data={spells}
-                            style = {styles.list}
-                            removeClippedSubviews={false}
-                            keyExtractor={(item) => item._id}
-                            renderItem={({ item }) => (
-                                <Spell
-                                    index={index++}
-                                    spell={item}
-                                    onChange={updateSpell}
-                                />
-                            )}
-                            ListFooterComponent={
-                                <View style = {styles.centerButton}>
-                                    <Button
-                                        mode="contained"
-                                        style = {styles.addButton}
-                                        onPress={() => {navigation.navigate('AddSpell')}}>
-                                        Add A New Spell
-                                    </Button>
-                                </View>
-                            }
-                        />
-                    </View>
-                    <View style = {styles.gap}/>
-                </View>
-            </ScrollView>
-        </KeyboardAvoidingView>
+                </ScrollView>
+            </KeyboardAvoidingView>
+        </TouchableOpacity>
     );
 }
 
