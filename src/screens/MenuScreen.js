@@ -529,6 +529,7 @@ const styles = StyleSheet.create({
   buttonItem: {
     width: '34.2%',
     height: '91%',
+    justifyContent: 'center',
     paddingTop: screenHeight * 0.0132978723404255,
     marginTop: screenHeight * 0.0053191489361702,
     position: 'absolute',

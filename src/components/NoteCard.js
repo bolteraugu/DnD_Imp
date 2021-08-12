@@ -3,7 +3,7 @@ import {Dimensions, StyleSheet} from 'react-native';
 import {Card, Paragraph, Button} from 'react-native-paper';
 import {AuthUserContext} from "../navigation/AuthUserProvider";
 
-export default function NoteCard({title, content, groupRef, note, navigation, onChange, index}) {
+export default function NoteCard({title, content, groupRef, note, navigation, onChange, index, shareNote}) {
     const {user} = useContext(AuthUserContext);
     function deleteNote() {
         groupRef
@@ -33,6 +33,7 @@ export default function NoteCard({title, content, groupRef, note, navigation, on
                 }>
                     Edit
                 </Button>
+                <Button onPress={shareNote}>Share</Button>
                 <Button onPress={deleteNote}>Delete</Button>
             </Card.Actions>
         </Card>
