@@ -13,19 +13,10 @@ global.screenHeight = Dimensions.get("window").height;
 export default function CharacterCard({
                                           character, index,
                                           onChange,
-                                          //onRacePopUp,
                                           groupRef,
                                           navigation,
                                       }) {
-    // const {user} = useContext(AuthUserContext);
     const [characterData, setCharacterData] = useState([]);
-    // const [classes, setClasses] = useState([]);
-    // const [numRaces, setNumRaces] = useState([]);
-    // const [numClasses, setNumClasses] = useState([]);
-
-    // useEffect( () => {
-    //   getRacesAndClasses()
-    // }, [])
 
     useEffect(() => {
         getCharacter()
@@ -40,19 +31,6 @@ export default function CharacterCard({
                 console.log('Failed to update character: ' + error)
             );
     }
-
-    // function getRacesAndClasses() {
-    //   firebase.firestore().collection('members').doc(user.toJSON().email).onSnapshot( (snapshot) => {
-    //     let racesTemp = snapshot.get('races');
-    //     let classesTemp = snapshot.get('classes');
-    //     racesTemp.push("Create new    +");
-    //     classesTemp.push("Create new    +");
-    //     setRaces(racesTemp);
-    //     setClasses(classesTemp);
-    //     setNumRaces(snapshot.get('numRacesCreated'));
-    //     setNumClasses(snapshot.get('numClassesCreated'));
-    //   })
-    // }
 
     function getCharacter() {
         groupRef.collection('characters').doc(character._id).get().then( (snapshot) => {
@@ -83,61 +61,9 @@ export default function CharacterCard({
                             onChangeText={(text) => {
                                 onChange(index, 'name', text, false);
                                 updateCharacter();
-                                getCharacter()
                             }
                             }
                         />
-                        {/*<ModalDropdown*/}
-                        {/*    options = {races}*/}
-                        {/*    style = {styles.totalDropdownRaceStyle}*/}
-                        {/*    defaultValue = {character.char_race}*/}
-                        {/*    // renderRightComponent={ () => (*/}
-                        {/*    //       <IconButton*/}
-                        {/*    //           icon="plus"*/}
-                        {/*    //           style = {styles.plusIcon}*/}
-                        {/*    //           size={28}*/}
-                        {/*    //           color="#32a67d"*/}
-                        {/*    //       />*/}
-                        {/*    // )}*/}
-                        {/*    onSelect = {(index, value) => {*/}
-                        {/*      if (index === 9 + numRaces) {*/}
-                        {/*        onRacePopUp(characterIndex)*/}
-                        {/*        */}
-                        {/*      }*/}
-                        {/*      else {*/}
-                        {/*        onChange(characterIndex, 'char_race', value.text, false)*/}
-                        {/*      }*/}
-                        {/*    }}*/}
-                        {/*    textStyle={styles.currentSelectedText}*/}
-                        {/*    dropdownTextStyle={styles.dropdownText}*/}
-                        {/*    dropdownStyle = {styles.dropdownStyle}*/}
-                        {/*/>*/}
-                        {/*<Text*/}
-                        {/*    style={styles.raceLabel}*/}
-                        {/*>*/}
-                        {/*  Race (dropdown)*/}
-                        {/*</Text>*/}
-                        {/*<ModalDropdown*/}
-                        {/*    options = {classes}*/}
-                        {/*    style = {styles.totalDropdownClassStyle}*/}
-                        {/*    defaultValue = {character.char_class}*/}
-                        {/*    // renderRightComponent={ () => (*/}
-                        {/*    //       <IconButton*/}
-                        {/*    //           icon="plus"*/}
-                        {/*    //           style = {styles.plusIcon}*/}
-                        {/*    //           size={28}*/}
-                        {/*    //           color="#32a67d"*/}
-                        {/*    //       />*/}
-                        {/*    // )}*/}
-                        {/*    textStyle={styles.currentSelectedText}*/}
-                        {/*    dropdownTextStyle={styles.dropdownText}*/}
-                        {/*    dropdownStyle = {styles.dropdownStyle}*/}
-                        {/*/>*/}
-                        {/*<Text*/}
-                        {/*    style={styles.classLabel}*/}
-                        {/*>*/}
-                        {/*  Class (dropdown)*/}
-                        {/*</Text>*/}
                         <TextInput
                             label="Race"
                             style={styles.stringContainer}
@@ -147,7 +73,6 @@ export default function CharacterCard({
                                 (text) =>  {
                                     onChange(index, 'char_race', text, false);
                                     updateCharacter();
-                                    getCharacter()
                                 }
                             }
                         />
@@ -159,7 +84,6 @@ export default function CharacterCard({
                             onChangeText={(text) => {
                                 onChange(index, 'char_class', text, false);
                                 updateCharacter();
-                                getCharacter()
                             }
                             }
                         />
@@ -171,7 +95,6 @@ export default function CharacterCard({
                             onChangeText={(text) => {
                                 onChange(index, 'level', text, true);
                                 updateCharacter();
-                                getCharacter()
                             }
                             }
                         />
@@ -189,7 +112,6 @@ export default function CharacterCard({
                             onChangeText={(text) => {
                                 onChange(index, 'strength', text, true);
                                 updateCharacter();
-                                getCharacter();
                             }
                             }
                         />
@@ -201,7 +123,6 @@ export default function CharacterCard({
                             onChangeText={(text) => {
                                 onChange(index, 'constitution', text, true);
                                 updateCharacter();
-                                getCharacter();
                             }
                             }
                         />
@@ -213,7 +134,6 @@ export default function CharacterCard({
                             onChangeText={(text) => {
                                 onChange(index, 'dexterity', text, true);
                                 updateCharacter();
-                                getCharacter();
                             }
                             }
                         />
@@ -225,7 +145,6 @@ export default function CharacterCard({
                             onChangeText={(text) => {
                                 onChange(index, 'intelligence', text, true);
                                 updateCharacter();
-                                getCharacter();
                             }
                             }
                         />
@@ -237,7 +156,6 @@ export default function CharacterCard({
                             onChangeText={(text) => {
                                 onChange(index, 'wisdom', text, true);
                                 updateCharacter();
-                                getCharacter();
                             }
                             }
                         />
@@ -249,7 +167,6 @@ export default function CharacterCard({
                             onChangeText={(text) => {
                                 onChange(index, 'charisma', text, true);
                                 updateCharacter();
-                                getCharacter();
                             }
                             }
                         />
@@ -261,7 +178,6 @@ export default function CharacterCard({
                             onChangeText={(text) => {
                                 onChange(index, 'proficiency', text, true);
                                 updateCharacter();
-                                getCharacter();
                             }
                             }
                         />
@@ -273,7 +189,6 @@ export default function CharacterCard({
                             onChangeText={(text) => {
                                 onChange(index, 'initiative', text, true);
                                 updateCharacter();
-                                getCharacter();
                             }
                             }
                         />
@@ -289,7 +204,6 @@ export default function CharacterCard({
                             onChangeText={(text) => {
                                 onChange(index, 'alignment', text, false);
                                 updateCharacter();
-                                getCharacter();
                             }
                             }
                         />
@@ -301,7 +215,6 @@ export default function CharacterCard({
                             onChangeText={(text) => {
                                 onChange(index, 'max_hp', text, true);
                                 updateCharacter();
-                                getCharacter();
                             }
                             }
                         />
@@ -313,7 +226,6 @@ export default function CharacterCard({
                             onChangeText={(text) => {
                                 onChange(index, 'current_hp', text, true);
                                 updateCharacter();
-                                getCharacter();
                             }
                             }
                         />
@@ -325,7 +237,6 @@ export default function CharacterCard({
                             onChangeText={(text) => {
                                 onChange(index, 'temp_hp', text, true);
                                 updateCharacter();
-                                getCharacter();
                             }
                             }
                         />
@@ -337,7 +248,6 @@ export default function CharacterCard({
                             onChangeText={(text) => {
                                 onChange(index, 'armor_class', text, true);
                                 updateCharacter();
-                                getCharacter();
                             }}
                         />
                         <TextInput
@@ -348,7 +258,6 @@ export default function CharacterCard({
                             onChangeText={(text) => {
                                 onChange(index, 'speed', text, true);
                                 updateCharacter();
-                                getCharacter();
                             }}
                         />
                         <View style={styles.iconRow}>
@@ -370,15 +279,14 @@ export default function CharacterCard({
                                 color="#000"
                                 //Navigates to playerScreen but then redirects to CharacterSheetScreen??? Strange. Will fix later.
                                 onPress={async () => {
-                                    await getCharacter();
                                     navigation.navigate('CharacterSheet', {
                                         screen: 'Main',
                                         params: {
                                             charRef: groupRef.collection('characters').doc(character._id),
+                                            character: character,
                                             charData: characterData,
                                             index: index,
-                                            onFSChange: (index, fieldName, fieldValue, isNumber) => onChange(index, fieldName, fieldValue, isNumber),
-                                            updateCharData: () => getCharacter()
+                                            onFSChange: onChange,
                                         },
                                     })
                                 }}
@@ -531,4 +439,4 @@ const styles = StyleSheet.create({
         margin: 5,
     }
 
-});
+})

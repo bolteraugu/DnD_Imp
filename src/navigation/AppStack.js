@@ -21,6 +21,7 @@ import AddPossessionScreen from "../screens/AddPossessionScreen"
 import AddSpellScreen from "../screens/AddSpellScreen"
 import NotesScreen from "../screens/NotesScreen"
 import AddNotesScreen from "../screens/AddNotesScreen"
+import EditNotesScreen from "../screens/EditNotesScreen"
 const Stack = createStackNavigator();
 
 global.screenWidth = Dimensions.get("window").width;
@@ -88,6 +89,10 @@ export default function AppStack({navigation}) {
         <Stack.Screen name="AddNote" component={AddNotesScreen}
                       options={{
                           title: "Add Note",
+                      }}/>
+        <Stack.Screen name="EditNote" component={EditNotesScreen}
+                      options={{
+                          title: "Edit Note",
                       }}/>
         <Stack.Screen name="AddWeapon" component={AddWeaponScreen}
                       options={{

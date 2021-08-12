@@ -4,14 +4,12 @@ import {createMaterialTopTabNavigator} from "@react-navigation/material-top-tabs
 import {
     View,
     StyleSheet,
-    TextInput as NativeTextInput,
     ScrollView,
     FlatList,
     KeyboardAvoidingView,
-    Dimensions, Keyboard, TouchableOpacity
+    Dimensions
 } from "react-native";
 import colors from "../utils/colors";
-import CharacterCard from "../components/CharacterCard";
 import Spinner from "../components/Spinner";
 import Weapon from "../components/Weapon";
 import Armor from "../components/Armor";
@@ -21,7 +19,8 @@ global.screenWidth = Dimensions.get("window").width;
 global.screenHeight = Dimensions.get("window").height;
 
 export default function InventoryScreen({route, navigation}) {
-    const [charData, setCharData] = useState(global.charaData);
+    const [character, setCharacter] = useState(global.character);
+    const pushChange = global.onFSChange
     const [loading, setLoading] = useState(true);
     const [weapons, setWeapons] = useState([]);
     const [armor, setArmor] = useState([]);
@@ -30,7 +29,9 @@ export default function InventoryScreen({route, navigation}) {
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', e => {
             setLoading(true)
-            getCharacter();
+            global.charaRef.onSnapshot( (snapshot) => {
+                setCharacter(snapshot.data())
+            });
             global.charaRef.collection("weapons").onSnapshot(
                 (querySnapshot) => {
                     const weapons = querySnapshot.docs.map((doc) => {
@@ -88,16 +89,10 @@ export default function InventoryScreen({route, navigation}) {
         return <Spinner />;
     }
 
-    function getCharacter() {
-        global.charaRef.onSnapshot( (snapshot) => {
-            setCharData(snapshot.data())
-        });
-    }
-
     function updateCharacterLocal(fieldName, text, isNumber) {
-        let tempCharData = JSON.parse(JSON.stringify(charData));
-        tempCharData[fieldName] = isNumber ? Number(text) : text;
-        setCharData(tempCharData);
+        let tempCharacter = JSON.parse(JSON.stringify(character));
+        tempCharacter[fieldName] = isNumber ? Number(text) : text;
+        setCharacter(tempCharacter);
     }
 
     function updateWeapon(index, field, value) {
@@ -166,10 +161,7 @@ export default function InventoryScreen({route, navigation}) {
     let armorIndex = 0;
     let possessionIndex = 0;
     return (
-        <TouchableOpacity
-            activeOpacity={1}
-            onPress={() => Keyboard.dismiss()}
-        >
+        <View>
             <KeyboardAvoidingView
                 behavior = {'height'}>
                 <ScrollView>
@@ -191,12 +183,11 @@ export default function InventoryScreen({route, navigation}) {
                                         style = {styles.currencyTypeInput}
                                         underlineColor="transparent"
                                         keyboardType="number-pad"
-                                        value = {String(charData["CP"])}
+                                        value = {String(character.CP)}
                                         onChangeText={(text) => {
+                                            pushChange(global.index, 'CP', text, true);
                                             updateCharacterLocal('CP', text, true);
-                                        }}
-                                        onBlur = {() => {
-                                            updateCharacter('CP', charData["CP"]);
+                                            updateCharacter('CP', text);
                                         }}
                                     />
                                 </View>
@@ -210,12 +201,11 @@ export default function InventoryScreen({route, navigation}) {
                                         style = {styles.currencyTypeInput}
                                         underlineColor="transparent"
                                         keyboardType="number-pad"
-                                        value = {String(charData["SP"])}
+                                        value = {String(character.SP)}
                                         onChangeText={(text) => {
+                                            pushChange(global.index, 'SP', text, true);
                                             updateCharacterLocal('SP', text, true);
-                                        }}
-                                        onBlur = {() => {
-                                            updateCharacter('SP', charData["SP"]);
+                                            updateCharacter('SP', text);
                                         }}
                                     />
                                 </View>
@@ -229,12 +219,11 @@ export default function InventoryScreen({route, navigation}) {
                                         style = {styles.currencyTypeInput}
                                         underlineColor="transparent"
                                         keyboardType="number-pad"
-                                        value = {String(charData["EP"])}
+                                        value = {String(character.EP)}
                                         onChangeText={(text) => {
+                                            pushChange(global.index, 'EP', text, true);
                                             updateCharacterLocal('EP', text, true);
-                                        }}
-                                        onBlur = {() => {
-                                            updateCharacter('EP', charData["EP"]);
+                                            updateCharacter('EP', text);
                                         }}
                                     />
                                 </View>
@@ -248,12 +237,11 @@ export default function InventoryScreen({route, navigation}) {
                                         style = {styles.currencyTypeInput}
                                         underlineColor="transparent"
                                         keyboardType="number-pad"
-                                        value = {String(charData["GP"])}
+                                        value = {String(character.GP)}
                                         onChangeText={(text) => {
+                                            pushChange(global.index, 'GP', text, true);
                                             updateCharacterLocal('GP', text, true);
-                                        }}
-                                        onBlur = {() => {
-                                            updateCharacter('GP', charData["GP"]);
+                                            updateCharacter('GP', text);
                                         }}
                                     />
                                 </View>
@@ -267,12 +255,11 @@ export default function InventoryScreen({route, navigation}) {
                                         style = {styles.currencyTypeInput}
                                         underlineColor="transparent"
                                         keyboardType="number-pad"
-                                        value = {String(charData["PP"])}
+                                        value = {String(character.PP)}
                                         onChangeText={(text) => {
+                                            pushChange(global.index, 'PP', text, true);
                                             updateCharacterLocal('PP', text, true);
-                                        }}
-                                        onBlur = {() => {
-                                            updateCharacter('PP', charData["PP"]);
+                                            updateCharacter('PP', text);
                                         }}
                                     />
                                 </View>
@@ -371,7 +358,7 @@ export default function InventoryScreen({route, navigation}) {
                     </View>
                 </ScrollView>
             </KeyboardAvoidingView>
-        </TouchableOpacity>
+        </View>
     );
 }
 

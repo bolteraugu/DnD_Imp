@@ -62,6 +62,13 @@ export default function NotesScreen({navigation, route}) {
         return <Spinner />;
     }
 
+    function updateNote(index, fieldName, text) {
+        const tempNotes = [...notes];
+        tempNotes[index][fieldName] = text;
+        setNotes(tempNotes);
+        console.log(notes)
+    }
+
     // Edit Current Notes - need to do this
 
     // Delete Notes - need to do this
@@ -75,15 +82,27 @@ export default function NotesScreen({navigation, route}) {
         }
     }
 
+    let index = 0;
     return (
         <Provider>
             <View style={styles.wrapper}>
                 <ShowEmptyMessage/>
                 <FlatList
                     data={notes} //Data of the flatList is the notes
+                    keyExtractor={(item) => item._id}
                     renderItem={(
                         {item} //Render each item with the title and content
-                    ) => <NoteCard title={item.title} content={item.content} />}
+                    ) =>
+                        <NoteCard
+                            title={item.title}
+                            note={item}
+                            index = {index++}
+                            content={item.content}
+                            groupRef = {groupRef}
+                            navigation = {navigation}
+                            onChange = {updateNote}
+                        />
+                    }
                 />
                 <FAB style={styles.fab} small icon="plus" onPress={() => {navigation.navigate('AddNote', {groupRef: groupRef})}} />
             </View>

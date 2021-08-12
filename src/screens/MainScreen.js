@@ -4,28 +4,26 @@ import {
     StyleSheet,
     TouchableOpacity,
     View,
-    TextInput as NativeTextInput,
-    AppState,
-    Platform, Keyboard
+    TextInput as NativeTextInput
 } from 'react-native';
-import firebase from "firebase";
-import {AuthUserContext} from "../navigation/AuthUserProvider";
 import {TextInput, Text, Button} from "react-native-paper"; //Probably will need text...
 import colors from '../utils/colors';
 import Spinner from "../components/Spinner";
 
 export default function MainScreen({route, navigation}) {
-    const charRef = route.params.charRef;
-    const [charData, setCharData] = useState(route.params.charData);
+    const [character, setCharacter] = useState(route.params.character);
     const [loading, setLoading] = useState(true);
-    global.charaRef = charRef;
-    global.charaData = charData;
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', e => {
             setLoading(true)
-            getCharacter();
-            route.params.updateCharData()
+            global.charaRef = route.params.charRef;
+            global.character = route.params.character
+            global.onFSChange = route.params.onFSChange
+            global.index = route.params.index
+            global.charaRef.onSnapshot((snapshot) => {
+                setCharacter(snapshot.data())
+            })
             if (loading) {
                 setLoading(false);
             }
@@ -37,22 +35,15 @@ export default function MainScreen({route, navigation}) {
         return <Spinner />;
     }
 
-    function getCharacter() {
-        charRef.onSnapshot( (snapshot) => {
-            setCharData(snapshot.data())
-        });
-        global.charaData = charData;
-    }
-
     function updateCharacterLocal(fieldName, text, isNumber) {
-        let tempCharData = JSON.parse(JSON.stringify(charData));
-        tempCharData[fieldName] = isNumber ? Number(text) : text;
-        setCharData(tempCharData);
+        let tempCharacter = JSON.parse(JSON.stringify(character));
+        tempCharacter[fieldName] = isNumber ? Number(text) : text;
+        setCharacter(tempCharacter);
     }
 
     function updateCharacter(fieldName, value) {
         if (fieldName === 'strength') {
-            charRef
+            global.charaRef
                 .update({
                     strength: Number(value)
                 })
@@ -61,7 +52,7 @@ export default function MainScreen({route, navigation}) {
                 );
         }
         else if (fieldName === 'constitution') {
-            charRef
+            global.charaRef
                 .update({
                     constitution: Number(value)
                 })
@@ -70,7 +61,7 @@ export default function MainScreen({route, navigation}) {
                 );
         }
         else if (fieldName === 'dexterity') {
-            charRef
+            global.charaRef
                 .update({
                     dexterity: Number(value)
                 })
@@ -79,7 +70,7 @@ export default function MainScreen({route, navigation}) {
                 );
         }
         else if (fieldName === 'wisdom') {
-            charRef
+            global.charaRef
                 .update({
                     wisdom: Number(value)
                 })
@@ -88,7 +79,7 @@ export default function MainScreen({route, navigation}) {
                 );
         }
         else if (fieldName === 'intelligence') {
-            charRef
+            global.charaRef
                 .update({
                     intelligence: Number(value)
                 })
@@ -97,7 +88,7 @@ export default function MainScreen({route, navigation}) {
                 );
         }
         else if (fieldName === 'charisma') {
-            charRef
+            global.charaRef
                 .update({
                     charisma: Number(value)
                 })
@@ -106,7 +97,7 @@ export default function MainScreen({route, navigation}) {
                 );
         }
         else if (fieldName === 'proficiency') {
-            charRef
+            global.charaRef
                 .update({
                     proficiency: Number(value)
                 })
@@ -115,7 +106,7 @@ export default function MainScreen({route, navigation}) {
                 );
         }
         else if (fieldName === 'name') {
-            charRef
+            global.charaRef
                 .update({
                     name: value
                 })
@@ -123,8 +114,8 @@ export default function MainScreen({route, navigation}) {
                     console.log('Failed to update character: ' + error)
                 );
         }
-        else if (fieldName === 'race') {
-            charRef
+        else if (fieldName === 'char_race') {
+            global.charaRef
                 .update({
                     char_race: value
                 })
@@ -132,8 +123,8 @@ export default function MainScreen({route, navigation}) {
                     console.log('Failed to update character: ' + error)
                 );
         }
-        else if (fieldName === 'class') {
-            charRef
+        else if (fieldName === 'char_class') {
+            global.charaRef
                 .update({
                     char_class: value
                 })
@@ -142,7 +133,7 @@ export default function MainScreen({route, navigation}) {
                 );
         }
         else if (fieldName === 'alignment') {
-            charRef
+            global.charaRef
                 .update({
                     alignment: value
                 })
@@ -151,7 +142,7 @@ export default function MainScreen({route, navigation}) {
                 );
         }
         else if (fieldName === 'hit_dice') {
-            charRef
+            global.charaRef
                 .update({
                     hit_dice: value
                 })
@@ -160,7 +151,7 @@ export default function MainScreen({route, navigation}) {
                 );
         }
         else if (fieldName === 'level') {
-            charRef
+            global.charaRef
                 .update({
                     level: Number(value)
                 })
@@ -169,7 +160,7 @@ export default function MainScreen({route, navigation}) {
                 );
         }
         else if (fieldName === 'current_hp') {
-            charRef
+            global.charaRef
                 .update({
                     current_hp: Number(value)
                 })
@@ -178,7 +169,7 @@ export default function MainScreen({route, navigation}) {
                 );
         }
         else if (fieldName === 'temp_hp') {
-            charRef
+            global.charaRef
                 .update({
                     temp_hp: Number(value)
                 })
@@ -187,7 +178,7 @@ export default function MainScreen({route, navigation}) {
                 );
         }
         else if (fieldName === 'max_hp') {
-            charRef
+            global.charaRef
                 .update({
                     max_hp: Number(value)
                 })
@@ -196,7 +187,7 @@ export default function MainScreen({route, navigation}) {
                 );
         }
         else if (fieldName === 'armor_class') {
-            charRef
+            global.charaRef
                 .update({
                     armor_class: Number(value)
                 })
@@ -205,7 +196,7 @@ export default function MainScreen({route, navigation}) {
                 );
         }
         else if (fieldName === 'initiative') {
-            charRef
+            global.charaRef
                 .update({
                     initiative: Number(value)
                 })
@@ -214,7 +205,7 @@ export default function MainScreen({route, navigation}) {
                 );
         }
         else if (fieldName === 'speed') {
-            charRef
+            global.charaRef
                 .update({
                     speed: Number(value)
                 })
@@ -223,7 +214,7 @@ export default function MainScreen({route, navigation}) {
                 );
         }
         else if (fieldName === 'passive_perception') {
-            charRef
+            global.charaRef
                 .update({
                     passive_perception: Number(value)
                 })
@@ -232,7 +223,7 @@ export default function MainScreen({route, navigation}) {
                 );
         }
         else if (fieldName === 'passive_investigation') {
-            charRef
+            global.charaRef
                 .update({
                     passive_investigation: Number(value)
                 })
@@ -241,7 +232,7 @@ export default function MainScreen({route, navigation}) {
                 );
         }
         else if (fieldName === 'passive_insight') {
-            charRef
+            global.charaRef
                 .update({
                     passive_insight: Number(value)
                 })
@@ -250,7 +241,7 @@ export default function MainScreen({route, navigation}) {
                 );
         }
         else if (fieldName === 'DS_successCircle1') {
-            charRef
+            global.charaRef
                 .update({
                     DS_successCircle1: value
                 })
@@ -259,7 +250,7 @@ export default function MainScreen({route, navigation}) {
                 )
         }
         else if (fieldName === 'DS_successCircle2') {
-            charRef
+            global.charaRef
                 .update({
                     DS_successCircle2: value
                 })
@@ -268,7 +259,7 @@ export default function MainScreen({route, navigation}) {
                 )
         }
         else if (fieldName === 'DS_successCircle3') {
-            charRef
+            global.charaRef
                 .update({
                     DS_successCircle3: value
                 })
@@ -277,7 +268,7 @@ export default function MainScreen({route, navigation}) {
                 )
         }
         else if (fieldName === 'DS_failureCircle1') {
-            charRef
+            global.charaRef
                 .update({
                     DS_failureCircle1: value
                 })
@@ -286,7 +277,7 @@ export default function MainScreen({route, navigation}) {
                 )
         }
         else if (fieldName === 'DS_failureCircle2') {
-            charRef
+            global.charaRef
                 .update({
                     DS_failureCircle2: value
                 })
@@ -295,7 +286,7 @@ export default function MainScreen({route, navigation}) {
                 )
         }
         else if (fieldName === 'DS_failureCircle3') {
-            charRef
+            global.charaRef
                 .update({
                     DS_failureCircle3: value
                 })
@@ -304,7 +295,7 @@ export default function MainScreen({route, navigation}) {
                 )
         }
         else if (fieldName === 'ST_strength') {
-            charRef
+            global.charaRef
                 .update({
                     ST_strength: Number(value)
                 })
@@ -313,7 +304,7 @@ export default function MainScreen({route, navigation}) {
                 );
         }
         else if (fieldName === 'ST_dexterity') {
-            charRef
+            global.charaRef
                 .update({
                     ST_dexterity: Number(value)
                 })
@@ -322,7 +313,7 @@ export default function MainScreen({route, navigation}) {
                 );
         }
         else if (fieldName === 'ST_constitution') {
-            charRef
+            global.charaRef
                 .update({
                     ST_constitution: Number(value)
                 })
@@ -331,7 +322,7 @@ export default function MainScreen({route, navigation}) {
                 );
         }
         else if (fieldName === 'ST_intelligence') {
-            charRef
+            global.charaRef
                 .update({
                     ST_intelligence: Number(value)
                 })
@@ -340,7 +331,7 @@ export default function MainScreen({route, navigation}) {
                 );
         }
         else if (fieldName === 'ST_wisdom') {
-            charRef
+            global.charaRef
                 .update({
                     ST_wisdom: Number(value)
                 })
@@ -349,7 +340,7 @@ export default function MainScreen({route, navigation}) {
                 );
         }
         else if (fieldName === 'ST_charisma') {
-            charRef
+            global.charaRef
                 .update({
                     ST_charisma: Number(value)
                 })
@@ -358,7 +349,7 @@ export default function MainScreen({route, navigation}) {
                 );
         }
         else if (fieldName === 'acrobatics') {
-            charRef
+            global.charaRef
                 .update({
                     acrobatics: Number(value)
                 })
@@ -367,7 +358,7 @@ export default function MainScreen({route, navigation}) {
                 );
         }
         else if (fieldName === 'animal_handling') {
-            charRef
+            global.charaRef
                 .update({
                     animal_handling: Number(value)
                 })
@@ -376,7 +367,7 @@ export default function MainScreen({route, navigation}) {
                 );
         }
         else if (fieldName === 'arcana') {
-            charRef
+            global.charaRef
                 .update({
                     arcana: Number(value)
                 })
@@ -385,7 +376,7 @@ export default function MainScreen({route, navigation}) {
                 );
         }
         else if (fieldName === 'athletics') {
-            charRef
+            global.charaRef
                 .update({
                     athletics: Number(value)
                 })
@@ -394,7 +385,7 @@ export default function MainScreen({route, navigation}) {
                 );
         }
         else if (fieldName === 'deception') {
-            charRef
+            global.charaRef
                 .update({
                     deception: Number(value)
                 })
@@ -403,7 +394,7 @@ export default function MainScreen({route, navigation}) {
                 );
         }
         else if (fieldName === 'history') {
-            charRef
+            global.charaRef
                 .update({
                     history: Number(value)
                 })
@@ -412,7 +403,7 @@ export default function MainScreen({route, navigation}) {
                 );
         }
         else if (fieldName === 'insight') {
-            charRef
+            global.charaRef
                 .update({
                     insight: Number(value)
                 })
@@ -421,7 +412,7 @@ export default function MainScreen({route, navigation}) {
                 );
         }
         else if (fieldName === 'intimidation') {
-            charRef
+            global.charaRef
                 .update({
                     intimidation: Number(value)
                 })
@@ -430,7 +421,7 @@ export default function MainScreen({route, navigation}) {
                 );
         }
         else if (fieldName === 'investigation') {
-            charRef
+            global.charaRef
                 .update({
                     investigation: Number(value)
                 })
@@ -439,7 +430,7 @@ export default function MainScreen({route, navigation}) {
                 );
         }
         else if (fieldName === 'medicine') {
-            charRef
+            global.charaRef
                 .update({
                     medicine: Number(value)
                 })
@@ -448,7 +439,7 @@ export default function MainScreen({route, navigation}) {
                 );
         }
         else if (fieldName === 'nature') {
-            charRef
+            global.charaRef
                 .update({
                     nature: Number(value)
                 })
@@ -457,7 +448,7 @@ export default function MainScreen({route, navigation}) {
                 );
         }
         else if (fieldName === 'perception') {
-            charRef
+            global.charaRef
                 .update({
                     perception: Number(value)
                 })
@@ -466,7 +457,7 @@ export default function MainScreen({route, navigation}) {
                 );
         }
         else if (fieldName === 'performance') {
-            charRef
+            global.charaRef
                 .update({
                     performance: Number(value)
                 })
@@ -475,7 +466,7 @@ export default function MainScreen({route, navigation}) {
                 );
         }
         else if (fieldName === 'persuasion') {
-            charRef
+            global.charaRef
                 .update({
                     persuasion: Number(value)
                 })
@@ -484,7 +475,7 @@ export default function MainScreen({route, navigation}) {
                 );
         }
         else if (fieldName === 'religion') {
-            charRef
+            global.charaRef
                 .update({
                     religion: Number(value)
                 })
@@ -493,7 +484,7 @@ export default function MainScreen({route, navigation}) {
                 );
         }
         else if (fieldName === 'sleight_of_hand') {
-            charRef
+            global.charaRef
                 .update({
                     sleight_of_hand: Number(value)
                 })
@@ -502,7 +493,7 @@ export default function MainScreen({route, navigation}) {
                 );
         }
         else if (fieldName === 'stealth') {
-            charRef
+            global.charaRef
                 .update({
                     stealth: Number(value)
                 })
@@ -511,7 +502,7 @@ export default function MainScreen({route, navigation}) {
                 );
         }
         else if (fieldName === 'survival') {
-            charRef
+            global.charaRef
                 .update({
                     survival: Number(value)
                 })
@@ -520,7 +511,7 @@ export default function MainScreen({route, navigation}) {
                 );
         }
         else if (fieldName === 'proficiencies_and_languages') {
-            charRef
+            global.charaRef
                 .update({
                     proficiencies_and_languages: value
                 })
@@ -558,11 +549,8 @@ export default function MainScreen({route, navigation}) {
     // }
 
     return (
-        <TouchableOpacity
-            activeOpacity={1}
-            onPress={() => Keyboard.dismiss()}
-        >
-            {/*{tabNavigator()}*/}
+        <View>
+            {/*<tabNavigator/>*/}
             <View style = {styles.imageAndAbilitiesContainer}>
                 <Image
                     source={require('./../../assets/default_character.png')}
@@ -584,14 +572,11 @@ export default function MainScreen({route, navigation}) {
                                 style={styles.abilityScoresStyle}
                                 keyboardType="number-pad"
                                 underlineColor="transparent"
-                                value={String(charData['strength'])}
+                                value={String(character.strength)}
                                 onChangeText={(text) => {
+                                    route.params.onFSChange(route.params.index, 'strength', text, true);
                                     updateCharacterLocal('strength', text, true);
-                                }}
-                                onBlur={() => {
-                                    updateCharacter('strength', charData['strength']);
-                                    route.params.onFSChange(route.params.index, 'strength', charData['strength'], true);
-                                    route.params.updateCharData()
+                                    updateCharacter('strength', text);
                                 }}
                             />
                             <Text
@@ -605,14 +590,11 @@ export default function MainScreen({route, navigation}) {
                                 style={styles.abilityScoresStyle}
                                 keyboardType="number-pad"
                                 underlineColor="transparent"
-                                value={String(charData['constitution'])}
+                                value={String(character.constitution)}
                                 onChangeText={(text) => {
+                                    route.params.onFSChange(route.params.index,'constitution', text, true);
                                     updateCharacterLocal('constitution', text, true);
-                                }}
-                                onBlur={() => {
-                                    updateCharacter('constitution', charData['constitution']);
-                                    route.params.onFSChange(route.params.index,'constitution', charData['constitution'], true);
-                                    route.params.updateCharData()
+                                    updateCharacter('constitution', text);
                                 }}
                             />
                             <Text
@@ -626,14 +608,11 @@ export default function MainScreen({route, navigation}) {
                                 style={styles.abilityScoresStyle}
                                 keyboardType="number-pad"
                                 underlineColor="transparent"
-                                value={String(charData['wisdom'])}
+                                value={String(character.wisdom)}
                                 onChangeText={(text) => {
+                                    route.params.onFSChange(route.params.index, 'wisdom', text, true);
                                     updateCharacterLocal('wisdom', text, true);
-                                }}
-                                onBlur={() => {
-                                    updateCharacter('wisdom', charData['wisdom']);
-                                    route.params.onFSChange(route.params.index, 'wisdom', charData['wisdom'], true);
-                                    route.params.updateCharData()
+                                    updateCharacter('wisdom', text);
                                 }}
                             />
                             <Text
@@ -649,14 +628,11 @@ export default function MainScreen({route, navigation}) {
                                 style={styles.abilityScoresStyle}
                                 keyboardType="number-pad"
                                 underlineColor="transparent"
-                                value={String(charData['dexterity'])}
+                                value={String(character.dexterity)}
                                 onChangeText={(text) => {
+                                    route.params.onFSChange(route.params.index,'dexterity', text, true);
                                     updateCharacterLocal('dexterity', text, true);
-                                }}
-                                onBlur={() => {
-                                    updateCharacter('dexterity', charData['dexterity']);
-                                    route.params.onFSChange(route.params.index,'dexterity', charData['dexterity'], true);
-                                    route.params.updateCharData()
+                                    updateCharacter('dexterity', text);
                                 }}
                             />
                             <Text
@@ -670,14 +646,11 @@ export default function MainScreen({route, navigation}) {
                                 style={styles.abilityScoresStyle}
                                 keyboardType="number-pad"
                                 underlineColor="transparent"
-                                value={String(charData['intelligence'])}
+                                value={String(character.intelligence)}
                                 onChangeText={(text) => {
+                                    route.params.onFSChange(route.params.index,'intelligence', text, true);
                                     updateCharacterLocal('intelligence', text, true);
-                                }}
-                                onBlur={() => {
-                                    updateCharacter('intelligence', charData['intelligence']);
-                                    route.params.onFSChange(route.params.index,'intelligence', charData['intelligence'], true);
-                                    route.params.updateCharData()
+                                    updateCharacter('intelligence', text);
                                 }}
                             />
                             <Text
@@ -691,14 +664,11 @@ export default function MainScreen({route, navigation}) {
                                 style={styles.abilityScoresStyle}
                                 keyboardType="number-pad"
                                 underlineColor="transparent"
-                                value={String(charData['charisma'])}
+                                value={String(character.charisma)}
                                 onChangeText={(text) => {
+                                    route.params.onFSChange(route.params.index,'charisma', text, true);
                                     updateCharacterLocal('charisma', text, true);
-                                }}
-                                onBlur={() => {
-                                    updateCharacter('charisma', charData['charisma']);
-                                    route.params.onFSChange(route.params.index,'charisma', charData['charisma'], true);
-                                    route.params.updateCharData()
+                                    updateCharacter('charisma', text);
                                 }}
                             />
                             <Text
@@ -714,14 +684,11 @@ export default function MainScreen({route, navigation}) {
                         style={styles.proficiencyStyle}
                         keyboardType="number-pad"
                         underlineColor="transparent"
-                        value={String(charData['proficiency'])}
+                        value={String(character.proficiency)}
                         onChangeText={(text) => {
+                            route.params.onFSChange(route.params.index,'proficiency', text, true);
                             updateCharacterLocal('proficiency', text, true);
-                        }}
-                        onBlur={() => {
-                            updateCharacter('proficiency', charData['proficiency']);
-                            route.params.onFSChange(route.params.index,'proficiency', charData['proficiency'], true);
-                            route.params.updateCharData()
+                            updateCharacter('proficiency', text);
                         }}
                     />
                     <Text
@@ -735,16 +702,13 @@ export default function MainScreen({route, navigation}) {
                 <View>
                     <TextInput
                         style={styles.name}
-                        value={charData['name']}
+                        value={character.name}
                         underlineColor="transparent"
                         placeholder={"Enter name..."}
                         onChangeText={(text) => {
+                            route.params.onFSChange(route.params.index,'name', text, false);
                             updateCharacterLocal('name', text, false);
-                        }}
-                        onBlur={() => {
-                            updateCharacter('name', charData['name']);
-                            route.params.onFSChange(route.params.index,'name', charData['name'], false);
-                            route.params.updateCharData()
+                            updateCharacter('name', text);
                         }}
                     />
                     <Text
@@ -756,16 +720,14 @@ export default function MainScreen({route, navigation}) {
                 <View>
                     <TextInput
                         style={styles.race}
-                        value={charData['char_race']}
+                        value={character.char_race}
                         underlineColor="transparent"
                         placeholder={"Enter race..."}
                         onChangeText={(text) => {
+                            console.log(text);
+                            route.params.onFSChange(route.params.index,'char_race', text, false);
                             updateCharacterLocal('char_race', text, false);
-                        }}
-                        onBlur={() => {
-                            updateCharacter('char_race', charData['char_race']);
-                            route.params.onFSChange(route.params.index,'char_race', charData['char_race'], false);
-                            route.params.updateCharData()
+                            updateCharacter('char_race', text);
                         }}
                     />
                     <Text
@@ -777,16 +739,13 @@ export default function MainScreen({route, navigation}) {
                 <View>
                     <TextInput
                         style={styles.class}
-                        value={charData['char_class']}
+                        value={character.char_class}
                         underlineColor="transparent"
                         placeholder={"Enter class..."}
                         onChangeText={(text) => {
+                            route.params.onFSChange(route.params.index,'char_class', text, false);
                             updateCharacterLocal('char_class', text, false);
-                        }}
-                        onBlur={() => {
-                            updateCharacter('char_class', charData['char_class']);
-                            route.params.onFSChange(route.params.index,'char_class', charData['char_class'], false);
-                            route.params.updateCharData()
+                            updateCharacter('char_class', text);
                         }}
                     />
                     <Text
@@ -800,14 +759,11 @@ export default function MainScreen({route, navigation}) {
                         style={styles.levelCurrentHPHitDice}
                         keyboardType="number-pad"
                         underlineColor="transparent"
-                        value={String(charData['level'])}
+                        value={String(character.level)}
                         onChangeText={(text) => {
+                            route.params.onFSChange(route.params.index,'level', text, true);
                             updateCharacterLocal('level', text, true);
-                        }}
-                        onBlur={() => {
-                            updateCharacter('level', charData['level']);
-                            route.params.onFSChange(route.params.index,'level', charData['level'], true);
-                            route.params.updateCharData()
+                            updateCharacter('level', text);
                         }}
                     />
                     <Text
@@ -821,14 +777,11 @@ export default function MainScreen({route, navigation}) {
                         style={styles.levelCurrentHPHitDice}
                         keyboardType="number-pad"
                         underlineColor="transparent"
-                        value={String(charData['current_hp'])}
+                        value={String(character.current_hp)}
                         onChangeText={(text) => {
+                            route.params.onFSChange(route.params.index,'current_hp', text, true);
                             updateCharacterLocal('current_hp', text, true);
-                        }}
-                        onBlur={() => {
-                            updateCharacter('current_hp', charData['current_hp']);
-                            route.params.onFSChange(route.params.index,'current_hp', charData['current_hp'], true);
-                            route.params.updateCharData()
+                            updateCharacter('current_hp', text);
                         }}
                     />
                     <Text
@@ -840,15 +793,12 @@ export default function MainScreen({route, navigation}) {
                 <View>
                     <TextInput
                         style={styles.levelCurrentHPHitDice}
-                        value={charData['hit_dice']}
+                        value={character.hit_dice}
                         underlineColor="transparent"
                         onChangeText={(text) => {
+                            route.params.onFSChange(route.params.index,'hit_dice', text, false);
                             updateCharacterLocal('hit_dice', text, false);
-                        }}
-                        onBlur={() => {
-                            updateCharacter('hit_dice', charData['hit_dice']);
-                            route.params.onFSChange(route.params.index,'hit_dice', charData['hit_dice'], false);
-                            route.params.updateCharData()
+                            updateCharacter('hit_dice', text);
                         }}
                     />
                     <Text
@@ -864,14 +814,11 @@ export default function MainScreen({route, navigation}) {
                         style={styles.levelCurrentHPHitDice}
                         keyboardType="number-pad"
                         underlineColor="transparent"
-                        value={String(charData['armor_class'])}
+                        value={String(character.armor_class)}
                         onChangeText={(text) => {
+                            route.params.onFSChange(route.params.index,'armor_class', text, true);
                             updateCharacterLocal('armor_class', text, true);
-                        }}
-                        onBlur={() => {
-                            updateCharacter('armor_class', charData['armor_class']);
-                            route.params.onFSChange(route.params.index,'armor_class', charData['armor_class'], true);
-                            route.params.updateCharData()
+                            updateCharacter('armor_class', text);
                         }}
                     />
                     <Text
@@ -885,14 +832,11 @@ export default function MainScreen({route, navigation}) {
                         style={styles.levelCurrentHPHitDice}
                         keyboardType="number-pad"
                         underlineColor="transparent"
-                        value={String(charData['initiative'])}
+                        value={String(character.initiative)}
                         onChangeText={(text) => {
+                            route.params.onFSChange(route.params.index,'initiative', text, true);
                             updateCharacterLocal('initiative', text, true);
-                        }}
-                        onBlur={() => {
-                            updateCharacter('initiative', charData['initiative']);
-                            route.params.onFSChange(route.params.index,'initiative', charData['initiative'], true);
-                            route.params.updateCharData()
+                            updateCharacter('initiative', text);
                         }}
                     />
                     <Text
@@ -905,15 +849,12 @@ export default function MainScreen({route, navigation}) {
                     <TextInput
                         style={styles.levelCurrentHPHitDice}
                         keyboardType="number-pad"
-                        value={String(charData['speed'])}
+                        value={String(character.speed)}
                         underlineColor="transparent"
                         onChangeText={(text) => {
+                            route.params.onFSChange(route.params.index,'speed', text, true);
                             updateCharacterLocal('speed', text, true);
-                        }}
-                        onBlur={() => {
-                            updateCharacter('speed', charData['speed']);
-                            route.params.onFSChange(route.params.index,'speed', charData['speed'], true);
-                            route.params.updateCharData()
+                            updateCharacter('speed', text);
                         }}
                     />
                     <Text
@@ -925,16 +866,13 @@ export default function MainScreen({route, navigation}) {
                 <View>
                     <TextInput
                         style= {styles.class}
-                        value={charData['alignment']}
+                        value={character.alignment}
                         underlineColor="transparent"
                         placeholder={"Enter alignment..."}
                         onChangeText={(text) => {
+                            route.params.onFSChange(route.params.index,'alignment', text, false);
                             updateCharacterLocal('alignment', text, false);
-                        }}
-                        onBlur={() => {
-                            updateCharacter('alignment', charData['alignment']);
-                            route.params.onFSChange(route.params.index,'alignment', charData['alignment'], false);
-                            route.params.updateCharData()
+                            updateCharacter('alignment', text);
                         }}
                     />
                     <Text
@@ -962,14 +900,11 @@ export default function MainScreen({route, navigation}) {
                                 style={styles.passiveInputs}
                                 keyboardType="number-pad"
                                 underlineColor="transparent"
-                                value={String(charData['passive_perception'])}
+                                value={String(character.passive_perception)}
                                 onChangeText={(text) => {
+                                    route.params.onFSChange(route.params.index,'passive_perception', text, true);
                                     updateCharacterLocal('passive_perception', text, true);
-                                }}
-                                onBlur={() => {
-                                    updateCharacter('passive_perception', charData['passive_perception']);
-                                    route.params.onFSChange(route.params.index,'passive_perception', charData['passive_perception'], true);
-                                    route.params.updateCharData()
+                                    updateCharacter('passive_perception', text);
                                 }}
                             />
                         </View>
@@ -983,14 +918,11 @@ export default function MainScreen({route, navigation}) {
                                 style={styles.passiveInputs}
                                 keyboardType="number-pad"
                                 underlineColor="transparent"
-                                value={String(charData['passive_investigation'])}
+                                value={String(character.passive_investigation)}
                                 onChangeText={(text) => {
+                                    route.params.onFSChange(route.params.index,'passive_investigation', text, true);
                                     updateCharacterLocal('passive_investigation', text, true);
-                                }}
-                                onBlur={() => {
-                                    updateCharacter('passive_investigation', charData['passive_investigation']);
-                                    route.params.onFSChange(route.params.index,'passive_investigation', charData['passive_investigation'], true);
-                                    route.params.updateCharData()
+                                    updateCharacter('passive_investigation', text);
                                 }}
                             />
                         </View>
@@ -1004,14 +936,11 @@ export default function MainScreen({route, navigation}) {
                                 style={styles.passiveInputs}
                                 keyboardType="number-pad"
                                 underlineColor="transparent"
-                                value={String(charData['passive_insight'])}
+                                value={String(character.passive_insight)}
                                 onChangeText={(text) => {
+                                    route.params.onFSChange(route.params.index,'passive_insight', text, true);
                                     updateCharacterLocal('passive_insight', text, true);
-                                }}
-                                onBlur={() => {
-                                    updateCharacter('passive_insight', charData['passive_insight']);
-                                    route.params.onFSChange(route.params.index,'passive_insight', charData['passive_insight'], true);
-                                    route.params.updateCharData()
+                                    updateCharacter('passive_insight', text);
                                 }}
                             />
                         </View>
@@ -1023,14 +952,11 @@ export default function MainScreen({route, navigation}) {
                             style={styles.maxHPInputs}
                             keyboardType="number-pad"
                             underlineColor="transparent"
-                            value={String(charData['max_hp'])}
+                            value={String(character.max_hp)}
                             onChangeText={(text) => {
+                                route.params.onFSChange(route.params.index,'max_hp', text, true);
                                 updateCharacterLocal('max_hp', text, true);
-                            }}
-                            onBlur={() => {
-                                updateCharacter('max_hp', charData['max_hp']);
-                                route.params.onFSChange(route.params.index,'max_hp', charData['max_hp'], true);
-                                route.params.updateCharData()
+                                updateCharacter('max_hp', text);
                             }}
                         />
                         <Text
@@ -1044,15 +970,11 @@ export default function MainScreen({route, navigation}) {
                             style={styles.tempHPInputs}
                             keyboardType="number-pad"
                             underlineColor="transparent"
-                            value={String(charData['temp_hp'])}
+                            value={String(character.temp_hp)}
                             onChangeText={(text) => {
+                                route.params.onFSChange(route.params.index,'temp_hp', text, true);
                                 updateCharacterLocal('temp_hp', text, true);
-                            }}
-                            onBlur={() => {
-                                updateCharacter('temp_hp', charData['temp_hp']);
-                                getCharacter()
-                                route.params.onFSChange(route.params.index,'temp_hp', charData['temp_hp'], true);
-                                route.params.updateCharData()
+                                updateCharacter('temp_hp', text);
                             }}
                         />
                         <Text
@@ -1082,19 +1004,18 @@ export default function MainScreen({route, navigation}) {
                                             width: 27,
                                             height: 27,
                                             borderWidth: 1,
-                                            backgroundColor: charData['DS_successCircle1'],
+                                            backgroundColor: character.DS_successCircle1,
                                             borderRadius: 54,
                                         }}
                                         onPress = {() => {
-                                            if (charData['DS_successCircle1']  === "#00db79") {
+                                            if (character.DS_successCircle1  === "#00db79") {
+                                                route.params.onFSChange(route.params.index,'DS_successCircle1', "#ffffff", false);
+                                                updateCharacterLocal('DS_successCircle1', "#ffffff", false);
                                                 updateCharacter('DS_successCircle1', "#ffffff");
-                                                route.params.onFSChange(route.params.index,'DS_successCircle1', "#ffffff", true);
-                                                route.params.updateCharData()
                                             } else {
+                                                route.params.onFSChange(route.params.index,'DS_successCircle1', "#00db79", false);
+                                                updateCharacterLocal('DS_successCircle1', "#00db79", false);
                                                 updateCharacter('DS_successCircle1', "#00db79");
-                                                route.params.onFSChange(route.params.index,'DS_successCircle1', "#00db79", true);
-                                                route.params.updateCharData()
-
                                             }
                                         }}
                                     />
@@ -1108,19 +1029,19 @@ export default function MainScreen({route, navigation}) {
                                             width: 27,
                                             height: 27,
                                             borderWidth: 1,
-                                            backgroundColor: charData['DS_successCircle2'],
+                                            backgroundColor: character.DS_successCircle2,
                                             borderRadius: 54,
                                         }}
                                         onPress = {() => {
-                                            if (charData['DS_successCircle2'] === "#00db79") {
+                                            if (character.DS_successCircle2 === "#00db79") {
+                                                route.params.onFSChange(route.params.index,'DS_successCircle2', "#ffffff", false);
+                                                updateCharacterLocal('DS_successCircle2', "#ffffff", false);
                                                 updateCharacter('DS_successCircle2', "#ffffff")
-                                                route.params.onFSChange(route.params.index,'DS_successCircle2', "#ffffff", true);
-                                                route.params.updateCharData()
                                             }
                                             else {
+                                                route.params.onFSChange(route.params.index,'DS_successCircle2', "#00db79", false);
+                                                updateCharacterLocal('DS_successCircle2', "#00db79", false);
                                                 updateCharacter('DS_successCircle2', "#00db79")
-                                                route.params.onFSChange(route.params.index,'DS_successCircle2', "#00db79", true);
-                                                route.params.updateCharData()
                                             }
                                         }}
                                     />
@@ -1133,19 +1054,19 @@ export default function MainScreen({route, navigation}) {
                                         width: 27,
                                         height: 27,
                                         borderWidth: 1,
-                                        backgroundColor: charData['DS_successCircle3'],
+                                        backgroundColor: character.DS_successCircle3,
                                         borderRadius: 54,
                                     }}
                                     onPress = {() => {
-                                        if (charData['DS_successCircle3'] === "#00db79") {
+                                        if (character.DS_successCircle3 === "#00db79") {
+                                            route.params.onFSChange(route.params.index,'DS_successCircle3', "#ffffff", false);
+                                            updateCharacterLocal('DS_successCircle3', "#ffffff", false);
                                             updateCharacter('DS_successCircle3', "#ffffff")
-                                            route.params.onFSChange(route.params.index,'DS_successCircle3', "#ffffff", true);
-                                            route.params.updateCharData()
                                         }
                                         else {
+                                            route.params.onFSChange(route.params.index,'DS_successCircle3', "#00db79", false);
+                                            updateCharacterLocal('DS_successCircle3', "#00db79", false);
                                             updateCharacter('DS_successCircle3', "#00db79")
-                                            route.params.onFSChange(route.params.index,'DS_successCircle3', "#00db79", true);
-                                            route.params.updateCharData()
                                         }
                                     }}
                                 />
@@ -1164,19 +1085,19 @@ export default function MainScreen({route, navigation}) {
                                             width: 27,
                                             height: 27,
                                             borderWidth: 1,
-                                            backgroundColor: charData['DS_failureCircle1'],
+                                            backgroundColor: character.DS_failureCircle1,
                                             borderRadius: 54,
                                         }}
                                         onPress = {() => {
-                                            if (charData['DS_failureCircle1'] === "#f51b1b") {
+                                            if (character.DS_failureCircle1 === "#f51b1b") {
+                                                route.params.onFSChange(route.params.index,'DS_failureCircle1', "#ffffff", false);
+                                                updateCharacterLocal('DS_failureCircle1', "#ffffff", false);
                                                 updateCharacter('DS_failureCircle1', "#ffffff");
-                                                route.params.onFSChange(route.params.index,'DS_failuresCircle1', "#ffffff", true);
-                                                route.params.updateCharData()
                                             }
                                             else {
+                                                route.params.onFSChange(route.params.index,'DS_failureCircle1', "#f51b1b", false);
+                                                updateCharacterLocal('DS_failureCircle1', "#f51b1b", false);
                                                 updateCharacter('DS_failureCircle1', "#f51b1b");
-                                                route.params.onFSChange(route.params.index,'DS_failuresCircle1', "#f51b1b", true);
-                                                route.params.updateCharData()
                                             }
                                         }}
                                     />
@@ -1190,19 +1111,19 @@ export default function MainScreen({route, navigation}) {
                                             width: 27,
                                             height: 27,
                                             borderWidth: 1,
-                                            backgroundColor: charData['DS_failureCircle2'],
+                                            backgroundColor: character.DS_failureCircle2,
                                             borderRadius: 54,
                                         }}
                                         onPress = {() => {
-                                            if (charData['DS_failureCircle2'] === "#f51b1b") {
-                                                updateCharacter('DS_failureCircle2',"#ffffff");
-                                                route.params.onFSChange(route.params.index,'DS_failuresCircle2', "#ffffff", true);
-                                                route.params.updateCharData()
+                                            if (character.DS_failureCircle2 === "#f51b1b") {
+                                                route.params.onFSChange(route.params.index,'DS_failureCircle2', "#ffffff", false);
+                                                updateCharacterLocal('DS_failureCircle2', "#ffffff", false);
+                                                updateCharacter('DS_failureCircle2', "#ffffff");
                                             }
                                             else {
+                                                route.params.onFSChange(route.params.index,'DS_failureCircle2', "#f51b1b", false);
+                                                updateCharacterLocal('DS_failureCircle2', "#f51b1b", false);
                                                 updateCharacter('DS_failureCircle2', "#f51b1b");
-                                                route.params.onFSChange(route.params.index,'DS_failuresCircle2', "#f51b1b", true);
-                                                route.params.updateCharData()
                                             }
                                         }}
                                     />
@@ -1215,19 +1136,19 @@ export default function MainScreen({route, navigation}) {
                                         width: 27,
                                         height: 27,
                                         borderWidth: 1,
-                                        backgroundColor: charData['DS_failureCircle3'],
+                                        backgroundColor: character.DS_failureCircle3,
                                         borderRadius: 54,
                                     }}
                                     onPress = {() => {
-                                        if (charData['DS_failureCircle3'] === "#f51b1b") {
+                                        if (character.DS_failureCircle3 === "#f51b1b") {
+                                            route.params.onFSChange(route.params.index,'DS_failureCircle3', "#ffffff", false);
+                                            updateCharacterLocal('DS_failureCircle3', "#ffffff", false);
                                             updateCharacter('DS_failureCircle3', "#ffffff");
-                                            route.params.onFSChange(route.params.index,'DS_failuresCircle3', "#ffffff", true);
-                                            route.params.updateCharData()
                                         }
                                         else {
+                                            route.params.onFSChange(route.params.index,'DS_failureCircle3', "#f51b1b", false);
+                                            updateCharacterLocal('DS_failureCircle3', "#f51b1b", false);
                                             updateCharacter('DS_failureCircle3', "#f51b1b");
-                                            route.params.onFSChange(route.params.index,'DS_failuresCircle3', "#f51b1b", true);
-                                            route.params.updateCharData()
                                         }
                                     }}
                                 />
@@ -1251,15 +1172,12 @@ export default function MainScreen({route, navigation}) {
                         </View>
                         <TextInput
                             style = {styles.STValue}
-                            value = {String(charData["ST_strength"])}
+                            value = {String(character.ST_strength)}
                             underlineColor="transparent"
-                            onChangeText = {(text) => {
+                            onChangeText={(text) => {
+                                route.params.onFSChange(route.params.index,'ST_strength', text, true);
                                 updateCharacterLocal('ST_strength', text, true);
-                            }}
-                            onBlur = {() => {
-                                updateCharacter('ST_strength', charData["ST_strength"]);
-                                route.params.onFSChange(route.params.index,'ST_strength', charData["ST_strength"], true);
-                                route.params.updateCharData()
+                                updateCharacter('ST_strength', text);
                             }}
                         />
                     </View>
@@ -1271,15 +1189,12 @@ export default function MainScreen({route, navigation}) {
                         </View>
                         <TextInput
                             style = {styles.STValue}
-                            value = {String(charData["ST_dexterity"])}
+                            value = {String(character.ST_dexterity)}
                             underlineColor="transparent"
-                            onChangeText = {(text) => {
+                            onChangeText={(text) => {
+                                route.params.onFSChange(route.params.index,'ST_dexterity', text, true);
                                 updateCharacterLocal('ST_dexterity', text, true);
-                            }}
-                            onBlur = {() => {
-                                updateCharacter('ST_dexterity', charData["ST_dexterity"]);
-                                route.params.onFSChange(route.params.index,'ST_dexterity', charData["ST_dexterity"], true);
-                                route.params.updateCharData()
+                                updateCharacter('ST_dexterity', text);
                             }}
                         />
                     </View>
@@ -1291,15 +1206,12 @@ export default function MainScreen({route, navigation}) {
                         </View>
                         <TextInput
                             style = {styles.STValue}
-                            value = {String(charData["ST_constitution"])}
+                            value = {String(character.ST_constitution)}
                             underlineColor="transparent"
-                            onChangeText = {(text) => {
+                            onChangeText={(text) => {
+                                route.params.onFSChange(route.params.index,'ST_constitution', text, true);
                                 updateCharacterLocal('ST_constitution', text, true);
-                            }}
-                            onBlur = {() => {
-                                updateCharacter('ST_constitution', charData["ST_constitution"]);
-                                route.params.onFSChange(route.params.index,'ST_constitution', charData["ST_constitution"], true);
-                                route.params.updateCharData()
+                                updateCharacter('ST_constitution', text);
                             }}
                         />
                     </View>
@@ -1311,15 +1223,12 @@ export default function MainScreen({route, navigation}) {
                         </View>
                         <TextInput
                             style = {styles.STValue}
-                            value = {String(charData["ST_intelligence"])}
+                            value = {String(character.ST_intelligence)}
                             underlineColor="transparent"
-                            onChangeText = {(text) => {
+                            onChangeText={(text) => {
+                                route.params.onFSChange(route.params.index,'ST_intelligence', text, true);
                                 updateCharacterLocal('ST_intelligence', text, true);
-                            }}
-                            onBlur = {() => {
-                                updateCharacter('ST_intelligence', charData["ST_intelligence"]);
-                                route.params.onFSChange(route.params.index,'ST_intelligence', charData["ST_intelligence"], true);
-                                route.params.updateCharData()
+                                updateCharacter('ST_intelligence', text);
                             }}
                         />
                     </View>
@@ -1331,15 +1240,12 @@ export default function MainScreen({route, navigation}) {
                         </View>
                         <TextInput
                             style = {styles.STValue}
-                            value = {String(charData["ST_wisdom"])}
+                            value = {String(character.ST_wisdom)}
                             underlineColor="transparent"
-                            onChangeText = {(text) => {
+                            onChangeText={(text) => {
+                                route.params.onFSChange(route.params.index,'ST_wisdom', text, true);
                                 updateCharacterLocal('ST_wisdom', text, true);
-                            }}
-                            onBlur = {() => {
-                                updateCharacter('ST_wisdom', charData["ST_wisdom"]);
-                                route.params.onFSChange(route.params.index,'ST_wisdom', charData["ST_wisdom"], true);
-                                route.params.updateCharData()
+                                updateCharacter('ST_wisdom', text);
                             }}
                         />
                     </View>
@@ -1351,15 +1257,12 @@ export default function MainScreen({route, navigation}) {
                         </View>
                         <TextInput
                             style = {styles.STValue}
-                            value = {String(charData["ST_charisma"])}
+                            value = {String(character.ST_charisma)}
                             underlineColor="transparent"
-                            onChangeText = {(text) => {
+                            onChangeText={(text) => {
+                                route.params.onFSChange(route.params.index,'ST_charisma', text, true);
                                 updateCharacterLocal('ST_charisma', text, true);
-                            }}
-                            onBlur = {() => {
-                                updateCharacter('ST_charisma', charData["ST_charisma"]);
-                                route.params.onFSChange(route.params.index,'ST_charisma', charData["ST_charisma"], true);
-                                route.params.updateCharData()
+                                updateCharacter('ST_charisma', text);
                             }}
                         />
                     </View>
@@ -1403,15 +1306,12 @@ export default function MainScreen({route, navigation}) {
                             </View>
                             <TextInput
                                 style = {styles.skillsValue}
-                                value = {String(charData["acrobatics"])}
+                                value = {String(character.acrobatics)}
                                 underlineColor="transparent"
-                                onChangeText = {(text) => {
+                                onChangeText={(text) => {
+                                    route.params.onFSChange(route.params.index,'acrobatics', text, true);
                                     updateCharacterLocal('acrobatics', text, true);
-                                }}
-                                onBlur = {() => {
-                                    updateCharacter('acrobatics', charData["acrobatics"]);
-                                    route.params.onFSChange(route.params.index,'acrobatics', charData["acrobatics"], true);
-                                    route.params.updateCharData()
+                                    updateCharacter('acrobatics', text);
                                 }}
                             />
                         </View>
@@ -1423,15 +1323,12 @@ export default function MainScreen({route, navigation}) {
                             </View>
                             <TextInput
                                 style = {styles.skillsValue}
-                                value = {String(charData["animal_handling"])}
+                                value = {String(character.animal_handling)}
                                 underlineColor="transparent"
-                                onChangeText = {(text) => {
+                                onChangeText={(text) => {
+                                    route.params.onFSChange(route.params.index,'animal_handling', text, true);
                                     updateCharacterLocal('animal_handling', text, true);
-                                }}
-                                onBlur = {() => {
-                                    updateCharacter('animal_handling', charData["animal_handling"]);
-                                    route.params.onFSChange(route.params.index,'animal_handling', charData["animal_handling"], true);
-                                    route.params.updateCharData()
+                                    updateCharacter('animal_handling', text);
                                 }}
                             />
                         </View>
@@ -1443,15 +1340,12 @@ export default function MainScreen({route, navigation}) {
                             </View>
                             <TextInput
                                 style = {styles.skillsValue}
-                                value = {String(charData["arcana"])}
+                                value = {String(character.arcana)}
                                 underlineColor="transparent"
-                                onChangeText = {(text) => {
+                                onChangeText={(text) => {
+                                    route.params.onFSChange(route.params.index,'arcana', text, true);
                                     updateCharacterLocal('arcana', text, true);
-                                }}
-                                onBlur = {() => {
-                                    updateCharacter('arcana', charData["arcana"]);
-                                    route.params.onFSChange(route.params.index,'arcana', charData["arcana"], true);
-                                    route.params.updateCharData()
+                                    updateCharacter('arcana', text);
                                 }}
                             />
                         </View>
@@ -1463,15 +1357,12 @@ export default function MainScreen({route, navigation}) {
                             </View>
                             <TextInput
                                 style = {styles.skillsValue}
-                                value = {String(charData["athletics"])}
+                                value = {String(character.athletics)}
                                 underlineColor="transparent"
-                                onChangeText = {(text) => {
+                                onChangeText={(text) => {
+                                    route.params.onFSChange(route.params.index,'athletics', text, true);
                                     updateCharacterLocal('athletics', text, true);
-                                }}
-                                onBlur = {() => {
-                                    updateCharacter('athletics', charData["athletics"]);
-                                    route.params.onFSChange(route.params.index,'athletics', charData["athletics"], true);
-                                    route.params.updateCharData()
+                                    updateCharacter('athletics', text);
                                 }}
                             />
                         </View>
@@ -1483,15 +1374,12 @@ export default function MainScreen({route, navigation}) {
                             </View>
                             <TextInput
                                 style = {styles.skillsValue}
-                                value = {String(charData["deception"])}
+                                value = {String(character.deception)}
                                 underlineColor="transparent"
-                                onChangeText = {(text) => {
+                                onChangeText={(text) => {
+                                    route.params.onFSChange(route.params.index,'deception', text, true);
                                     updateCharacterLocal('deception', text, true);
-                                }}
-                                onBlur = {() => {
-                                    updateCharacter('deception', charData["deception"]);
-                                    route.params.onFSChange(route.params.index,'deception', charData["deception"], true);
-                                    route.params.updateCharData()
+                                    updateCharacter('deception', text);
                                 }}
                             />
                         </View>
@@ -1503,15 +1391,12 @@ export default function MainScreen({route, navigation}) {
                             </View>
                             <TextInput
                                 style = {styles.skillsValue}
-                                value = {String(charData["history"])}
+                                value = {String(character.history)}
                                 underlineColor="transparent"
-                                onChangeText = {(text) => {
+                                onChangeText={(text) => {
+                                    route.params.onFSChange(route.params.index,'history', text, true);
                                     updateCharacterLocal('history', text, true);
-                                }}
-                                onBlur = {() => {
-                                    updateCharacter('history', charData["history"]);
-                                    route.params.onFSChange(route.params.index,'history', charData["history"], true);
-                                    route.params.updateCharData()
+                                    updateCharacter('history', text);
                                 }}
                             />
                         </View>
@@ -1523,15 +1408,12 @@ export default function MainScreen({route, navigation}) {
                             </View>
                             <TextInput
                                 style = {styles.skillsValue}
-                                value = {String(charData["insight"])}
+                                value = {String(character.insight)}
                                 underlineColor="transparent"
-                                onChangeText = {(text) => {
+                                onChangeText={(text) => {
+                                    route.params.onFSChange(route.params.index,'insight', text, true);
                                     updateCharacterLocal('insight', text, true);
-                                }}
-                                onBlur = {() => {
-                                    updateCharacter('insight', charData["insight"]);
-                                    route.params.onFSChange(route.params.index,'insight', charData["insight"], true);
-                                    route.params.updateCharData()
+                                    updateCharacter('insight', text);
                                 }}
                             />
                         </View>
@@ -1543,15 +1425,12 @@ export default function MainScreen({route, navigation}) {
                             </View>
                             <TextInput
                                 style = {styles.skillsValue}
-                                value = {String(charData["intimidation"])}
+                                value = {String(character.intimidation)}
                                 underlineColor="transparent"
-                                onChangeText = {(text) => {
+                                onChangeText={(text) => {
+                                    route.params.onFSChange(route.params.index,'intimidation', text, true);
                                     updateCharacterLocal('intimidation', text, true);
-                                }}
-                                onBlur = {() => {
-                                    updateCharacter('intimidation', charData["intimidation"]);
-                                    route.params.onFSChange(route.params.index,'intimidation', charData["intimidation"], true);
-                                    route.params.updateCharData()
+                                    updateCharacter('intimidation', text);
                                 }}
                             />
                         </View>
@@ -1563,15 +1442,12 @@ export default function MainScreen({route, navigation}) {
                             </View>
                             <TextInput
                                 style = {styles.skillsValue}
-                                value = {String(charData["investigation"])}
+                                value = {String(character.investigation)}
                                 underlineColor="transparent"
-                                onChangeText = {(text) => {
+                                onChangeText={(text) => {
+                                    route.params.onFSChange(route.params.index,'investigation', text, true);
                                     updateCharacterLocal('investigation', text, true);
-                                }}
-                                onBlur = {() => {
-                                    updateCharacter('investigation', charData["investigation"]);
-                                    route.params.onFSChange(route.params.index,'investigation', charData["investigation"], true);
-                                    route.params.updateCharData()
+                                    updateCharacter('investigation', text);
                                 }}
                             />
                         </View>
@@ -1585,15 +1461,12 @@ export default function MainScreen({route, navigation}) {
                             </View>
                             <TextInput
                                 style = {styles.skillsValue}
-                                value = {String(charData["medicine"])}
+                                value = {String(character.medicine)}
                                 underlineColor="transparent"
-                                onChangeText = {(text) => {
+                                onChangeText={(text) => {
+                                    route.params.onFSChange(route.params.index,'medicine', text, true);
                                     updateCharacterLocal('medicine', text, true);
-                                }}
-                                onBlur = {() => {
-                                    updateCharacter('medicine', charData["medicine"]);
-                                    route.params.onFSChange(route.params.index,'medicine', charData["medicine"], true);
-                                    route.params.updateCharData()
+                                    updateCharacter('medicine', text);
                                 }}
                             />
                         </View>
@@ -1605,15 +1478,12 @@ export default function MainScreen({route, navigation}) {
                             </View>
                             <TextInput
                                 style = {styles.skillsValue}
-                                value = {String(charData["nature"])}
+                                value = {String(character.nature)}
                                 underlineColor="transparent"
-                                onChangeText = {(text) => {
+                                onChangeText={(text) => {
+                                    route.params.onFSChange(route.params.index,'nature', text, true);
                                     updateCharacterLocal('nature', text, true);
-                                }}
-                                onBlur = {() => {
-                                    updateCharacter('nature', charData["nature"]);
-                                    route.params.onFSChange(route.params.index,'nature', charData["nature"], true);
-                                    route.params.updateCharData()
+                                    updateCharacter('nature', text);
                                 }}
                             />
                         </View>
@@ -1625,15 +1495,12 @@ export default function MainScreen({route, navigation}) {
                             </View>
                             <TextInput
                                 style = {styles.skillsValue}
-                                value = {String(charData["perception"])}
+                                value = {String(character.perception)}
                                 underlineColor="transparent"
-                                onChangeText = {(text) => {
+                                onChangeText={(text) => {
+                                    route.params.onFSChange(route.params.index,'perception', text, true);
                                     updateCharacterLocal('perception', text, true);
-                                }}
-                                onBlur = {() => {
-                                    updateCharacter('perception', charData["perception"]);
-                                    route.params.onFSChange(route.params.index,'perception', charData["perception"], true);
-                                    route.params.updateCharData()
+                                    updateCharacter('perception', text);
                                 }}
                             />
                         </View>
@@ -1645,15 +1512,12 @@ export default function MainScreen({route, navigation}) {
                             </View>
                             <TextInput
                                 style = {styles.skillsValue}
-                                value = {String(charData["performance"])}
+                                value = {String(character.performance)}
                                 underlineColor="transparent"
-                                onChangeText = {(text) => {
+                                onChangeText={(text) => {
+                                    route.params.onFSChange(route.params.index,'performance', text, true);
                                     updateCharacterLocal('performance', text, true);
-                                }}
-                                onBlur = {() => {
-                                    updateCharacter('performance', charData["performance"]);
-                                    route.params.onFSChange(route.params.index,'performance', charData["performance"], true);
-                                    route.params.updateCharData()
+                                    updateCharacter('performance', text);
                                 }}
                             />
                         </View>
@@ -1665,15 +1529,12 @@ export default function MainScreen({route, navigation}) {
                             </View>
                             <TextInput
                                 style = {styles.skillsValue}
-                                value = {String(charData["persuasion"])}
+                                value = {String(character.persuasion)}
                                 underlineColor="transparent"
-                                onChangeText = {(text) => {
+                                onChangeText={(text) => {
+                                    route.params.onFSChange(route.params.index,'persuasion', text, true);
                                     updateCharacterLocal('persuasion', text, true);
-                                }}
-                                onBlur = {() => {
-                                    updateCharacter('persuasion', charData["persuasion"]);
-                                    route.params.onFSChange(route.params.index,'persuasion', charData["persuasion"], true);
-                                    route.params.updateCharData()
+                                    updateCharacter('persuasion', text);
                                 }}
                             />
                         </View>
@@ -1685,15 +1546,12 @@ export default function MainScreen({route, navigation}) {
                             </View>
                             <TextInput
                                 style = {styles.skillsValue}
-                                value = {String(charData["religion"])}
+                                value = {String(character.religion)}
                                 underlineColor="transparent"
-                                onChangeText = {(text) => {
+                                onChangeText={(text) => {
+                                    route.params.onFSChange(route.params.index,'religion', text, true);
                                     updateCharacterLocal('religion', text, true);
-                                }}
-                                onBlur = {() => {
-                                    updateCharacter('religion', charData["religion"]);
-                                    route.params.onFSChange(route.params.index,'religion', charData["religion"], true);
-                                    route.params.updateCharData()
+                                    updateCharacter('religion', text);
                                 }}
                             />
                         </View>
@@ -1706,14 +1564,11 @@ export default function MainScreen({route, navigation}) {
                             <TextInput
                                 style = {styles.skillsValue}
                                 underlineColor="transparent"
-                                value = {String(charData["sleight_of_hand"])}
-                                onChangeText = {(text) => {
+                                value = {String(character.sleight_of_hand)}
+                                onChangeText={(text) => {
+                                    route.params.onFSChange(route.params.index,'sleight_of_hand', text, true);
                                     updateCharacterLocal('sleight_of_hand', text, true);
-                                }}
-                                onBlur = {() => {
-                                    updateCharacter('sleight_of_hand', charData["sleight_of_hand"]);
-                                    route.params.onFSChange(route.params.index,'sleight_of_hand', charData["sleight_of_hand"], true);
-                                    route.params.updateCharData()
+                                    updateCharacter('sleight_of_hand', text);
                                 }}
                             />
                         </View>
@@ -1726,14 +1581,11 @@ export default function MainScreen({route, navigation}) {
                             <TextInput
                                 style = {styles.skillsValue}
                                 underlineColor="transparent"
-                                value = {String(charData["stealth"])}
-                                onChangeText = {(text) => {
+                                value = {String(character.stealth)}
+                                onChangeText={(text) => {
+                                    route.params.onFSChange(route.params.index,'stealth', text, true);
                                     updateCharacterLocal('stealth', text, true);
-                                }}
-                                onBlur = {() => {
-                                    updateCharacter("stealth", charData["stealth"]);
-                                    route.params.onFSChange(route.params.index,"stealth", charData["stealth"], true);
-                                    route.params.updateCharData()
+                                    updateCharacter('stealth', text);
                                 }}
                             />
                         </View>
@@ -1746,14 +1598,11 @@ export default function MainScreen({route, navigation}) {
                             <TextInput
                                 style = {styles.skillsValue}
                                 underlineColor="transparent"
-                                value = {String(charData["survival"])}
-                                onChangeText = {(text) => {
+                                value = {String(character.survival)}
+                                onChangeText={(text) => {
+                                    route.params.onFSChange(route.params.index,'survival', text, true);
                                     updateCharacterLocal('survival', text, true);
-                                }}
-                                onBlur = {() => {
-                                    updateCharacter("survival", charData["survival"]);
-                                    route.params.onFSChange(route.params.index,"survival", charData["survival"], true);
-                                    route.params.updateCharData()
+                                    updateCharacter('survival', text);
                                 }}
                             />
                         </View>
@@ -1764,7 +1613,7 @@ export default function MainScreen({route, navigation}) {
                 style = {styles.profAndLanguages}
                 underlineColor="transparent"
                 multiline={true}
-                value = {charData["proficiencies_and_languages"]}
+                value = {character.proficiencies_and_languages}
                 render={props => (
                     <NativeTextInput
                         {...props}
@@ -1783,13 +1632,10 @@ export default function MainScreen({route, navigation}) {
                         placeholder={"Enter proficiencies and languages..."}
                     />
                 )}
-                onChangeText = {(text) => {
+                onChangeText={(text) => {
+                    route.params.onFSChange(route.params.index,'proficiencies_and_languages', text, false);
                     updateCharacterLocal('proficiencies_and_languages', text, false);
-                }}
-                onBlur = {() => {
-                    updateCharacter('proficiencies_and_languages', charData["proficiencies_and_languages"]);
-                    route.params.onFSChange(route.params.index,'proficiencies_and_languages', charData["proficiencies_and_languages"], false);
-                    route.params.updateCharData()
+                    updateCharacter('proficiencies_and_languages', text);
                 }}
             />
             <Text
@@ -1797,7 +1643,7 @@ export default function MainScreen({route, navigation}) {
             >
                 Proficiencies and languages
             </Text>
-        </TouchableOpacity>
+        </View>
     );
     // TOP NESTED TAB NAVIGATION
     // MAIN | NOTES | SPELLS

@@ -11,7 +11,6 @@ import {
     View
 } from "react-native"
 import {Button, Text, TextInput} from "react-native-paper";
-import Weapon from "../components/Weapon";
 import Spinner from "../components/Spinner";
 import Spell from "../components/Spell";
 
@@ -19,13 +18,16 @@ global.screenWidth = Dimensions.get("window").width;
 global.screenHeight = Dimensions.get("window").height;
 
 export default function SpellsScreen({route, navigation}) {
-    const [charData, setCharData] = useState(global.charaData);
+    const [character, setCharacter] = useState(global.character);
+    const pushChange = global.onFSChange
     const [spells, setSpells] = useState([]);
     const [loading, setLoading] = useState(true);
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', e => {
             setLoading(true)
-            getCharacter();
+            global.charaRef.onSnapshot( (snapshot) => {
+                setCharacter(snapshot.data())
+            });
             global.charaRef.collection("spells").onSnapshot(
                 (querySnapshot) => {
                     const spells = querySnapshot.docs.map((doc) => {
@@ -54,16 +56,10 @@ export default function SpellsScreen({route, navigation}) {
         return <Spinner />;
     }
 
-    function getCharacter() {
-        global.charaRef.onSnapshot( (snapshot) => {
-            setCharData(snapshot.data())
-        });
-    }
-
     function updateCharacterLocal(fieldName, text, isNumber) {
-        let tempCharData = JSON.parse(JSON.stringify(charData));
-        tempCharData[fieldName] = isNumber ? Number(text) : text;
-        setCharData(tempCharData);
+        let tempCharacter = JSON.parse(JSON.stringify(character));
+        tempCharacter[fieldName] = isNumber ? Number(text) : text;
+        setCharacter(tempCharacter);
     }
 
     function updateSpell(index, field, value) {
@@ -185,10 +181,7 @@ export default function SpellsScreen({route, navigation}) {
 
     let index = 0;
     return (
-        <TouchableOpacity
-            activeOpacity={1}
-            onPress={() => Keyboard.dismiss()}
-        >
+        <View>
             <KeyboardAvoidingView
                 behavior = {'height'}>
                 <ScrollView>
@@ -200,12 +193,11 @@ export default function SpellsScreen({route, navigation}) {
                                         style={styles.spellcastingInput}
                                         underlineColor="transparent"
                                         placeholder={"Enter spellcasting ability..."}
-                                        value={charData['spellcasting_ability']}
+                                        value={character.spellcasting_ability}
                                         onChangeText={(text) => {
+                                            pushChange(global.index, 'spellcasting_ability', text, false);
                                             updateCharacterLocal('spellcasting_ability', text, false);
-                                        }}
-                                        onBlur={() => {
-                                            updateCharacter('spellcasting_ability', charData['spellcasting_ability']);
+                                            updateCharacter('spellcasting_ability', text);
                                         }}
                                     />
                                     <Text
@@ -220,12 +212,11 @@ export default function SpellsScreen({route, navigation}) {
                                         keyboardType="number-pad"
                                         placeholder={"Enter spell save DC..."}
                                         underlineColor="transparent"
-                                        value={String(charData['spell_save_DC'])}
+                                        value={String(character.spell_save_DC)}
                                         onChangeText={(text) => {
+                                            pushChange(global.index, 'spell_save_DC', text, true);
                                             updateCharacterLocal('spell_save_DC', text, true);
-                                        }}
-                                        onBlur={() => {
-                                            updateCharacter('spell_save_DC', charData['spell_save_DC']);
+                                            updateCharacter('spell_save_DC', text);
                                         }}
                                     />
                                     <Text
@@ -240,12 +231,11 @@ export default function SpellsScreen({route, navigation}) {
                                         keyboardType="number-pad"
                                         placeholder={"Enter spell attack bonus..."}
                                         underlineColor="transparent"
-                                        value={String(charData['spell_attack_bonus'])}
+                                        value={String(character.spell_attack_bonus)}
                                         onChangeText={(text) => {
+                                            pushChange(global.index, 'spell_attack_bonus', text, true);
                                             updateCharacterLocal('spell_attack_bonus', text, true);
-                                        }}
-                                        onBlur={() => {
-                                            updateCharacter('spell_attack_bonus', charData['spell_attack_bonus']);
+                                            updateCharacter('spell_attack_bonus', text);
                                         }}
                                     />
                                     <Text
@@ -268,12 +258,11 @@ export default function SpellsScreen({route, navigation}) {
                                             underlineColor="transparent"
                                             keyboardType="number-pad"
                                             placeholder={"Enter 1st-level spell slots..."}
-                                            value={String(charData['first_level_spell_slots'])}
+                                            value={String(character.first_level_spell_slots)}
                                             onChangeText={(text) => {
+                                                pushChange(global.index, 'first_level_spell_slots', text, true);
                                                 updateCharacterLocal('first_level_spell_slots', text, true);
-                                            }}
-                                            onBlur={() => {
-                                                updateCharacter('first_level_spell_slots', charData['first_level_spell_slots']);
+                                                updateCharacter('first_level_spell_slots', text);
                                             }}
                                         />
                                         <Text
@@ -288,12 +277,11 @@ export default function SpellsScreen({route, navigation}) {
                                             keyboardType="number-pad"
                                             placeholder={"Enter 2nd-level spell slots..."}
                                             underlineColor="transparent"
-                                            value={String(charData['second_level_spell_slots'])}
+                                            value={String(character.second_level_spell_slots)}
                                             onChangeText={(text) => {
+                                                pushChange(global.index, 'second_level_spell_slots', text, true);
                                                 updateCharacterLocal('second_level_spell_slots', text, true);
-                                            }}
-                                            onBlur={() => {
-                                                updateCharacter('second_level_spell_slots', charData['second_level_spell_slots']);
+                                                updateCharacter('second_level_spell_slots', text);
                                             }}
                                         />
                                         <Text
@@ -308,12 +296,11 @@ export default function SpellsScreen({route, navigation}) {
                                             keyboardType="number-pad"
                                             placeholder={"Enter 3rd-level spell slots..."}
                                             underlineColor="transparent"
-                                            value={String(charData['third_level_spell_slots'])}
+                                            value={String(character.third_level_spell_slots)}
                                             onChangeText={(text) => {
+                                                pushChange(global.index, 'third_level_spell_slots', text, true);
                                                 updateCharacterLocal('third_level_spell_slots', text, true);
-                                            }}
-                                            onBlur={() => {
-                                                updateCharacter('third_level_spell_slots', charData['third_level_spell_slots']);
+                                                updateCharacter('third_level_spell_slots', text);
                                             }}
                                         />
                                         <Text
@@ -330,12 +317,11 @@ export default function SpellsScreen({route, navigation}) {
                                             underlineColor="transparent"
                                             keyboardType="number-pad"
                                             placeholder={"Enter 4th-level spell slots..."}
-                                            value={String(charData['fourth_level_spell_slots'])}
+                                            value={String(character.fourth_level_spell_slots)}
                                             onChangeText={(text) => {
+                                                pushChange(global.index, 'fourth_level_spell_slots', text, true);
                                                 updateCharacterLocal('fourth_level_spell_slots', text, true);
-                                            }}
-                                            onBlur={() => {
-                                                updateCharacter('fourth_level_spell_slots', charData['fourth_level_spell_slots']);
+                                                updateCharacter('fourth_level_spell_slots', text);
                                             }}
                                         />
                                         <Text
@@ -350,12 +336,11 @@ export default function SpellsScreen({route, navigation}) {
                                             keyboardType="number-pad"
                                             placeholder={"Enter 5th-level spell slots..."}
                                             underlineColor="transparent"
-                                            value={String(charData['fifth_level_spell_slots'])}
+                                            value={String(character.fifth_level_spell_slots)}
                                             onChangeText={(text) => {
+                                                pushChange(global.index, 'fifth_level_spell_slots', text, true);
                                                 updateCharacterLocal('fifth_level_spell_slots', text, true);
-                                            }}
-                                            onBlur={() => {
-                                                updateCharacter('fifth_level_spell_slots', charData['fifth_level_spell_slots']);
+                                                updateCharacter('fifth_level_spell_slots', text);
                                             }}
                                         />
                                         <Text
@@ -370,12 +355,11 @@ export default function SpellsScreen({route, navigation}) {
                                             keyboardType="number-pad"
                                             placeholder={"Enter 6th-level spell slots..."}
                                             underlineColor="transparent"
-                                            value={String(charData['sixth_level_spell_slots'])}
+                                            value={String(character.sixth_level_spell_slots)}
                                             onChangeText={(text) => {
+                                                pushChange(global.index, 'sixth_level_spell_slots', text, true);
                                                 updateCharacterLocal('sixth_level_spell_slots', text, true);
-                                            }}
-                                            onBlur={() => {
-                                                updateCharacter('sixth_level_spell_slots', charData['sixth_level_spell_slots']);
+                                                updateCharacter('sixth_level_spell_slots', text);
                                             }}
                                         />
                                         <Text
@@ -392,12 +376,11 @@ export default function SpellsScreen({route, navigation}) {
                                             underlineColor="transparent"
                                             keyboardType="number-pad"
                                             placeholder={"Enter 7th-level spell slots..."}
-                                            value={String(charData['seventh_level_spell_slots'])}
+                                            value={String(character.seventh_level_spell_slots)}
                                             onChangeText={(text) => {
+                                                pushChange(global.index, 'seventh_level_spell_slots', text, true);
                                                 updateCharacterLocal('seventh_level_spell_slots', text, true);
-                                            }}
-                                            onBlur={() => {
-                                                updateCharacter('seventh_level_spell_slots', charData['seventh_level_spell_slots']);
+                                                updateCharacter('seventh_level_spell_slots', text);
                                             }}
                                         />
                                         <Text
@@ -412,12 +395,11 @@ export default function SpellsScreen({route, navigation}) {
                                             keyboardType="number-pad"
                                             placeholder={"Enter 8th-level spell slots..."}
                                             underlineColor="transparent"
-                                            value={String(charData['eighth_level_spell_slots'])}
+                                            value={String(character.eighth_level_spell_slots)}
                                             onChangeText={(text) => {
+                                                pushChange(global.index, 'eighth_level_spell_slots', text, true);
                                                 updateCharacterLocal('eighth_level_spell_slots', text, true);
-                                            }}
-                                            onBlur={() => {
-                                                updateCharacter('eighth_level_spell_slots', charData['eighth_level_spell_slots']);
+                                                updateCharacter('eighth_level_spell_slots', text);
                                             }}
                                         />
                                         <Text
@@ -432,12 +414,11 @@ export default function SpellsScreen({route, navigation}) {
                                             keyboardType="number-pad"
                                             placeholder={"Enter 9th-level spell slots..."}
                                             underlineColor="transparent"
-                                            value={String(charData['ninth_level_spell_slots'])}
+                                            value={String(character.ninth_level_spell_slots)}
                                             onChangeText={(text) => {
+                                                pushChange(global.index, 'ninth_level_spell_slots', text, true);
                                                 updateCharacterLocal('ninth_level_spell_slots', text, true);
-                                            }}
-                                            onBlur={() => {
-                                                updateCharacter('ninth_level_spell_slots', charData['ninth_level_spell_slots']);
+                                                updateCharacter('ninth_level_spell_slots', text);
                                             }}
                                         />
                                         <Text
@@ -483,7 +464,7 @@ export default function SpellsScreen({route, navigation}) {
                     </View>
                 </ScrollView>
             </KeyboardAvoidingView>
-        </TouchableOpacity>
+        </View>
     );
 }
 

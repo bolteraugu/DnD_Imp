@@ -1,30 +1,72 @@
 import {Button, Text, TextInput} from "react-native-paper";
-import React, {useContext, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {StyleSheet, TextInput as NativeTextInput, View} from "react-native";
 import {AuthUserContext} from "../navigation/AuthUserProvider";
 
 
-export default function AddNotesScreen({navigation, route}) {
+export default function EditNotesScreen({navigation, route}) {
     const {user} = useContext(AuthUserContext);
-    const [inputTitle, setInputTitle] = useState(''); //Notes title
-    const [inputContent, setInputContent] = useState(''); //Notes content
+    const [loading, setLoading] = useState(true);
+    const [note, setNote] = useState(route.params.note);
+
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('focus', e => {
+            setLoading(true)
+            route.params.groupRef.collection('notes').doc(user.toJSON().email).collection('notes').doc(route.params.note._id).onSnapshot((snapshot) => {
+                setNote(snapshot.data())
+            })
+            if (loading) {
+                setLoading(false);
+            }
+        });
+        return unsubscribe;
+    }, [])
+
+    function updateNoteLocal(fieldName, text) {
+        let tempNote = JSON.parse(JSON.stringify(note));
+        tempNote[fieldName] = text;
+        setNote(tempNote);
+    }
+
+    function updateNote() {
+        route.params.groupRef.collection('notes').doc(user.toJSON().email).collection('notes').doc(route.params.note._id)
+            .update({
+                title: route.params.note["title"],
+                content: route.params.note["content"]
+            })
+            .then(console.log('Successfully updated note'), (error) =>
+                console.log('Failed to update note: ' + error)
+            );
+    }
+
     return (
         <View style = {styles.container}>
             <Text style = {styles.headingName}>
-                Name
+                Title
             </Text>
             <TextInput
-                onChangeText={(text) => setInputTitle(text)}
+                onChangeText={(text) => {
+                    route.params.executeOnChange(route.params.index, 'title', text)
+                    updateNoteLocal('title', text);
+                    updateNote()
+                }}
                 style = {styles.titleInput}
-                placeholder = {"Enter the note's name..."}
+                value = {note.title}
+                placeholder = {"Enter the note's title..."}
             />
             <Text style = {styles.headingContent}>
                 Content
             </Text>
             <TextInput // Content of the note (I think note should be shown multi-lined by default instead of one lined.
-                onChangeText={(text) => setInputContent(text)}
+                // onChangeText={(text) => setInputContent(text)}
                 multiline={true}
                 style = {styles.contentInput}
+                value = {note.content}
+                onChangeText={(text) => {
+                    route.params.executeOnChange(route.params.index, 'content', text)
+                    updateNoteLocal('content', text);
+                    updateNote()
+                }}
                 render={props => (
                     <NativeTextInput
                         {...props}
@@ -36,7 +78,7 @@ export default function AddNotesScreen({navigation, route}) {
                                     paddingLeft: screenWidth * 0.010454688672168,
                                     paddingRight: screenWidth * 0.018754688672168,
                                     paddingBottom: screenHeight * 0.0106382978723404,
-                                    height: screenHeight * 0.4015957446808511
+                                    height: screenHeight * 0.4815957446808511
                                 }
                                 : null,
                         ]}
@@ -44,33 +86,6 @@ export default function AddNotesScreen({navigation, route}) {
                     />
                 )}
             />
-            <View style = {styles.buttonContainer}>
-                <Button
-                    mode = "contained"
-                    style = {styles.button}
-                    disabled = {inputTitle.length === 0}
-                    onPress={() => {
-                        //If add button is pressed add the note to the notes collection in the firebase of the specified character
-                        route.params.groupRef
-                            .collection('notes').doc(user.toJSON().email).collection('notes')
-                            .add({
-                                //Add the title and the content
-                                title: inputTitle,
-                                content: inputContent,
-                            }).then(navigation.goBack())
-                    }}
-                >
-                    Add
-                </Button>
-                <View style = {styles.gap}/>
-                <Button
-                    mode = "contained"
-                    style = {styles.button}
-                    onPress={() => {navigation.goBack()}}
-                >
-                    Cancel
-                </Button>
-            </View>
         </View>
     )
 }
@@ -107,7 +122,7 @@ const styles = StyleSheet.create({
     contentInput: {
         width: "50%",
         marginBottom: screenHeight * 0.0415957446808511,
-        height: screenHeight * 0.4015957446808511
+        height: screenHeight * 0.4815957446808511
     },
     button: {
         width: screenWidth * 0.15037509377344
