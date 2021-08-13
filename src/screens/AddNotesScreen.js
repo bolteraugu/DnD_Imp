@@ -52,11 +52,12 @@ export default function AddNotesScreen({navigation, route}) {
                     onPress={() => {
                         //If add button is pressed add the note to the notes collection in the firebase of the specified character
                         route.params.groupRef
-                            .collection('notes').doc(user.toJSON().email).collection('notes')
+                            .collection('notes')
                             .add({
                                 //Add the title and the content
                                 title: inputTitle,
                                 content: inputContent,
+                                members: new Array(user.toJSON().email)
                             }).then(navigation.goBack())
                     }}
                 >

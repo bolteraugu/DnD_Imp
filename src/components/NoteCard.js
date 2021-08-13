@@ -8,7 +8,7 @@ export default function NoteCard({title, content, groupRef, note, navigation, on
     function deleteNote() {
         groupRef
             .collection('notes')
-            .doc(user.toJSON().email).collection('notes').doc(note._id)
+            .doc(note._id)
             .delete()
             .then(console.log('Successfully deleted note'), (error) =>
                 console.log('Failed to delete note: ' + error)
@@ -33,7 +33,11 @@ export default function NoteCard({title, content, groupRef, note, navigation, on
                 }>
                     Edit
                 </Button>
-                <Button onPress={shareNote}>Share</Button>
+                <Button onPress={() => {
+                    shareNote({note})
+                }}>
+                    Share
+                </Button>
                 <Button onPress={deleteNote}>Delete</Button>
             </Card.Actions>
         </Card>

@@ -31,30 +31,33 @@ export default function NotesScreen({navigation, route}) {
     const showDialog = () => setVisible(true);
     const hideDialog = () => setVisible(false);
     const [items, setItems] = useState("");
+    const [noteToS, setNoteToS] = useState([]);
 
     // Load data from firebase
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', e => {
             setRecipients("")
-            firebase.firestore().collection('groups').doc(group._id).get().then((snapshot) => {
+            groupRef.get().then((snapshot) => {
                 setMembers(snapshot.get('members'))
             })
             hideDialog()
-            const notesListener = groupRef.collection('notes').doc(user.toJSON().email).collection('notes').onSnapshot(
+            const notesListener = groupRef.collection('notes').onSnapshot(
                 //Pretty much gets a snapshot of the notes from the currently looked at character
                 (querySnapshot) => {
                     //Query this snapshot
                     //Pretty much gets each element from docs using map and using map applies the function below. The function gets the id from the item id and gets the data too using data().
-                    const notes = querySnapshot.docs.map((doc) => {
-                        const data = {
-                            _id: doc.id,
-                            ...doc.data(),
-                        };
-                        return data;
+                    let notes = []
+                    querySnapshot.docs.map((doc) => {
+                        if (doc.get('members').includes(user.toJSON().email)) {
+                            const data = {
+                                _id: doc.id,
+                                ...doc.data(),
+                            };
+                            notes.push(data)
+                        }
                     });
                     //Sets notes to this new array that was made using map (the array contains the id and the data)
-                    setNotes(notes);
-
+                    setNotes(notes)
                     //Pretty much as soon as it has finished getting the data it is set to false since it is no longer loading/getting it.
                 },
                 //If we get an error when loading the data then show this.
@@ -73,57 +76,58 @@ export default function NotesScreen({navigation, route}) {
         setNotes(tempNotes);
     }
 
-    // Edit Current Notes - need to do this
-
-    // Delete Notes - need to do this
-
-    function ShowEmptyMessage() {
+    function ShowNotes() {
         if (notes.length === 0) {
-            return <Text style={styles.emptyMessage}>You currently do not have any notes. Press the + icon in the bottom left to add a new one.</Text>
+            return <Text style={styles.emptyMessage}>You currently do not have any notes. Press the + icon in the bottom left to add a new one.</Text>;
         }
         else {
-            return null
+            return (
+                <FlatList
+                data={notes} //Data of the flatList is the notes
+                keyExtractor={(item) => item._id}
+                renderItem={(
+                    {item} //Render each item with the title and content
+                ) =>
+                    <NoteCard
+                        title={item.title}
+                        note={item}
+                        index = {index++}
+                        content={item.content}
+                        groupRef = {groupRef}
+                        navigation = {navigation}
+                        onChange = {updateNote}
+                        shareNote = { (noteToShare) => {
+                            setNoteToS(noteToShare)
+                            let membersTemp = []
+                            for (let i = 0; i < members.length; i++) {
+                                if (members[i] !== user.toJSON().email) {
+                                    membersTemp.push({
+                                        value: members[i], label: members[i]
+                                    })
+                                }
+                            }
+                            setItems(membersTemp);
+                            showDialog()
+                        }
+                        }
+                    />
+                }
+            />
+            )
         }
+
     }
 
     let index = 0;
     return (
         <Provider>
             <View style={styles.wrapper}>
-                <ShowEmptyMessage/>
-                <FlatList
-                    data={notes} //Data of the flatList is the notes
-                    keyExtractor={(item) => item._id}
-                    renderItem={(
-                        {item} //Render each item with the title and content
-                    ) =>
-                        <NoteCard
-                            title={item.title}
-                            note={item}
-                            index = {index++}
-                            content={item.content}
-                            groupRef = {groupRef}
-                            navigation = {navigation}
-                            onChange = {updateNote}
-                            shareNote = { () => {
-                                let membersTemp = []
-                                for (let i = 0; i < members.length; i++) {
-                                    membersTemp.push({
-                                        value: members[i], label: members[i]
-                                    })
-                                }
-                                setItems(membersTemp);
-                                showDialog()
-                            }
-                            }
-                        />
-                    }
-                />
+                <ShowNotes/>
                 <FAB
                     style={styles.fab}
                      small icon="plus"
                      onPress={() => {
-                         console.log(items)
+                         console.log(notes)
                          navigation.navigate('AddNote', {groupRef: groupRef})
                      }} />
             </View>
@@ -155,17 +159,13 @@ export default function NotesScreen({navigation, route}) {
                                     style={styles.button}
                                     disabled = {recipients.length === 0}
                                     onPress={() => {
-                                        // groupRef
-                                        //     .update({
-                                        //         members:
-                                        //             firebase.firestore.FieldValue.arrayUnion(inputVal)//,
-                                        //         //numMembers: firebase.firestore.FieldValue.increment(1),
-                                        //     })
-                                        //     .then(() => {
-                                        //         hideDialog();
-                                        //         setRecipients([...recipients, inputVal]);
-                                        //         setMembers([...members, inputVal]);
-                                        //     });
+                                        const peopleToSendMsg = recipients.split(',')
+                                        for (let i = 1; i < peopleToSendMsg.length; i++) {
+                                            groupRef.collection('notes').doc(noteToS.note._id).update({
+                                                members: firebase.firestore.FieldValue.arrayUnion(peopleToSendMsg[i])
+                                            })
+                                        }
+                                        hideDialog()
                                     }}
                                 >
                                     Share

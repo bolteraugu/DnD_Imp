@@ -12,7 +12,7 @@ export default function EditNotesScreen({navigation, route}) {
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', e => {
             setLoading(true)
-            route.params.groupRef.collection('notes').doc(user.toJSON().email).collection('notes').doc(route.params.note._id).onSnapshot((snapshot) => {
+            route.params.groupRef.collection('notes').doc(route.params.note._id).onSnapshot((snapshot) => {
                 setNote(snapshot.data())
             })
             if (loading) {
@@ -28,15 +28,25 @@ export default function EditNotesScreen({navigation, route}) {
         setNote(tempNote);
     }
 
-    function updateNote() {
-        route.params.groupRef.collection('notes').doc(user.toJSON().email).collection('notes').doc(route.params.note._id)
-            .update({
-                title: route.params.note["title"],
-                content: route.params.note["content"]
-            })
-            .then(console.log('Successfully updated note'), (error) =>
-                console.log('Failed to update note: ' + error)
-            );
+    function updateNote(fieldName) {
+        if (fieldName === 'title') {
+            route.params.groupRef.collection('notes').doc(route.params.note._id)
+                .update({
+                    title: route.params.note["title"]
+                })
+                .then(console.log('Successfully updated note'), (error) =>
+                    console.log('Failed to update note: ' + error)
+                );
+        }
+        else {
+            route.params.groupRef.collection('notes').doc(route.params.note._id)
+                .update({
+                    content: route.params.note["content"]
+                })
+                .then(console.log('Successfully updated note'), (error) =>
+                    console.log('Failed to update note: ' + error)
+                );
+        }
     }
 
     return (
@@ -48,7 +58,7 @@ export default function EditNotesScreen({navigation, route}) {
                 onChangeText={(text) => {
                     route.params.executeOnChange(route.params.index, 'title', text)
                     updateNoteLocal('title', text);
-                    updateNote()
+                    updateNote('title')
                 }}
                 style = {styles.titleInput}
                 value = {note.title}
@@ -65,7 +75,7 @@ export default function EditNotesScreen({navigation, route}) {
                 onChangeText={(text) => {
                     route.params.executeOnChange(route.params.index, 'content', text)
                     updateNoteLocal('content', text);
-                    updateNote()
+                    updateNote('content')
                 }}
                 render={props => (
                     <NativeTextInput
