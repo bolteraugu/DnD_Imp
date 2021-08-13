@@ -2,7 +2,7 @@ import React, {useContext, useEffect, useState} from 'react'; //If I need revisi
 import NoteCard from '../components/NoteCard'; //NoteCard is essentially represents a note after it has been created
 import colors from '../utils/colors'; //Getting colors we are using for the app
 import Spinner from '../components/Spinner'; //Spinner icon that shows
-import {StyleSheet, View, FlatList, Dimensions, Text} from 'react-native'; //FlatList for viewing things in a list, View and Stylesheet we know too
+import {StyleSheet, View, FlatList, Dimensions} from 'react-native'; //FlatList for viewing things in a list, View and Stylesheet we know too
 import DropDown from "react-native-paper-dropdown";
 //Importing everything we need from react native paper. FAB stands for floating action button (represents the primary action in the screen). Portal is for rendering a component at
 //a different place in the parent (component) tree.
@@ -12,6 +12,7 @@ import {
     Dialog,
     FAB,
     Provider,
+    Text
 } from 'react-native-paper';
 import {AuthUserContext} from "../navigation/AuthUserProvider";
 import firebase from "firebase";
@@ -26,10 +27,13 @@ export default function NotesScreen({navigation, route}) {
     const groupRef = firebase.firestore().collection('groups').doc(group._id);
     const [notes, setNotes] = useState([]); //Notes
     const [visible, setVisible] = useState(false); //Whether the data is loading
+    const [noShareVisible, setNoShareVisible] = useState(false); //Whether the data is loading
     const [recipients, setRecipients] = useState("");
     const [members, setMembers] = useState("");
     const showDialog = () => setVisible(true);
     const hideDialog = () => setVisible(false);
+    const showNoShareDialog = () => setNoShareVisible(true);
+    const hideNoShareDialog = () => setNoShareVisible(false);
     const [items, setItems] = useState("");
     const [noteToS, setNoteToS] = useState([]);
 
@@ -100,14 +104,19 @@ export default function NotesScreen({navigation, route}) {
                             setNoteToS(noteToShare)
                             let membersTemp = []
                             for (let i = 0; i < members.length; i++) {
-                                if (members[i] !== user.toJSON().email) {
+                                if (!noteToShare.note.members.includes(members[i])) {
                                     membersTemp.push({
                                         value: members[i], label: members[i]
                                     })
                                 }
                             }
-                            setItems(membersTemp);
-                            showDialog()
+                            if (membersTemp.length === 0) {
+                                showNoShareDialog()
+                            }
+                            else {
+                                setItems(membersTemp);
+                                showDialog()
+                            }
                         }
                         }
                     />
@@ -178,6 +187,29 @@ export default function NotesScreen({navigation, route}) {
                             </View>
                         </Dialog.Actions>
                     </Dialog>
+            </Portal>
+            <Portal>
+                <Dialog
+                    visible={noShareVisible}
+                    onDismiss={hideNoShareDialog}
+                    style = {styles.shareWindow}
+                >
+                    <Dialog.Title
+                        style = {styles.shareTitle}>There are no users you can share this note to.</Dialog.Title>
+                    <Dialog.Actions>
+                        <View style = {styles.buttonContainer}>
+                            <Button
+                                mode = "contained"
+                                style={styles.button}
+                                onPress={() => {
+                                    hideNoShareDialog()
+                                }}
+                            >
+                                OK
+                            </Button>
+                        </View>
+                    </Dialog.Actions>
+                </Dialog>
             </Portal>
         </Provider>
     );
