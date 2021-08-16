@@ -289,7 +289,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         left: global.screenWidth * 0.56639,
         top: global.screenHeight * 0.0132978723404255,
-        resizeMode: "contain"
+        resizeMode: "center"
     },
     levelContainer: {
         width: global.screenWidth * 0.082521,

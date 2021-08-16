@@ -182,9 +182,13 @@ export default function Chat({groupRef}) {
                     groupRef
                       .update({
                         members:
-                          firebase.firestore.FieldValue.arrayUnion(inputVal)//,
-                        //numMembers: firebase.firestore.FieldValue.increment(1),
+                          firebase.firestore.FieldValue.arrayUnion(inputVal),
+                        numMembers: firebase.firestore.FieldValue.increment(1),
+                      }).then(() => {
+                      groupRef.collection('members').doc(inputVal).set({
+                        isDM: false
                       })
+                    })
                       .then(() => {
                         hideDialog();
                         setRecipients([...recipients, inputVal]);

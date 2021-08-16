@@ -63,7 +63,11 @@ export default function MenuScreen({navigation}) {
               .doc(docRef.id)
               .set({
                 groupName: groupName,
+              }).then(() => {
+              docRef.collection('members').doc(user.toJSON().email).set({
+                isDM: true
               })
+            })
               .then(() => {
                 firebase
                   .firestore()

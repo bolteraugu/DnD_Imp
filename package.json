@@ -8,6 +8,7 @@
     "eject": "expo eject"
   },
   "dependencies": {
+    "@firebase/firestore-types": "^2.3.0",
     "@react-native-community/masked-view": "0.1.10",
     "@react-native-community/picker": "^1.8.1",
     "@react-native-firebase/app": "11.5.0",

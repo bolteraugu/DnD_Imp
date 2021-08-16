@@ -2063,7 +2063,7 @@ const styles = StyleSheet.create({
         marginTop: screenHeight * 0.0132978723404255,
         marginLeft: screenWidth * 0.007500000001875,
         marginBottom: screenHeight * 0.0132978723404255,
-        resizeMode: "contain"
+        resizeMode: "center"
     },
     imageAndAbilitiesContainer: {
         flexDirection: "column",

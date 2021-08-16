@@ -20,35 +20,118 @@ export default function DMScreen({route, navigation}) {
   const groupRef = firebase.firestore().collection('groups').doc(group._id);
   const [characters, setCharacters] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [members, setMembers] = useState(true);
   const showRaceDialog = () => setRaceVisible(true);
   const hideRaceDialog = () => setRaceVisible(false);
   const [raceVisible, setRaceVisible] = useState(false);
   const [newRaceName, setNewRaceName] = useState('');
   const [createRaceIndex, setCreateRaceIndex] = useState('');
   const {user} = useContext(AuthUserContext);
+  const [isDM, setIsDM] = useState(false);
 
   useEffect(() => {
-    const characterListener = groupRef.collection('characters').onSnapshot(
-      (querySnapshot) => {
-        const characters = querySnapshot.docs.map((doc) => {
-          const data = {
-            _id: doc.id,
-            ...doc.data(),
-          };
-          return data;
-        });
-        setCharacters(characters);
 
-        if (loading) {
-          setLoading(false);
-        }
-      },
-      (error) => {
-        alert(error);
+    groupRef.collection('members').doc(user.toJSON().email).onSnapshot((ss) => {
+      setIsDM(ss.get('isDM'));
+      if (ss.get('isDM')) {
+        const characterListener = groupRef.collection('characters').onSnapshot(
+            (querySnapshot) => {
+              const characters = querySnapshot.docs.map((doc) => {
+                const data = {
+                  _id: doc.id,
+                  ...doc.data(),
+                };
+                return data;
+              });
+              setCharacters(characters);
+
+              if (loading) {
+                setLoading(false);
+              }
+            },
+            (error) => {
+              alert(error);
+            }
+        );
+        return characterListener;
       }
-    );
+      else {
+        const characterListener = groupRef.collection('characters').onSnapshot(
+            (querySnapshot) => {
+              const characters = querySnapshot.docs.map((doc) => {
+                if (doc.get('assignedTo') === user.toJSON().email) {
+                  const data = {
+                    _id: doc.id,
+                    ...doc.data(),
+                  };
+                  return data;
+                }
+              });
+                setCharacters(characters.filter(function( element ) {
+                    return element !== undefined;
+                }));
 
-    return characterListener;
+              if (loading) {
+                setLoading(false);
+              }
+            },
+            (error) => {
+              alert(error);
+            }
+        );
+        return characterListener;
+      }
+    })
+
+
+    //DM View - old code (works if firestore structure characters are separated by being put in different collections rather than using assignedTo field
+    // groupRef.get().then((snapshot) => {
+    //   setMembers(snapshot.get('members'))
+    // })
+    // let chars = [];
+    // groupRef.collection('members').onSnapshot((snapshot) => {
+    //     snapshot.forEach((doc) => {
+    //       groupRef.collection('members').doc(doc.id).collection('characters').onSnapshot((doc) => {
+    //         const charactersTemp = doc.docs.map((doc) => {
+    //           const data = {
+    //             _id: doc.id,
+    //             ...doc.data(),
+    //           };
+    //           chars.push(data)
+    //           return data;
+    //         });
+    //         setCharacters(chars)
+    //       })
+    //     })
+    //       if (loading) {
+    //         setLoading(false);
+    //       }
+    //     },
+    //     (error) => {
+    //       alert(error);
+    //     }
+    // );
+
+    // DM View - oldest code
+    // const characterListener = groupRef.collection('characters').onSnapshot(
+    //   (querySnapshot) => {
+    //     const characters = querySnapshot.docs.map((doc) => {
+    //       const data = {
+    //         _id: doc.id,
+    //         ...doc.data(),
+    //       };
+    //       return data;
+    //     });
+    //     setCharacters(characters);
+    //
+    //     if (loading) {
+    //       setLoading(false);
+    //     }
+    //   },
+    //   (error) => {
+    //     alert(error);
+    //   }
+    // );
   }, []);
 
   if (loading) {
@@ -59,6 +142,11 @@ export default function DMScreen({route, navigation}) {
     groupRef
       .collection('characters')
       .add(CharacterTemplate)
+        .then((char) => {
+          char.update({
+            assignedTo: user.toJSON().email
+          })
+        })
       .then(console.log('Successfully added character'), (error) =>
         alert(error)
       );
@@ -71,40 +159,57 @@ export default function DMScreen({route, navigation}) {
   }
 
   let index = 0;
-  return (
-      <KeyboardAvoidingView
-      behavior = {'height'}>
+  if (characters == null || characters.length === 0) {
+    return (
         <View style={styles.wrapper}>
           <View style={styles.charactersContainer}>
-            <ScrollView>
-              <FlatList
-                  data={characters}
-                  removeClippedSubviews={true}
-                  keyExtractor={(item) => item._id}
-                  renderItem={({ item }) => (
-                      <CharacterCard
-                          character={item}
-                          index={index++}
-                          groupRef={groupRef}
-                          onChange={updateCharacter}
-                          navigation={navigation}
-                      />
-                  )}
-                  ListFooterComponent={
-                    <View style = {styles.gap}>
-                      <Button
-                          mode="contained" onPress={addCharacter}>
-                        Add New Character
-                      </Button>
-                    </View>
-                  }
-              />
-            </ScrollView>
+            <View>
+              <Button
+                  mode="contained" onPress={addCharacter}>
+                Add New Character
+              </Button>
+            </View>
           </View>
           <Chat groupRef={groupRef} />
         </View>
-      </KeyboardAvoidingView>
-  );
+    );
+  }
+  else {
+    return (
+        <KeyboardAvoidingView
+            behavior = {'height'}>
+          <View style={styles.wrapper}>
+            <View style={styles.charactersContainer}>
+              <ScrollView>
+                <FlatList
+                    data={characters}
+                    removeClippedSubviews={true}
+                    keyExtractor={(item) => item._id}
+                    renderItem={({ item }) => (
+                        <CharacterCard
+                            character={item}
+                            index={index++}
+                            groupRef={groupRef}
+                            onChange={updateCharacter}
+                            navigation={navigation}
+                        />
+                    )}
+                    ListFooterComponent={
+                      <View style = {styles.gap}>
+                        <Button
+                            mode="contained" onPress={addCharacter}>
+                          Add New Character
+                        </Button>
+                      </View>
+                    }
+                />
+              </ScrollView>
+            </View>
+            <Chat groupRef={groupRef} />
+          </View>
+        </KeyboardAvoidingView>
+    );
+  }
   //       <Provider>
   //         <Portal>
   //           <Dialog

@@ -2,31 +2,49 @@ import React, {useContext, useState} from 'react';
 import {Dimensions, Image, StyleSheet, TouchableOpacity, View} from 'react-native';
 import {Card, Text, Button} from 'react-native-paper';
 import {AuthUserContext} from "../navigation/AuthUserProvider";
-import firebase from "firebase";
+import firebase from 'firebase';
+import 'firebase/firestore';
 
 global.screenWidth = Dimensions.get("window").width;
 global.screenHeight = Dimensions.get("window").height;
 
-export default function ImageCard({image, onSelect, shareImage, groupRef, editName, resetSelect}) {
+export default function ImageCard({image, onSelect, shareImage, groupRef, editName, resetSelect, metadata}) {
+    const {user} = useContext(AuthUserContext);
 
     function deleteImage() {
-        firebase.storage().ref("/" + image.imageNameStatic).delete().then(() => {
-            groupRef
-                .collection('images').doc(image._id)
-                .delete()
-        }).then(() => {
-            groupRef.collection('characters').onSnapshot((snapshot) => {
-                snapshot.docs.map((doc) => {
-                    if (doc.get('imageName') === image.uri) {
-                        doc.update({
-                            imageName: "https://firebasestorage.googleapis.com/v0/b/improving-dungeon-minion-5e.appspot.com/o/default_character.png?alt=media&token=84c93a85-ce56-45a7-9b01-0df6e257c6db"
-                        })
+        groupRef.collection('characters').onSnapshot((snapshot) => {
+            snapshot.docs.map((doc) => {
+                if (doc.get('assignedTo') === user.toJSON().email && doc.get('imageName') === image.uri) {
+                    groupRef.collection('characters').doc(doc.id).update({
+                        imageName: "https://firebasestorage.googleapis.com/v0/b/improving-dungeon-minion-5e.appspot.com/o/default_character.png?alt=media&token=84c93a85-ce56-45a7-9b01-0df6e257c6db"
+                    })
+                }
+            })
+        })
+            groupRef.collection('members').doc(user.toJSON().email).collection('images').onSnapshot((snapshot) => {
+                snapshot.docs.map((doc2) => {
+                    if (doc2.get('uri') === image.uri) {
+                        groupRef.collection('members').doc(user.toJSON().email).collection('images').doc(doc2.id).delete();
                     }
                 })
             })
-        }).then(() => {
-            resetSelect()
-        });
+            if (metadata.numShared === 1) {
+                groupRef.collection('imageCanBeShared').doc(image._id).delete().then(() => {
+                    firebase.storage().ref("/" + image.imageNameStatic).delete().then(() => {
+                        groupRef
+                            .collection('images').doc(image._id)
+                            .delete()
+                    })
+                })
+            }
+            else {
+                groupRef.collection('imageCanBeShared').doc(image._id).update({
+                    numShared: firebase.firestore.FieldValue.increment(-1),
+                    sharedWith: firebase.firestore.FieldValue.arrayRemove(user.toJSON().email)
+                })
+            }
+            resetSelect(image)
+
     }
 
     return (
@@ -77,7 +95,6 @@ const styles = StyleSheet.create({
     imageTitle: {
         width: screenWidth * 0.25,
         fontSize: 14.5,
-        marginBottom: screenHeight * -0.0266489361702128,
         textAlign: 'center'
     },
     card: {
@@ -95,7 +112,7 @@ const styles = StyleSheet.create({
     thumbnail: {
         width: screenWidth * 0.25,
         height: screenHeight * 0.35,
-        resizeMode: "contain"
+        resizeMode: "center"
     },
     buttonContainer: {
         flexDirection: 'row'

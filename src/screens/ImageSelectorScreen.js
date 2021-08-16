@@ -7,6 +7,7 @@ import ImageCard from "../components/ImageCard";
 import DropDown from "react-native-paper-dropdown";
 import firebase from "firebase";
 import colors from "../utils/colors";
+import { v4 as uuidv4 } from 'uuid';
 
 global.screenWidth = Dimensions.get("window").width;
 global.screenHeight = Dimensions.get("window").height;
@@ -15,11 +16,12 @@ export default function ImageSelectorScreen({navigation, route}) {
     const {user} = useContext(AuthUserContext);
     const [loading, setLoading] = useState(true);
     const [images, setImages] = useState([]);
+    const [imagesMetaData, setImagesMetaData] = useState([]);
     const [selectedImage, setSelectedImage] = useState("");
     const [imageToS, setImageToS] = useState([]);
     const [imageToEdit, setImageToEdit] = useState([]);
     const [name, setName] = useState("");
-    const [members, setMembers] = useState("");
+    const [members, setMembers] = useState([]);
     const [visible, setVisible] = useState(false); //Whether the data is loading
     const [noShareVisible, setNoShareVisible] = useState(false); //Whether the data is loading
     const [editNameVisible, setEditNameVisible] = useState(false); //Whether the data is loading
@@ -32,6 +34,7 @@ export default function ImageSelectorScreen({navigation, route}) {
     const [showDropDown, setShowDropDown] = useState(false);
     const [recipients, setRecipients] = useState("");
     const [items, setItems] = useState("");
+    let membersTemp = [];
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', e => {
@@ -39,7 +42,7 @@ export default function ImageSelectorScreen({navigation, route}) {
             route.params.groupRef.get().then((snapshot) => {
                 setMembers(snapshot.get('members'))
             })
-            route.params.groupRef.collection('images').onSnapshot((querySnapshot) => {
+            route.params.groupRef.collection('members').doc(user.toJSON().email).collection('images').onSnapshot((querySnapshot) => {
                 let images = []
                 querySnapshot.docs.map((doc) => {
                     if (route.params.character.imageName !== "https://firebasestorage.googleapis.com/v0/b/improving-dungeon-minion-5e.appspot.com/o/default_character.png?alt=media&token=84c93a85-ce56-45a7-9b01-0df6") {
@@ -49,16 +52,25 @@ export default function ImageSelectorScreen({navigation, route}) {
                     } else {
                         setSelectedImage("")
                     }
-                    if (doc.get('members').includes(user.toJSON().email)) {
-                        const data = {
-                            _id: doc.id,
-                            ...doc.data(),
-                        };
-                        images.push(data)
-                    }
+                    const data = {
+                        _id: doc.id,
+                        ...doc.data(),
+                    };
+                    images.push(data)
                 });
                 setImages(images)
-            })
+            });
+            route.params.groupRef.collection('imageCanBeShared').onSnapshot((querySnapshot) => {
+                let imagesMetaData = []
+                querySnapshot.docs.map((doc) => {
+                    const data = {
+                        _id: doc.id,
+                        ...doc.data(),
+                    };
+                    imagesMetaData.push(data)
+                });
+                setImagesMetaData(imagesMetaData)
+            });
             if (loading) {
                 setLoading(false);
             }
@@ -97,18 +109,26 @@ export default function ImageSelectorScreen({navigation, route}) {
             xhr.send(null);
         });
 
-        const ref = firebase.storage().ref().child(imageName);
+        const uuid = uuidv4();
+        const ref = firebase.storage().ref().child(uuid);
         const snapshot = await ref.put(blob);
         const url = await snapshot.ref.getDownloadURL()
         route.params.groupRef
-            .collection('images')
+            .collection('members').doc(user.toJSON().email).collection('images')
             .add({
                 //Add the title and the content
                 uri: url,
-                imageName: imageName,
-                imageNameStatic: imageName,
-                members: new Array(user.toJSON().email)
-            }).then(() => {
+                imageName: uuid,
+                imageNameStatic: uuid
+            }).then((docRef) => {
+            route.params.groupRef.onSnapshot((snapshot) => {
+                route.params.groupRef.collection('imageCanBeShared').doc(docRef.id).set({
+                    numShared: 1,
+                    sharedWith: new Array(user.toJSON().email)
+                })
+
+            })
+        }).then(() => {
             setSelectedImage(url)
         })
     };
@@ -140,6 +160,7 @@ export default function ImageSelectorScreen({navigation, route}) {
                 </View>
             );
         } else {
+            let index = 0;
             return (
                 <View>
                     <ScrollView>
@@ -155,8 +176,11 @@ export default function ImageSelectorScreen({navigation, route}) {
                                         image={item}
                                         onSelect={onSelect}
                                         groupRef={route.params.groupRef}
-                                        resetSelect={() => {
-                                            setSelectedImage("")
+                                        metadata={imagesMetaData[index++]}
+                                        resetSelect={(image) => {
+                                            if (image.uri === selectedImage) {
+                                                setSelectedImage("")
+                                            }
                                         }}
                                         editName={(imageToEdit) => {
                                             setImageToEdit(imageToEdit)
@@ -165,19 +189,24 @@ export default function ImageSelectorScreen({navigation, route}) {
                                         }}
                                         shareImage={(imageToShare) => {
                                             setImageToS(imageToShare)
-                                            let membersTemp = []
-                                            for (let i = 0; i < members.length; i++) {
-                                                if (!imageToShare.image.members.includes(members[i])) {
-                                                    membersTemp.push({
-                                                        value: members[i], label: members[i]
-                                                    })
+                                            membersTemp = []
+                                            console.log("te")
+                                            for (let i = 0; i < imagesMetaData.length; i++) {
+                                                if (imagesMetaData[i]._id === imageToShare.image._id) {
+                                                    if (imagesMetaData[i].numShared !== members.length) {
+                                                        for (let j = 0; j < members.length; j++) {
+                                                            if (!imagesMetaData[i].sharedWith.includes(members[j])) {
+                                                                membersTemp.push({
+                                                                    value: members[j], label: members[j]
+                                                                })
+                                                                setItems(membersTemp)
+                                                            }
+                                                            showDialog()
+                                                        }
+                                                    } else {
+                                                        showNoShareDialog();
+                                                    }
                                                 }
-                                            }
-                                            if (membersTemp.length === 0) {
-                                                showNoShareDialog()
-                                            } else {
-                                                setItems(membersTemp);
-                                                showDialog()
                                             }
                                         }
                                         }
@@ -223,12 +252,35 @@ export default function ImageSelectorScreen({navigation, route}) {
             </View>
             <Portal>
                 <Dialog
+                    visible={noShareVisible}
+                    onDismiss={hideNoShareDialog}
+                    style={styles.shareWindow}
+                >
+                    <Dialog.Title
+                        style={styles.shareTitle}>There are no users you can share this image to.</Dialog.Title>
+                    <Dialog.Actions>
+                        <View style={styles.buttonContainer}>
+                            <Button
+                                mode="contained"
+                                style={styles.button}
+                                onPress={() => {
+                                    hideNoShareDialog()
+                                }}
+                            >
+                                OK
+                            </Button>
+                        </View>
+                    </Dialog.Actions>
+                </Dialog>
+                <Dialog
                     visible={visible}
                     onDismiss={hideDialog}
                     style={styles.shareWindow}
                 >
                     <Dialog.Title
-                        style={styles.shareTitle}>Share this image to user(s)</Dialog.Title>
+                        style={styles.shareTitle}>
+                        Share this image to user(s)
+                    </Dialog.Title>
                     <Dialog.Content>
                         <DropDown
                             label={"Please select users..."}
@@ -251,9 +303,15 @@ export default function ImageSelectorScreen({navigation, route}) {
                                 onPress={() => {
                                     const peopleToShare = recipients.split(',')
                                     for (let i = 1; i < peopleToShare.length; i++) {
-                                        route.params.groupRef.collection('images').doc(imageToS.image._id).update({
-                                            members: firebase.firestore.FieldValue.arrayUnion(peopleToShare[i])
+                                        route.params.groupRef.collection('members').doc(peopleToShare[i]).collection('images').doc(imageToS.image._id).set({
+                                            imageName: imageToS.image.imageName,
+                                            imageNameStatic: imageToS.image.imageName,
+                                            uri: imageToS.image.uri
                                         })
+                                        route.params.groupRef.collection('imageCanBeShared').doc(imageToS.image._id).update({
+                                                numShared: firebase.firestore.FieldValue.increment(1),
+                                                sharedWith: firebase.firestore.FieldValue.arrayUnion(peopleToShare[i])
+                                            })
                                     }
                                     hideDialog()
                                 }}
@@ -296,7 +354,7 @@ export default function ImageSelectorScreen({navigation, route}) {
                                 style={styles.button}
                                 disabled={name.length === 0}
                                 onPress={() => {
-                                    route.params.groupRef.collection('images').doc(imageToEdit.image._id).update({
+                                    route.params.groupRef.collection('members').doc(user.toJSON().email).collection('images').doc(imageToEdit.image._id).update({
                                         imageName: name
                                     })
                                     hideEditNameDialog()
@@ -311,30 +369,6 @@ export default function ImageSelectorScreen({navigation, route}) {
                                 onPress={hideEditNameDialog}
                             >
                                 Cancel
-                            </Button>
-                        </View>
-                    </Dialog.Actions>
-                </Dialog>
-            </Portal>
-            <Portal>
-                <Dialog
-                    visible={noShareVisible}
-                    onDismiss={hideNoShareDialog}
-                    style={styles.shareWindow}
-                >
-                    <Dialog.Title
-                        style={styles.shareTitle}>There are no users you can share this image to.</Dialog.Title>
-                    <Dialog.Actions>
-                        <View style={styles.buttonContainer}>
-                            <Button
-                                mode="contained"
-                                style={styles.button}
-                                disabled={selectedImage.length === 0}
-                                onPress={() => {
-                                    hideNoShareDialog()
-                                }}
-                            >
-                                OK
                             </Button>
                         </View>
                     </Dialog.Actions>
