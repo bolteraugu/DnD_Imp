@@ -2,7 +2,7 @@ import React, {useContext, useEffect, useState} from 'react'; //If I need revisi
 import NoteCard from '../components/NoteCard'; //NoteCard is essentially represents a note after it has been created
 import colors from '../utils/colors'; //Getting colors we are using for the app
 import Spinner from '../components/Spinner'; //Spinner icon that shows
-import {StyleSheet, View, FlatList, Dimensions} from 'react-native'; //FlatList for viewing things in a list, View and Stylesheet we know too
+import {StyleSheet, View, FlatList, Dimensions, ScrollView} from 'react-native'; //FlatList for viewing things in a list, View and Stylesheet we know too
 import DropDown from "react-native-paper-dropdown";
 //Importing everything we need from react native paper. FAB stands for floating action button (represents the primary action in the screen). Portal is for rendering a component at
 //a different place in the parent (component) tree.
@@ -45,7 +45,7 @@ export default function NotesScreen({navigation, route}) {
                 setMembers(snapshot.get('members'))
             })
             hideDialog()
-            const notesListener = groupRef.collection('notes').onSnapshot(
+            groupRef.collection('notes').onSnapshot(
                 //Pretty much gets a snapshot of the notes from the currently looked at character
                 (querySnapshot) => {
                     //Query this snapshot
@@ -86,45 +86,46 @@ export default function NotesScreen({navigation, route}) {
         }
         else {
             return (
-                <FlatList
-                data={notes} //Data of the flatList is the notes
-                keyExtractor={(item) => item._id}
-                renderItem={(
-                    {item} //Render each item with the title and content
-                ) =>
-                    <NoteCard
-                        title={item.title}
-                        note={item}
-                        index = {index++}
-                        content={item.content}
-                        groupRef = {groupRef}
-                        navigation = {navigation}
-                        onChange = {updateNote}
-                        shareNote = { (noteToShare) => {
-                            setNoteToS(noteToShare)
-                            let membersTemp = []
-                            for (let i = 0; i < members.length; i++) {
-                                if (!noteToShare.note.members.includes(members[i])) {
-                                    membersTemp.push({
-                                        value: members[i], label: members[i]
-                                    })
+                <ScrollView>
+                    <FlatList
+                        data={notes} //Data of the flatList is the notes
+                        keyExtractor={(item) => item._id}
+                        renderItem={(
+                            {item} //Render each item with the title and content
+                        ) =>
+                            <NoteCard
+                                title={item.title}
+                                note={item}
+                                index = {index++}
+                                content={item.content}
+                                groupRef = {groupRef}
+                                navigation = {navigation}
+                                onChange = {updateNote}
+                                shareNote = { (noteToShare) => {
+                                    setNoteToS(noteToShare)
+                                    let membersTemp = []
+                                    for (let i = 0; i < members.length; i++) {
+                                        if (!noteToShare.note.members.includes(members[i])) {
+                                            membersTemp.push({
+                                                value: members[i], label: members[i]
+                                            })
+                                        }
+                                    }
+                                    if (membersTemp.length === 0) {
+                                        showNoShareDialog()
+                                    }
+                                    else {
+                                        setItems(membersTemp);
+                                        showDialog()
+                                    }
                                 }
-                            }
-                            if (membersTemp.length === 0) {
-                                showNoShareDialog()
-                            }
-                            else {
-                                setItems(membersTemp);
-                                showDialog()
-                            }
-                        }
+                                }
+                            />
                         }
                     />
-                }
-            />
+                </ScrollView>
             )
         }
-
     }
 
     let index = 0;
@@ -168,10 +169,10 @@ export default function NotesScreen({navigation, route}) {
                                     style={styles.button}
                                     disabled = {recipients.length === 0}
                                     onPress={() => {
-                                        const peopleToSendMsg = recipients.split(',')
-                                        for (let i = 1; i < peopleToSendMsg.length; i++) {
+                                        const peopleToShare = recipients.split(',')
+                                        for (let i = 1; i < peopleToShare.length; i++) {
                                             groupRef.collection('notes').doc(noteToS.note._id).update({
-                                                members: firebase.firestore.FieldValue.arrayUnion(peopleToSendMsg[i])
+                                                members: firebase.firestore.FieldValue.arrayUnion(peopleToShare[i])
                                             })
                                         }
                                         hideDialog()
@@ -183,7 +184,10 @@ export default function NotesScreen({navigation, route}) {
                                 <Button
                                     mode = "contained"
                                     style={styles.button}
-                                    onPress={hideDialog}>Cancel</Button>
+                                    onPress={hideDialog}
+                                >
+                                    Cancel
+                                </Button>
                             </View>
                         </Dialog.Actions>
                     </Dialog>

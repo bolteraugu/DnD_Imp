@@ -14,13 +14,8 @@ export default function CharacterCard({
                                           character, index,
                                           onChange,
                                           groupRef,
-                                          navigation,
+                                          navigation
                                       }) {
-    const [characterData, setCharacterData] = useState([]);
-
-    useEffect(() => {
-        getCharacter()
-    }, [])
 
     function updateCharacter() {
         groupRef
@@ -30,12 +25,6 @@ export default function CharacterCard({
             .then(console.log('Successfully updated character'), (error) =>
                 console.log('Failed to update character: ' + error)
             );
-    }
-
-    function getCharacter() {
-        groupRef.collection('characters').doc(character._id).get().then( (snapshot) => {
-            setCharacterData(snapshot.data())
-        })
     }
 
     function deleteCharacter() {
@@ -100,7 +89,7 @@ export default function CharacterCard({
                         />
                     </View>
                     <Image
-                        source={require('./../../assets/default_character.png')}
+                        source={{uri: character.imageName}}
                         style = {styles.charImage}
                     />
                     <View style={styles.cardRow}>
@@ -261,12 +250,6 @@ export default function CharacterCard({
                             }}
                         />
                         <View style={styles.iconRow}>
-                            {/*<IconButton*/}
-                            {/*    icon="cloud-upload"*/}
-                            {/*    size={28}*/}
-                            {/*    color="#000"*/}
-                            {/*    onPress={updateCharacter} //Send character state to firebase*/}
-                            {/*/>*/}
                             <IconButton
                                 icon="delete"
                                 size={28}
@@ -284,8 +267,8 @@ export default function CharacterCard({
                                         params: {
                                             charRef: groupRef.collection('characters').doc(character._id),
                                             character: character,
-                                            charData: characterData,
                                             index: index,
+                                            groupRef: groupRef,
                                             onFSChange: onChange,
                                         },
                                     })
@@ -306,6 +289,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         left: global.screenWidth * 0.56639,
         top: global.screenHeight * 0.0132978723404255,
+        resizeMode: "contain"
     },
     levelContainer: {
         width: global.screenWidth * 0.082521,

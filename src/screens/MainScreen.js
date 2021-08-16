@@ -519,6 +519,15 @@ export default function MainScreen({route, navigation}) {
                     console.log('Failed to update character: ' + error)
                 );
         }
+        else if (fieldName === 'imageName') {
+            global.charaRef
+                .update({
+                    imageName: value
+                })
+                .then(console.log('Successfully updated character'), (error) =>
+                    console.log('Failed to update character: ' + error)
+                );
+        }
     }
 
     // function tabNavigator() {
@@ -553,15 +562,23 @@ export default function MainScreen({route, navigation}) {
             {/*<tabNavigator/>*/}
             <View style = {styles.imageAndAbilitiesContainer}>
                 <Image
-                    source={require('./../../assets/default_character.png')}
+                    source={{uri: character.imageName}}
                     style = {styles.charImage}
                 />
                 <Button
                     mode="contained"
                     style={styles.changeImageStyle}
-                    // onPress={() =>
-                    //
-                    // }
+                    onPress={() =>
+                        navigation.navigate('ImageSelector', {
+                            charRef: route.params.charRef,
+                            character: character,
+                            groupRef: route.params.groupRef,
+                            index: route.params.index,
+                            onImageChange: route.params.onFSChange,
+                            onImageChangeLocal: updateCharacterLocal,
+                            onImageChangeFirebase: updateCharacter,
+                        })
+                    }
                 >
                     Change Image
                 </Button>
@@ -2045,7 +2062,8 @@ const styles = StyleSheet.create({
         height: screenHeight * 0.2659574468085106,
         marginTop: screenHeight * 0.0132978723404255,
         marginLeft: screenWidth * 0.007500000001875,
-        marginBottom: screenHeight * 0.0132978723404255
+        marginBottom: screenHeight * 0.0132978723404255,
+        resizeMode: "contain"
     },
     imageAndAbilitiesContainer: {
         flexDirection: "column",

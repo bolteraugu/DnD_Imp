@@ -3,6 +3,9 @@ import {Dimensions, StyleSheet} from 'react-native';
 import {Card, Paragraph, Button} from 'react-native-paper';
 import {AuthUserContext} from "../navigation/AuthUserProvider";
 
+global.screenWidth = Dimensions.get("window").width;
+global.screenHeight = Dimensions.get("window").height;
+
 export default function NoteCard({title, content, groupRef, note, navigation, onChange, index, shareNote}) {
     const {user} = useContext(AuthUserContext);
     function deleteNote() {
@@ -43,9 +46,6 @@ export default function NoteCard({title, content, groupRef, note, navigation, on
         </Card>
     );
 }
-
-global.screenWidth = Dimensions.get("window").width;
-global.screenHeight = Dimensions.get("window").height;
 
 const styles = StyleSheet.create({
     card: {

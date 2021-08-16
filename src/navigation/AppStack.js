@@ -20,6 +20,7 @@ import AddArmorScreen from "../screens/AddArmorScreen"
 import AddPossessionScreen from "../screens/AddPossessionScreen"
 import AddSpellScreen from "../screens/AddSpellScreen"
 import NotesScreen from "../screens/NotesScreen"
+import ImageSelectorScreen from "../screens/ImageSelectorScreen"
 import AddNotesScreen from "../screens/AddNotesScreen"
 import EditNotesScreen from "../screens/EditNotesScreen"
 const Stack = createStackNavigator();
@@ -82,6 +83,10 @@ export default function AppStack({navigation}) {
                         }
                     }}
       />
+        <Stack.Screen name="ImageSelector" component={ImageSelectorScreen}
+                      options={{
+                          title: "Image Selector",
+                      }}/>
         <Stack.Screen name="Notes" component={NotesScreen}
                       options={{
                           title: "Notes",
