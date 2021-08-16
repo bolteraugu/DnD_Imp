@@ -1,10 +1,12 @@
 import {Button, Text, TextInput} from "react-native-paper";
 import React, {useContext, useState} from "react";
-import {StyleSheet, TextInput as NativeTextInput, View} from "react-native";
+import {Dimensions, StyleSheet, TextInput as NativeTextInput, View} from "react-native";
 import {AuthUserContext} from "../navigation/AuthUserProvider";
 
+global.screenWidth = Dimensions.get("window").width;
+global.screenHeight = Dimensions.get("window").height;
 
-export default function AddNotesScreen({navigation, route}) {
+export default function AddNotesScreenUnused({navigation, route}) {
     const {user} = useContext(AuthUserContext);
     const [inputTitle, setInputTitle] = useState(''); //Notes title
     const [inputContent, setInputContent] = useState(''); //Notes content

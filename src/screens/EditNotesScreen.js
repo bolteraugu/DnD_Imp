@@ -1,16 +1,20 @@
-import {Button, Text, TextInput} from "react-native-paper";
+import {Text, TextInput} from "react-native-paper";
 import React, {useContext, useEffect, useState} from "react";
-import {StyleSheet, TextInput as NativeTextInput, View} from "react-native";
+import {Dimensions, StyleSheet, TextInput as NativeTextInput, View} from "react-native";
 import {AuthUserContext} from "../navigation/AuthUserProvider";
+import Spinner from "../components/Spinner";
 
+global.screenWidth = Dimensions.get("window").width;
+global.screenHeight = Dimensions.get("window").height;
 
 export default function EditNotesScreen({navigation, route}) {
-    const {user} = useContext(AuthUserContext);
     const [loading, setLoading] = useState(true);
     const [note, setNote] = useState(route.params.note);
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', e => {
+            global.noteToEdit = route.params.note;
+            global.groupRef = route.params.groupRef;
             setLoading(true)
             route.params.groupRef.collection('notes').doc(route.params.note._id).onSnapshot((snapshot) => {
                 setNote(snapshot.data())
@@ -21,6 +25,10 @@ export default function EditNotesScreen({navigation, route}) {
         });
         return unsubscribe;
     }, [])
+
+    if (loading) {
+        return <Spinner />;
+    }
 
     function updateNoteLocal(fieldName, text) {
         let tempNote = JSON.parse(JSON.stringify(note));

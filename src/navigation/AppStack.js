@@ -21,8 +21,9 @@ import AddPossessionScreen from "../screens/AddPossessionScreen"
 import AddSpellScreen from "../screens/AddSpellScreen"
 import NotesScreen from "../screens/NotesScreen"
 import ImageSelectorScreen from "../screens/ImageSelectorScreen"
-import AddNotesScreen from "../screens/AddNotesScreen"
+import AddNotesScreenUnused from "../screens/AddNotesScreen(unused)"
 import EditNotesScreen from "../screens/EditNotesScreen"
+import ViewNoteImagesScreen from "../screens/ViewNoteImagesScreen"
 const Stack = createStackNavigator();
 
 global.screenWidth = Dimensions.get("window").width;
@@ -91,14 +92,16 @@ export default function AppStack({navigation}) {
                       options={{
                           title: "Notes",
                       }}/>
-        <Stack.Screen name="AddNote" component={AddNotesScreen}
+        <Stack.Screen name="AddNote" component={AddNotesScreenUnused}
                       options={{
                           title: "Add Note",
                       }}/>
-        <Stack.Screen name="EditNote" component={EditNotesScreen}
+        <Stack.Screen name="NoteOverview" component={NoteNav}
                       options={{
-                          title: "Edit Note",
-                      }}/>
+                          title: "Notes Overview",
+                      }}
+        />
+
         <Stack.Screen name="AddWeapon" component={AddWeaponScreen}
                       options={{
                           title: "Add Weapon",
@@ -120,6 +123,32 @@ export default function AppStack({navigation}) {
 }
 
 const Tab = createMaterialTopTabNavigator();
+
+function NoteNav() {
+    return (
+        <View style={styles.playerScreenContainer}>
+            <View style={styles.playerTabsContainer}>
+                <Tab.Navigator
+                    backBehavior="none"
+                    tabBarOptions={{
+                        style: {backgroundColor: colors.lightGrey},
+                    }}
+                >
+                    <Tab.Screen name="EditNote" component={EditNotesScreen}
+                        options={{
+                            title: "Edit Note",
+                        }}
+                    />
+                    <Tab.Screen name="ViewNoteImages" component={ViewNoteImagesScreen}
+                                options={{
+                                    title: "Images",
+                                }}
+                    />
+                </Tab.Navigator>
+            </View>
+        </View>
+    );
+}
 
 function CharacterNav() {
   return (

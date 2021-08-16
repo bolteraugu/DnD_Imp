@@ -137,8 +137,16 @@ export default function NotesScreen({navigation, route}) {
                     style={styles.fab}
                      small icon="plus"
                      onPress={() => {
-                         console.log(notes)
-                         navigation.navigate('AddNote', {groupRef: groupRef})
+                         groupRef
+                             .collection('notes')
+                             .add({
+                                 //Add the title and the content
+                                 title: "New Note",
+                                 content: "",
+                                 images: [],
+                                 members: new Array(user.toJSON().email)
+                             })
+                         //navigation.navigate('AddNote', {groupRef: groupRef})
                      }} />
             </View>
             <Portal>

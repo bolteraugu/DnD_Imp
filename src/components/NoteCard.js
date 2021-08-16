@@ -26,11 +26,14 @@ export default function NoteCard({title, content, groupRef, note, navigation, on
             </Card.Content>
             <Card.Actions>
                 <Button onPress={ () => {
-                    navigation.navigate('EditNote', {
-                        groupRef: groupRef,
-                        note: note,
-                        executeOnChange: onChange,
-                        index: index
+                    navigation.navigate('NoteOverview', {
+                        screen: 'EditNote',
+                        params: {
+                            groupRef: groupRef,
+                            note: note,
+                            executeOnChange: onChange,
+                            index: index
+                        }
                     })
                 }
                 }>
