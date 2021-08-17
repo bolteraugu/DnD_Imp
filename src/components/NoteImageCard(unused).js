@@ -8,7 +8,7 @@ import 'firebase/firestore';
 global.screenWidth = Dimensions.get("window").width;
 global.screenHeight = Dimensions.get("window").height;
 
-export default function NoteImageCard({note, image, showFullImage}) {
+export default function NoteImageCardUnused({note, image, showFullImage}) {
 
     function deleteImage() {
         global.groupRef.collection('notes').doc(note._id).collection('images').doc(image._id).delete()

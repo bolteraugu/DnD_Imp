@@ -21,20 +21,27 @@ export default function NoteCard({title, content, groupRef, note, navigation, on
     return (
         <Card elevation={4} style={styles.card}>
             <Card.Title title={title} />
-            <Card.Content>
-                <Paragraph>{content}</Paragraph>
-            </Card.Content>
             <Card.Actions>
                 <Button onPress={ () => {
-                    navigation.navigate('NoteOverview', {
-                        screen: 'EditNote',
-                        params: {
+                    navigation.navigate('ViewNote',
+                        {
+                            groupRef: groupRef,
+                            note: note,
+                        }
+                    )
+                }
+                }>
+                    View
+                </Button>
+                <Button onPress={ () => {
+                    navigation.navigate('EditNote',
+                        {
                             groupRef: groupRef,
                             note: note,
                             executeOnChange: onChange,
                             index: index
                         }
-                    })
+                    )
                 }
                 }>
                     Edit

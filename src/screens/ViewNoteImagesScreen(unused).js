@@ -3,7 +3,7 @@ import React, {useEffect, useState} from "react";
 import Spinner from "../components/Spinner";
 import {FAB, IconButton, Portal, Provider, Text, Title, Dialog} from "react-native-paper";
 import colors from "../utils/colors";
-import NoteImageCard from "../components/NoteImageCard";
+import NoteImageCardUnused from "../components/NoteImageCard(unused)";
 
 global.screenWidth = Dimensions.get("window").width;
 global.screenHeight = Dimensions.get("window").height;
@@ -74,7 +74,7 @@ export default function EditNotesScreen({navigation, route}) {
                     renderItem={(
                         {item} //Render each item with the title and content
                     ) =>
-                        <NoteImageCard
+                        <NoteImageCardUnused
                             note = {global.noteToEdit}
                             image = {item}
                             showFullImage = {(image) => {

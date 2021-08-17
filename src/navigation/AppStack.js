@@ -23,7 +23,8 @@ import NotesScreen from "../screens/NotesScreen"
 import ImageSelectorScreen from "../screens/ImageSelectorScreen"
 import AddNotesScreenUnused from "../screens/AddNotesScreen(unused)"
 import EditNotesScreen from "../screens/EditNotesScreen"
-import ViewNoteImagesScreen from "../screens/ViewNoteImagesScreen"
+import ViewNotesScreen from "../screens/ViewNotesScreen"
+import ViewNoteImagesScreen from "../screens/ViewNoteImagesScreen(unused)"
 const Stack = createStackNavigator();
 
 global.screenWidth = Dimensions.get("window").width;
@@ -92,15 +93,25 @@ export default function AppStack({navigation}) {
                       options={{
                           title: "Notes",
                       }}/>
-        <Stack.Screen name="AddNote" component={AddNotesScreenUnused}
-                      options={{
-                          title: "Add Note",
-                      }}/>
-        <Stack.Screen name="NoteOverview" component={NoteNav}
-                      options={{
-                          title: "Notes Overview",
-                      }}
+        <Tab.Screen name="EditNote" component={EditNotesScreen}
+                    options={({route}) => ({
+                        title: "Edit " + route.params.note.title,
+                    })}
         />
+        <Tab.Screen name="ViewNote" component={ViewNotesScreen}
+                    options={({route}) => ({
+                        title: "View " + route.params.note.title,
+                    })}
+        />
+        {/*<Stack.Screen name="AddNote" component={AddNotesScreenUnused}*/}
+        {/*              options={{*/}
+        {/*                  title: "Add Note",*/}
+        {/*              }}/>*/}
+        {/*<Stack.Screen name="NoteOverview" component={NoteNav}*/}
+        {/*              options={{*/}
+        {/*                  title: "Notes Overview",*/}
+        {/*              }}*/}
+        {/*/>*/}
 
         <Stack.Screen name="AddWeapon" component={AddWeaponScreen}
                       options={{
@@ -124,31 +135,31 @@ export default function AppStack({navigation}) {
 
 const Tab = createMaterialTopTabNavigator();
 
-function NoteNav() {
-    return (
-        <View style={styles.playerScreenContainer}>
-            <View style={styles.playerTabsContainer}>
-                <Tab.Navigator
-                    backBehavior="none"
-                    tabBarOptions={{
-                        style: {backgroundColor: colors.lightGrey},
-                    }}
-                >
-                    <Tab.Screen name="EditNote" component={EditNotesScreen}
-                        options={{
-                            title: "Edit Note",
-                        }}
-                    />
-                    <Tab.Screen name="ViewNoteImages" component={ViewNoteImagesScreen}
-                                options={{
-                                    title: "Images",
-                                }}
-                    />
-                </Tab.Navigator>
-            </View>
-        </View>
-    );
-}
+// function NoteNav() {
+//     return (
+//         <View style={styles.playerScreenContainer}>
+//             <View style={styles.playerTabsContainer}>
+//                 <Tab.Navigator
+//                     backBehavior="none"
+//                     tabBarOptions={{
+//                         style: {backgroundColor: colors.lightGrey},
+//                     }}
+//                 >
+//                     <Tab.Screen name="EditNote" component={EditNotesScreen}
+//                         options={{
+//                             title: "Edit Note",
+//                         }}
+//                     />
+//                     <Tab.Screen name="ViewNoteImages" component={ViewNoteImagesScreen}
+//                                 options={{
+//                                     title: "Images",
+//                                 }}
+//                     />
+//                 </Tab.Navigator>
+//             </View>
+//         </View>
+//     );
+// }
 
 function CharacterNav() {
   return (

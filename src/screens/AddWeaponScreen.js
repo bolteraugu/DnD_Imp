@@ -1,7 +1,7 @@
 import {Dimensions, StyleSheet, Text, TextInput as NativeTextInput, View} from "react-native";
 import {TextInput, Button} from "react-native-paper";
 import React, {useState} from "react";
-import {Picker} from "@react-native-community/picker";
+import {Picker} from "@react-native-picker/picker";
 
 global.screenWidth = Dimensions.get("window").width;
 global.screenHeight = Dimensions.get("window").height;
