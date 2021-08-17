@@ -1,4 +1,4 @@
-import {Button, Dialog, FAB, IconButton, Portal, Provider, Text, TextInput, Title} from "react-native-paper";
+import {Button, Dialog, FAB, IconButton, Portal, Provider, Text, TextInput, Title, Surface} from "react-native-paper";
 import React, {useContext, useEffect, useRef, useState} from "react";
 import {
     Dimensions,
@@ -201,9 +201,10 @@ export default function EditNotesScreen({navigation, route}) {
                     }}
                 />
                 <View style = {styles.iconRow}>
+                    <Surface style={styles.surface1}>
                     <IconButton
                         icon = "image"
-                        style = {styles.insertButton}
+                        //style = {styles.insertButton}
                         size = {28}
                         onPress = {() => {
                             navigation.navigate('ImageSelector', {
@@ -214,6 +215,8 @@ export default function EditNotesScreen({navigation, route}) {
                         }
                         }
                     />
+                    </Surface>
+                    <Surface style={styles.surface2}>
                     <IconButton
                         icon = "link"
                         //style = {styles.insertButton}
@@ -222,6 +225,7 @@ export default function EditNotesScreen({navigation, route}) {
                             showLinkDialog()
                         }}
                     />
+                    </Surface>
                 </View>
                 <View style = {styles.emptyGap}/>
             </KeyboardAvoidingView>
@@ -290,25 +294,25 @@ export default function EditNotesScreen({navigation, route}) {
                     </Dialog.Content>
                     <Dialog.Actions>
                         <View style={styles.buttonContainer}>
-                            <Button
-                                mode="contained"
-                                style={styles.button1}
-                                disabled={hyperlinkUrl.length === 0 || hyperlinkLabel.length === 0}
-                                onPress={() => {
-                                    onLinkInsert(hyperlinkLabel, hyperlinkUrl)
-                                    hideLinkDialog()
-                                }}
-                            >
-                                Insert
-                            </Button>
-                            <View style={styles.gap}/>
-                            <Button
-                                mode="contained"
-                                style={styles.button2}
-                                onPress={hideLinkDialog}
-                            >
-                                Cancel
-                            </Button>
+                                <Button
+                                    mode="contained"
+                                    style={styles.button1}
+                                    disabled={hyperlinkUrl.length === 0 || hyperlinkLabel.length === 0}
+                                    onPress={() => {
+                                        onLinkInsert(hyperlinkLabel, hyperlinkUrl)
+                                        hideLinkDialog()
+                                    }}
+                                >
+                                    Insert
+                                </Button>
+                                <View style={styles.gap}/>
+                                <Button
+                                    mode="contained"
+                                    style={styles.button2}
+                                    onPress={hideLinkDialog}
+                                >
+                                    Cancel
+                                </Button>
                         </View>
                     </Dialog.Actions>
                 </Dialog>
@@ -325,10 +329,27 @@ const styles = StyleSheet.create({
         marginRight: screenWidth * 0.02,
         fontSize: 16
     },
+    surface1: {
+        elevation: 4,
+        marginBottom: screenHeight * 0.0026595744680851,
+        marginTop: screenHeight * 0.0026595744680851,
+        marginLeft: screenWidth * 0.005709377344336,
+        marginRight: screenWidth * 0.0037509377344336,
+        backgroundColor: "#ebebeb"
+    },
+    surface2: {
+        elevation: 4,
+        marginBottom: screenHeight * 0.0026595744680851,
+        marginTop: screenHeight * 0.0026595744680851,
+        marginLeft: screenWidth * -0.003309377344336,
+        marginRight: screenWidth * 0.0037509377344336,
+        backgroundColor: "#ebebeb"
+    },
     helpMessage: {
         width: screenWidth * 0.37,
         position: 'absolute',
         left: screenWidth * 0.063,
+        top: screenHeight * -0.018,
         textAlign: 'center',
         fontSize: 16,
     },
@@ -382,7 +403,7 @@ const styles = StyleSheet.create({
     },
     iconRow: {
         flexDirection: 'row',
-        marginLeft: screenWidth * 0.055,
+        marginLeft: screenWidth * 0.0575,
         marginTop: screenHeight * -0.045
     },
     previewContainer: {
@@ -395,9 +416,6 @@ const styles = StyleSheet.create({
     },
     emptyGap: {
         height: screenHeight * 0.3
-    },
-    insertButton: {
-        marginLeft: screenWidth * 0.02
     },
     contentHeadingContainer: {
       flexDirection: 'row'
