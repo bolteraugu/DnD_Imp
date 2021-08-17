@@ -123,7 +123,7 @@ export default function EditNotesScreen({navigation, route}) {
                         placeholder = {"Enter the note's title..."}
                     />
                     <Text style = {styles.helpMessage}>
-                        If this is your first time editing a note please click on the help icon in the bottom left hand corner before you start editing.
+                        If this is your first time editing a note then, before you start editing, please learn how to edit notes by clicking on the help icon in the bottom left hand corner.
                     </Text>
                 </View>
             </View>
