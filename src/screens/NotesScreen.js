@@ -143,7 +143,6 @@ export default function NotesScreen({navigation, route}) {
                                  //Add the title and the content
                                  title: "New Note",
                                  content: "",
-                                 images: [],
                                  members: new Array(user.toJSON().email)
                              })
                          //navigation.navigate('AddNote', {groupRef: groupRef})
@@ -156,7 +155,10 @@ export default function NotesScreen({navigation, route}) {
                         style = {styles.shareWindow}
                     >
                         <Dialog.Title
-                        style = {styles.shareTitle}>Share this note to user(s)</Dialog.Title>
+                            style = {styles.shareTitle}
+                        >
+                            Share this note to user(s)
+                        </Dialog.Title>
                         <Dialog.Content>
                             <DropDown
                                 label = {"Please select users..."}

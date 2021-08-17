@@ -570,6 +570,7 @@ export default function MainScreen({route, navigation}) {
                     style={styles.changeImageStyle}
                     onPress={() =>
                         navigation.navigate('ImageSelector', {
+                            comingFrom: "MainScreen",
                             charRef: route.params.charRef,
                             character: character,
                             groupRef: route.params.groupRef,

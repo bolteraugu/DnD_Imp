@@ -1,6 +1,6 @@
 import React, {useContext, useState} from 'react';
 import {Dimensions, Image, StyleSheet, TouchableOpacity, View} from 'react-native';
-import {Card, Text, Button} from 'react-native-paper';
+import {Card, Text, Button, IconButton} from 'react-native-paper';
 import {AuthUserContext} from "../navigation/AuthUserProvider";
 import firebase from 'firebase';
 import 'firebase/firestore';
@@ -8,43 +8,10 @@ import 'firebase/firestore';
 global.screenWidth = Dimensions.get("window").width;
 global.screenHeight = Dimensions.get("window").height;
 
-export default function NoteImageCard({image, onSelect, shareImage, groupRef, editName, resetSelect, metadata}) {
-    const {user} = useContext(AuthUserContext);
+export default function NoteImageCard({note, image, showFullImage}) {
 
     function deleteImage() {
-        groupRef.collection('characters').onSnapshot((snapshot) => {
-            snapshot.docs.map((doc) => {
-                if (doc.get('assignedTo') === user.toJSON().email && doc.get('imageName') === image.uri) {
-                    groupRef.collection('characters').doc(doc.id).update({
-                        imageName: "https://firebasestorage.googleapis.com/v0/b/improving-dungeon-minion-5e.appspot.com/o/default_character.png?alt=media&token=84c93a85-ce56-45a7-9b01-0df6e257c6db"
-                    })
-                }
-            })
-        })
-        groupRef.collection('members').doc(user.toJSON().email).collection('images').onSnapshot((snapshot) => {
-            snapshot.docs.map((doc2) => {
-                if (doc2.get('uri') === image.uri) {
-                    groupRef.collection('members').doc(user.toJSON().email).collection('images').doc(doc2.id).delete();
-                }
-            })
-        })
-        if (metadata.numShared === 1) {
-            groupRef.collection('imageCanBeShared').doc(image._id).delete().then(() => {
-                firebase.storage().ref("/" + image.imageNameStatic).delete().then(() => {
-                    groupRef
-                        .collection('images').doc(image._id)
-                        .delete()
-                })
-            })
-        }
-        else {
-            groupRef.collection('imageCanBeShared').doc(image._id).update({
-                numShared: firebase.firestore.FieldValue.increment(-1),
-                sharedWith: firebase.firestore.FieldValue.arrayRemove(user.toJSON().email)
-            })
-        }
-        resetSelect(image)
-
+        global.groupRef.collection('notes').doc(note._id).collection('images').doc(image._id).delete()
     }
 
     return (
@@ -55,35 +22,27 @@ export default function NoteImageCard({image, onSelect, shareImage, groupRef, ed
                         style = {styles.imageTitle}>
                         {image.imageName}
                     </Text>
-                    <TouchableOpacity
-                        activeOpacity={1}
-                        onPress = {() => {
-                            onSelect({image})
-                        }}
-                    >
-                        <Image
-                            source={{uri: image.uri}}
-                            style={styles.thumbnail}
+                    <Image
+                        source={{uri: image.uri}}
+                        style={styles.thumbnail}
+                    />
+                    <View style = {styles.iconRow}>
+                        <IconButton
+                            icon="delete"
+                            size={28}
+                            color="#000"
+                            style = {{flex: 1}}
+                            onPress={deleteImage} //delete this image
                         />
-                    </TouchableOpacity>
-                    <View style = {styles.buttonContainer}>
-                        <Button
+                        <IconButton
+                            icon="arrow-expand-all"
+                            size={28}
+                            color="#000"
+                            style = {{flex: 1}}
                             onPress={() => {
-                                editName({image})
+                                showFullImage(image)
                             }}
-                        >
-                            Edit Name
-                        </Button>
-                        <Button
-                            onPress={() => {
-                                shareImage({image})
-                            }}>
-                            Share
-                        </Button>
-                        <Button
-                            onPress={deleteImage}>
-                            Delete
-                        </Button>
+                        />
                     </View>
                 </View>
             </Card.Content>
@@ -92,32 +51,33 @@ export default function NoteImageCard({image, onSelect, shareImage, groupRef, ed
 }
 
 const styles = StyleSheet.create({
+    iconRow: {
+        flexDirection: 'row',
+        height: screenHeight * 0.04,
+        marginBottom: screenHeight * 0.02,
+    },
     imageTitle: {
-        width: screenWidth * 0.25,
-        fontSize: 14.5,
+        width: screenWidth * 0.1752,
+        fontSize: 12,
         textAlign: 'center'
     },
     card: {
         elevation: 4,
-        flex: 1,
+        width: screenWidth * 0.2052,
         marginBottom: screenHeight * 0.0066489361702128,
         marginTop: screenHeight * 0.0066489361702128,
         marginLeft: screenWidth * 0.0037509377344336,
         marginRight: screenWidth * 0.0037509377344336,
-        // paddingTop: screenHeight * 0.0265957446808512,
-        // paddingBottom: screenHeight * 0.0265957446808512,
-        // paddingRight: screenWidth * 0.0150037509377344,
-        // paddingLeft: screenWidth * 0.0150037509377344,
     },
     thumbnail: {
-        width: screenWidth * 0.25,
-        height: screenHeight * 0.35,
+        width: screenWidth * 0.1752,
+        height: screenHeight * 0.242,
         resizeMode: "center"
     },
     buttonContainer: {
         flexDirection: 'row'
     },
     imageContainer: {
-        width: screenWidth * 0.25,
+        width: screenWidth * 0.1875,
     },
 });

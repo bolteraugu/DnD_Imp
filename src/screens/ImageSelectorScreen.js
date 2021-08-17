@@ -18,6 +18,7 @@ export default function ImageSelectorScreen({navigation, route}) {
     const [images, setImages] = useState([]);
     const [imagesMetaData, setImagesMetaData] = useState([]);
     const [selectedImage, setSelectedImage] = useState("");
+    const [selectedImageFN, setSelectedImageFN] = useState(null);
     const [imageToS, setImageToS] = useState([]);
     const [imageToEdit, setImageToEdit] = useState([]);
     const [name, setName] = useState("");
@@ -45,12 +46,14 @@ export default function ImageSelectorScreen({navigation, route}) {
             route.params.groupRef.collection('members').doc(user.toJSON().email).collection('images').onSnapshot((querySnapshot) => {
                 let images = []
                 querySnapshot.docs.map((doc) => {
-                    if (route.params.character.imageName !== "https://firebasestorage.googleapis.com/v0/b/improving-dungeon-minion-5e.appspot.com/o/default_character.png?alt=media&token=84c93a85-ce56-45a7-9b01-0df6") {
-                        if (doc.get('uri') === route.params.character.imageName) {
-                            setSelectedImage(route.params.character.imageName)
+                    if (route.params.comingFrom === 'MainScreen') {
+                        if (route.params.character.imageName !== "https://firebasestorage.googleapis.com/v0/b/improving-dungeon-minion-5e.appspot.com/o/default_character.png?alt=media&token=84c93a85-ce56-45a7-9b01-0df6") {
+                            if (doc.get('uri') === route.params.character.imageName) {
+                                setSelectedImage(route.params.character.imageName)
+                            }
+                        } else {
+                            setSelectedImage("")
                         }
-                    } else {
-                        setSelectedImage("")
                     }
                     const data = {
                         _id: doc.id,
@@ -93,7 +96,7 @@ export default function ImageSelectorScreen({navigation, route}) {
             return;
         }
 
-        const imageName = pickerResult.uri.split('/').slice(-1)[0]
+        //const imageName = pickerResult.uri.split('/').slice(-1)[0]
 
         const blob = await new Promise((resolve, reject) => {
             const xhr = new XMLHttpRequest();
@@ -121,27 +124,40 @@ export default function ImageSelectorScreen({navigation, route}) {
                 imageName: uuid,
                 imageNameStatic: uuid
             }).then((docRef) => {
-            route.params.groupRef.onSnapshot((snapshot) => {
                 route.params.groupRef.collection('imageCanBeShared').doc(docRef.id).set({
                     numShared: 1,
                     sharedWith: new Array(user.toJSON().email)
                 })
-
-            })
+                if (route.params.comingFrom === 'NotesScreen') {
+                    route.params.groupRef.collection('members').doc(user.toJSON().email).collection('images').doc(docRef.id).onSnapshot((snapshot) => {
+                        setSelectedImageFN(snapshot.data())
+                    })
+                }
         }).then(() => {
-            setSelectedImage(url)
+            if (route.params.comingFrom === 'MainScreen') {
+                setSelectedImage(url)
+            }
         })
     };
 
     function onSelect(image) {
-        setSelectedImage(image.image.uri)
+        if (route.params.comingFrom === 'MainScreen') {
+            setSelectedImage(image.image.uri)
+        } else {
+            setSelectedImageFN(image.image)
+        }
     }
 
     function confirmImage() {
-        route.params.onImageChange(route.params.index, 'imageName', selectedImage, true)
-        route.params.onImageChangeLocal('imageName', selectedImage, false)
-        route.params.onImageChangeFirebase('imageName', selectedImage)
-        navigation.goBack()
+        if (route.params.comingFrom === "MainScreen") {
+            route.params.onImageChange(route.params.index, 'imageName', selectedImage, true)
+            route.params.onImageChangeLocal('imageName', selectedImage, false)
+            route.params.onImageChangeFirebase('imageName', selectedImage)
+            navigation.goBack()
+        } else {
+            route.params.onImageChangeFirebase(selectedImageFN, false)
+            navigation.goBack()
+        }
     }
 
     function ShowImages() {
@@ -171,15 +187,23 @@ export default function ImageSelectorScreen({navigation, route}) {
                             renderItem={(
                                 {item} //Render each item with the title and content
                             ) =>
-                                <View style={[item.uri === selectedImage ? styles.border : styles.empty]}>
+                                <View style={[((route.params.comingFrom === 'MainScreen' && item.uri === selectedImage) ||
+                                    (route.params.comingFrom === 'NotesScreen' && selectedImageFN != null && item.uri === selectedImageFN.uri)) ?
+                                    styles.border : styles.empty]}>
                                     <ImageCard
                                         image={item}
                                         onSelect={onSelect}
                                         groupRef={route.params.groupRef}
                                         metadata={imagesMetaData[index++]}
                                         resetSelect={(image) => {
-                                            if (image.uri === selectedImage) {
-                                                setSelectedImage("")
+                                            if (route.params.comingFrom === "MainScreen") {
+                                                if (image.uri === selectedImage) {
+                                                    setSelectedImage("")
+                                                }
+                                            } else {
+                                                if (selectedImageFN != null && image.uri === selectedImageFN.uri) {
+                                                    setSelectedImageFN(null)
+                                                }
                                             }
                                         }}
                                         editName={(imageToEdit) => {
@@ -226,7 +250,9 @@ export default function ImageSelectorScreen({navigation, route}) {
                         <Button
                             mode="contained"
                             onPress={confirmImage}
-                            style={styles.confirmCancelButton}
+                            style={[((route.params.comingFrom === 'MainScreen' && selectedImage.length === 0) ||
+                                (route.params.comingFrom === 'NotesScreen' && selectedImageFN == null)) ? styles.disabledButton : styles.confirmCancelButton]}
+                            disabled = {route.params.comingFrom === 'MainScreen' ? selectedImage.length === 0 : selectedImageFN == null}
                         >
                             Confirm
                         </Button>
@@ -309,9 +335,9 @@ export default function ImageSelectorScreen({navigation, route}) {
                                             uri: imageToS.image.uri
                                         })
                                         route.params.groupRef.collection('imageCanBeShared').doc(imageToS.image._id).update({
-                                                numShared: firebase.firestore.FieldValue.increment(1),
-                                                sharedWith: firebase.firestore.FieldValue.arrayUnion(peopleToShare[i])
-                                            })
+                                            numShared: firebase.firestore.FieldValue.increment(1),
+                                            sharedWith: firebase.firestore.FieldValue.arrayUnion(peopleToShare[i])
+                                        })
                                     }
                                     hideDialog()
                                 }}
@@ -354,6 +380,19 @@ export default function ImageSelectorScreen({navigation, route}) {
                                 style={styles.button}
                                 disabled={name.length === 0}
                                 onPress={() => {
+                                    if (route.params.comingFrom === 'NotesScreen') {
+                                        if (selectedImageFN != null && imageToEdit.image.uri === selectedImageFN.uri) {
+                                            let imageTemp = imageToEdit.image;
+                                            imageTemp.imageName = name;
+                                            setSelectedImageFN(imageTemp);
+                                        }
+                                        for (let i = 0; i < images.length; i++) {
+                                            if (images[i]._id === imageToEdit.image._id) {
+                                                images[i]['imageName'] = name;
+                                            }
+                                        }
+                                        route.params.onImageChangeFirebase(imageToEdit.image, true, name)
+                                    }
                                     route.params.groupRef.collection('members').doc(user.toJSON().email).collection('images').doc(imageToEdit.image._id).update({
                                         imageName: name
                                     })
@@ -387,6 +426,11 @@ const styles = StyleSheet.create({
     },
     confirmCancelButton: {
         backgroundColor: "#000000",
+        marginTop: screenHeight * 0.020363829787234,
+        marginLeft: screenWidth * 0.0077509377344336,
+        width: screenWidth * 0.12
+    },
+    disabledButton: {
         marginTop: screenHeight * 0.020363829787234,
         marginLeft: screenWidth * 0.0077509377344336,
         width: screenWidth * 0.12

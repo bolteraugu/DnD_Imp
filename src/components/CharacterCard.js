@@ -260,7 +260,6 @@ export default function CharacterCard({
                                 icon="arrow-expand-all"
                                 size={28}
                                 color="#000"
-                                //Navigates to playerScreen but then redirects to CharacterSheetScreen??? Strange. Will fix later.
                                 onPress={async () => {
                                     navigation.navigate('CharacterSheet', {
                                         screen: 'Main',
