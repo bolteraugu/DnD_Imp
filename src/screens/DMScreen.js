@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useContext} from 'react';
 import {Dimensions, FlatList, ScrollView, StyleSheet, View} from 'react-native';
-import {Button, Dialog, Portal, Provider, TextInput} from 'react-native-paper';
+import {Button, Dialog, IconButton, Portal, Provider, TextInput} from 'react-native-paper';
 import CharacterCard from '../components/CharacterCard';
 import Chat from '../components/Chat';
 import CharacterTemplate from '../utils/character_template.json';
@@ -16,7 +16,9 @@ global.screenHeight = Dimensions.get("window").height;
 
 export default function DMScreen({route, navigation}) {
   const {group} = route.params;
-
+  const showDialog = () => setVisible(true);
+  const hideDialog = () => setVisible(false);
+  const [visible, setVisible] = useState(false);
   const groupRef = firebase.firestore().collection('groups').doc(group._id);
   const [characters, setCharacters] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -28,11 +30,13 @@ export default function DMScreen({route, navigation}) {
   const [createRaceIndex, setCreateRaceIndex] = useState('');
   const {user} = useContext(AuthUserContext);
   const [isDM, setIsDM] = useState(false);
+    const [chatImage, setChatImage] = useState(false);
+  global.showSettingsDialog = () => {showDialog()};
 
   useEffect(() => {
-
     groupRef.collection('members').doc(user.toJSON().email).onSnapshot((ss) => {
       setIsDM(ss.get('isDM'));
+      setChatImage(ss.get('chatImage'))
       if (ss.get('isDM')) {
         const characterListener = groupRef.collection('characters').onSnapshot(
             (querySnapshot) => {
@@ -67,9 +71,9 @@ export default function DMScreen({route, navigation}) {
                   return data;
                 }
               });
-                setCharacters(characters.filter(function( element ) {
-                    return element !== undefined;
-                }));
+              setCharacters(characters.filter(function( element ) {
+                return element !== undefined;
+              }));
 
               if (loading) {
                 setLoading(false);
@@ -140,16 +144,16 @@ export default function DMScreen({route, navigation}) {
 
   function addCharacter() {
     groupRef
-      .collection('characters')
-      .add(CharacterTemplate)
+        .collection('characters')
+        .add(CharacterTemplate)
         .then((char) => {
           char.update({
             assignedTo: user.toJSON().email
           })
         })
-      .then(console.log('Successfully added character'), (error) =>
-        alert(error)
-      );
+        .then(console.log('Successfully added character'), (error) =>
+            alert(error)
+        );
   }
 
   function updateCharacter(index, field, text, isInt) {
@@ -176,38 +180,81 @@ export default function DMScreen({route, navigation}) {
   }
   else {
     return (
-        <KeyboardAvoidingView
-            behavior = {'height'}>
-          <View style={styles.wrapper}>
-            <View style={styles.charactersContainer}>
-              <ScrollView>
-                <FlatList
-                    data={characters}
-                    removeClippedSubviews={true}
-                    keyExtractor={(item) => item._id}
-                    renderItem={({ item }) => (
-                        <CharacterCard
-                            character={item}
-                            index={index++}
-                            groupRef={groupRef}
-                            onChange={updateCharacter}
-                            navigation={navigation}
-                        />
-                    )}
-                    ListFooterComponent={
-                      <View style = {styles.gap}>
+        <Provider>
+          <KeyboardAvoidingView
+              behavior = {'height'}>
+            <View style={styles.wrapper}>
+              <View style={styles.charactersContainer}>
+                <ScrollView>
+                  <FlatList
+                      data={characters}
+                      removeClippedSubviews={true}
+                      keyExtractor={(item) => item._id}
+                      renderItem={({ item }) => (
+                          <CharacterCard
+                              character={item}
+                              index={index++}
+                              groupRef={groupRef}
+                              onChange={updateCharacter}
+                              navigation={navigation}
+                          />
+                      )}
+                      ListFooterComponent={
+                        <View style = {styles.gap}>
+                          <Button
+                              mode="contained" onPress={addCharacter}>
+                            Add New Character
+                          </Button>
+                        </View>
+                      }
+                  />
+                  <Portal>
+                    <Dialog
+                        visible={visible}
+                        onDismiss={hideDialog}
+                        style={styles.popUpEditWindow}
+                    >
+                        <View
+                            style = {styles.horzRow}
+                        >
+                          <IconButton
+                              icon="keyboard-backspace" //Getting the back icon image
+                              size={36} //Setting the size
+                              color="#6646ee" //And the color
+                              style = {styles.backButton}
+                              onPress={() => {
+                                hideDialog()
+                              }}
+                          />
+                          <Dialog.Title style={styles.popUpTitle}>
+                            Settings
+                          </Dialog.Title>
+                        </View>
+                      <Dialog.Actions>
+                          <View style = {styles.centerView}>
                         <Button
-                            mode="contained" onPress={addCharacter}>
-                          Add New Character
+                            mode="contained"
+                            style={styles.popUpEditButtons}
+                            onPress={() => {
+                                navigation.navigate('ImageSelector', {
+                                  comingFrom: "DMScreen",
+                                  groupRef: groupRef,
+                                    chatImage: chatImage
+                                })
+                            }}
+                        >
+                          Change chat profile picture
                         </Button>
-                      </View>
-                    }
-                />
-              </ScrollView>
+                          </View>
+                      </Dialog.Actions>
+                    </Dialog>
+                  </Portal>
+                </ScrollView>
+              </View>
+              <Chat groupRef={groupRef} />
             </View>
-            <Chat groupRef={groupRef} />
-          </View>
-        </KeyboardAvoidingView>
+          </KeyboardAvoidingView>
+        </Provider>
     );
   }
   //       <Provider>
@@ -269,6 +316,31 @@ DMScreen.navigationOptions = {
 };
 
 const styles = StyleSheet.create({
+    popUpTitle: {
+        marginLeft: screenWidth * 0.165,
+        marginTop: screenHeight * 0.02
+    },
+    centerView: {
+        width: "100%",
+        alignContent: 'center',
+        justifyContent: 'center'
+    },
+    popUpEditButtons: {
+        marginBottom: screenHeight * 0.015,
+        alignSelf: 'center',
+        width: '55%',
+    },
+    backButton: {
+
+    },
+    horzRow: {
+        flexDirection: 'row',
+    },
+    popUpEditWindow: {
+        width: "50%",
+        alignSelf: 'center',
+        marginTop: screenHeight * -0.07,
+    },
   gap: {
     height: screenHeight * 0.398936170212766
   },

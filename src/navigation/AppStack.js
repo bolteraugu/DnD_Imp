@@ -58,20 +58,29 @@ export default function AppStack({navigation}) {
           ),
         })}
       />
-
       <Stack.Screen
         name="DM"
         component={DMScreen}
         options={({route, navigation}) => ({
           title: route.params.group.name,
-
             headerRight: () => (
-                <IconButton
-                    icon="note-multiple"
-                    size={28}
-                    color="#ffffff"
-                    onPress={() => navigation.navigate('Notes', {group: route.params.group})}
-                />)
+                <View style = {styles.horzRow}>
+                    <IconButton
+                        icon="note-multiple"
+                        size={28}
+                        color="#ffffff"
+                        onPress={() => navigation.navigate('Notes', {group: route.params.group})}
+                    />
+                    <IconButton
+                        icon="cog"
+                        size={28}
+                        color="#ffffff"
+                        onPress={() => {
+                            global.showSettingsDialog()
+                        }}
+                    />
+                </View>
+            )
         })}
       />
       <Stack.Screen name="CharacterSheet" component={CharacterNav}
@@ -182,6 +191,9 @@ function CharacterNav() {
 }
 
 const styles = StyleSheet.create({
+    horzRow: {
+      flexDirection: 'row'
+    },
   chatContainer: {flex: 1},
   playerScreenContainer: {
     flexDirection: 'row',

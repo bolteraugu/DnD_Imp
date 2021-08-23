@@ -65,7 +65,8 @@ export default function MenuScreen({navigation}) {
                 groupName: groupName,
               }).then(() => {
               docRef.collection('members').doc(user.toJSON().email).set({
-                isDM: true
+                  isDM: true,
+                  chatImage: "https://firebasestorage.googleapis.com/v0/b/improving-dungeon-minion-5e.appspot.com/o/default_character.png?alt=media&token=84c93a85-ce56-45a7-9b01-0df6"
               })
             })
               .then(() => {

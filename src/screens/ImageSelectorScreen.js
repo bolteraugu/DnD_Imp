@@ -51,7 +51,18 @@ export default function ImageSelectorScreen({navigation, route}) {
                             if (doc.get('uri') === route.params.character.imageName) {
                                 setSelectedImage(route.params.character.imageName)
                             }
-                        } else {
+                        }
+                        else {
+                            setSelectedImage("")
+                        }
+                    }
+                    else if (route.params.comingFrom === 'DMScreen') {
+                        if (route.params.chatImage !== "https://firebasestorage.googleapis.com/v0/b/improving-dungeon-minion-5e.appspot.com/o/default_character.png?alt=media&token=84c93a85-ce56-45a7-9b01-0df6") {
+                            if (doc.get('uri') === route.params.chatImage) {
+                                setSelectedImage(route.params.chatImage)
+                            }
+                        }
+                        else {
                             setSelectedImage("")
                         }
                     }
@@ -134,14 +145,14 @@ export default function ImageSelectorScreen({navigation, route}) {
                     })
                 }
         }).then(() => {
-            if (route.params.comingFrom === 'MainScreen') {
+            if (route.params.comingFrom === 'MainScreen' || route.params.comingFrom === 'DMScreen') {
                 setSelectedImage(url)
             }
         })
     };
 
     function onSelect(image) {
-        if (route.params.comingFrom === 'MainScreen') {
+        if (route.params.comingFrom === 'MainScreen' || route.params.comingFrom === 'DMScreen') {
             setSelectedImage(image.image.uri)
         } else {
             setSelectedImageFN(image.image)
@@ -154,7 +165,14 @@ export default function ImageSelectorScreen({navigation, route}) {
             route.params.onImageChangeLocal('imageName', selectedImage, false)
             route.params.onImageChangeFirebase('imageName', selectedImage)
             navigation.goBack()
-        } else {
+        }
+        else if (route.params.comingFrom === 'DMScreen') {
+            route.params.groupRef.collection('members').doc(user.toJSON().email).update({
+                chatImage: selectedImage
+            })
+            navigation.goBack()
+        }
+        else {
             route.params.onImageChangeFirebase(selectedImageFN, false)
             navigation.goBack()
         }
@@ -187,7 +205,7 @@ export default function ImageSelectorScreen({navigation, route}) {
                             renderItem={(
                                 {item} //Render each item with the title and content
                             ) =>
-                                <View style={[((route.params.comingFrom === 'MainScreen' && item.uri === selectedImage) ||
+                                <View style={[((route.params.comingFrom === 'MainScreen' || route.params.comingFrom === 'DMScreen' && item.uri === selectedImage) ||
                                     (route.params.comingFrom === 'NotesScreen' && selectedImageFN != null && item.uri === selectedImageFN.uri)) ?
                                     styles.border : styles.empty]}>
                                     <ImageCard
@@ -196,7 +214,7 @@ export default function ImageSelectorScreen({navigation, route}) {
                                         groupRef={route.params.groupRef}
                                         metadata={imagesMetaData[index++]}
                                         resetSelect={(image) => {
-                                            if (route.params.comingFrom === "MainScreen") {
+                                            if (route.params.comingFrom === "MainScreen" || route.params.comingFrom === 'DMScreen') {
                                                 if (image.uri === selectedImage) {
                                                     setSelectedImage("")
                                                 }
@@ -214,7 +232,6 @@ export default function ImageSelectorScreen({navigation, route}) {
                                         shareImage={(imageToShare) => {
                                             setImageToS(imageToShare)
                                             membersTemp = []
-                                            console.log("te")
                                             for (let i = 0; i < imagesMetaData.length; i++) {
                                                 if (imagesMetaData[i]._id === imageToShare.image._id) {
                                                     if (imagesMetaData[i].numShared !== members.length) {
@@ -250,9 +267,9 @@ export default function ImageSelectorScreen({navigation, route}) {
                         <Button
                             mode="contained"
                             onPress={confirmImage}
-                            style={[((route.params.comingFrom === 'MainScreen' && selectedImage.length === 0) ||
+                            style={[((route.params.comingFrom === 'MainScreen' || route.params.comingFrom === 'DMScreen' && selectedImage.length === 0) ||
                                 (route.params.comingFrom === 'NotesScreen' && selectedImageFN == null)) ? styles.disabledButton : styles.confirmCancelButton]}
-                            disabled = {route.params.comingFrom === 'MainScreen' ? selectedImage.length === 0 : selectedImageFN == null}
+                            disabled = {(route.params.comingFrom === 'MainScreen' || route.params.comingFrom === 'DMScreen') ? selectedImage.length === 0 : selectedImageFN == null}
                         >
                             Confirm
                         </Button>
@@ -418,8 +435,7 @@ export default function ImageSelectorScreen({navigation, route}) {
 }
 
 const styles = StyleSheet.create({
-    empty: {
-    },
+    empty: {},
     border: {
         borderWidth: 2,
         borderColor: "#f02816",

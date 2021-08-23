@@ -44,8 +44,12 @@ export default function Chat({groupRef}) {
   const {user} = useContext(AuthUserContext);
   const currentUser = user.toJSON();
   const [messages, setMessages] = useState([]);
+    const [chatImage, setChatImage] = React.useState("");
 
   useEffect(() => {
+      groupRef.collection('members').doc(currentUser.email).onSnapshot((snapshot) => {
+          setChatImage(snapshot.get('chatImage'))
+      })
     const messagesListener = groupRef
       .collection('messages')
       .where('recipients', 'array-contains', user.toJSON().email)
@@ -96,6 +100,7 @@ export default function Chat({groupRef}) {
         user: {
           _id: currentUser.uid,
           email: currentUser.email,
+            avatar: chatImage
         },
         recipients: recipients,
       })
@@ -182,11 +187,12 @@ export default function Chat({groupRef}) {
                     groupRef
                       .update({
                         members:
-                          firebase.firestore.FieldValue.arrayUnion(inputVal),
-                        numMembers: firebase.firestore.FieldValue.increment(1),
+                            firebase.firestore.FieldValue.arrayUnion(inputVal),
+                            numMembers: firebase.firestore.FieldValue.increment(1),
                       }).then(() => {
                       groupRef.collection('members').doc(inputVal).set({
-                        isDM: false
+                          isDM: false,
+                          chatImage: "https://firebasestorage.googleapis.com/v0/b/improving-dungeon-minion-5e.appspot.com/o/default_character.png?alt=media&token=84c93a85-ce56-45a7-9b01-0df6"
                       })
                     })
                       .then(() => {
