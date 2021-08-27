@@ -102,8 +102,8 @@ export default function EditNotesScreen({navigation, route}) {
         <Provider>
         <View style = {styles.totalContainer}>
             <KeyboardAvoidingView
-                behavior = {"position"}
-                keyboardVerticalOffset = {-220}
+                behavior = {"height"}
+                keyboardVerticalOffset = {screenHeight * -0.2925531914893617}
             >
             <View style = {styles.container}>
                 <View style = {styles.borderTitle}>

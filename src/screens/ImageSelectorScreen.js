@@ -7,7 +7,6 @@ import ImageCard from "../components/ImageCard";
 import DropDown from "react-native-paper-dropdown";
 import firebase from "firebase";
 import colors from "../utils/colors";
-import { v4 as uuidv4 } from 'uuid';
 
 global.screenWidth = Dimensions.get("window").width;
 global.screenHeight = Dimensions.get("window").height;
@@ -34,6 +33,7 @@ export default function ImageSelectorScreen({navigation, route}) {
     const hideEditNameDialog = () => setEditNameVisible(false);
     const [showDropDown, setShowDropDown] = useState(false);
     const [recipients, setRecipients] = useState("");
+    const [avatars, setAvatars] = useState([]);
     const [items, setItems] = useState("");
     let membersTemp = [];
 
@@ -42,6 +42,16 @@ export default function ImageSelectorScreen({navigation, route}) {
             setLoading(true)
             route.params.groupRef.get().then((snapshot) => {
                 setMembers(snapshot.get('members'))
+            })
+            route.params.groupRef.collection('messages').onSnapshot((snapshot) => {
+                const avatars = snapshot.docs.map((doc) => {
+                    const data = {
+                        _id: doc.id,
+                        ...doc.data(),
+                    };
+                    return data;
+                })
+                setAvatars(avatars)
             })
             route.params.groupRef.collection('members').doc(user.toJSON().email).collection('images').onSnapshot((querySnapshot) => {
                 let images = []
@@ -92,6 +102,13 @@ export default function ImageSelectorScreen({navigation, route}) {
         return unsubscribe;
     })
 
+    function uuidv4() {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
+    }
+
     let openImagePickerAsync = async () => {
         if (Platform.OS !== "web") {
             let permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -139,7 +156,7 @@ export default function ImageSelectorScreen({navigation, route}) {
                     numShared: 1,
                     sharedWith: new Array(user.toJSON().email)
                 })
-                if (route.params.comingFrom === 'NotesScreen') {
+                if (route.params.comingFrom === 'NotesScreen' || route.params.comingFrom === 'Chat') {
                     route.params.groupRef.collection('members').doc(user.toJSON().email).collection('images').doc(docRef.id).onSnapshot((snapshot) => {
                         setSelectedImageFN(snapshot.data())
                     })
@@ -167,13 +184,28 @@ export default function ImageSelectorScreen({navigation, route}) {
             navigation.goBack()
         }
         else if (route.params.comingFrom === 'DMScreen') {
+            for (let i = 0; i < avatars.length; i++) {
+                if (avatars[i].user.email === user.toJSON().email) {
+                    route.params.groupRef.collection('messages').doc(avatars[i]._id).update({
+                        user: {
+                            avatar: selectedImage,
+                            uid: user.toJSON().uid,
+                            email: user.toJSON().email
+                        }
+                    })
+                }
+            }
             route.params.groupRef.collection('members').doc(user.toJSON().email).update({
                 chatImage: selectedImage
             })
             navigation.goBack()
         }
+        else if (route.params.comingFrom === 'Chat') {
+            route.params.updateChatFirebase(selectedImageFN.uri, route.params.chatImage, selectedImageFN.imageName)
+            navigation.goBack()
+        }
         else {
-            route.params.onImageChangeFirebase(selectedImageFN, false)
+            route.params.onImageChangeFirebase(selectedImageFN, false);
             navigation.goBack()
         }
     }
@@ -205,8 +237,8 @@ export default function ImageSelectorScreen({navigation, route}) {
                             renderItem={(
                                 {item} //Render each item with the title and content
                             ) =>
-                                <View style={[((route.params.comingFrom === 'MainScreen' || route.params.comingFrom === 'DMScreen' && item.uri === selectedImage) ||
-                                    (route.params.comingFrom === 'NotesScreen' && selectedImageFN != null && item.uri === selectedImageFN.uri)) ?
+                                <View style={[(((route.params.comingFrom === 'MainScreen' || route.params.comingFrom === 'DMScreen') && item.uri === selectedImage) ||
+                                    ((route.params.comingFrom === 'NotesScreen' || route.params.comingFrom === 'Chat') && selectedImageFN != null && item.uri === selectedImageFN.uri)) ?
                                     styles.border : styles.empty]}>
                                     <ImageCard
                                         image={item}
@@ -267,8 +299,8 @@ export default function ImageSelectorScreen({navigation, route}) {
                         <Button
                             mode="contained"
                             onPress={confirmImage}
-                            style={[((route.params.comingFrom === 'MainScreen' || route.params.comingFrom === 'DMScreen' && selectedImage.length === 0) ||
-                                (route.params.comingFrom === 'NotesScreen' && selectedImageFN == null)) ? styles.disabledButton : styles.confirmCancelButton]}
+                            style={[(((route.params.comingFrom === 'MainScreen' || route.params.comingFrom === 'DMScreen') && selectedImage.length === 0) ||
+                                ((route.params.comingFrom === 'NotesScreen' || route.params.comingFrom === 'Chat') && selectedImageFN == null)) ? styles.disabledButton : styles.confirmCancelButton]}
                             disabled = {(route.params.comingFrom === 'MainScreen' || route.params.comingFrom === 'DMScreen') ? selectedImage.length === 0 : selectedImageFN == null}
                         >
                             Confirm
@@ -397,7 +429,7 @@ export default function ImageSelectorScreen({navigation, route}) {
                                 style={styles.button}
                                 disabled={name.length === 0}
                                 onPress={() => {
-                                    if (route.params.comingFrom === 'NotesScreen') {
+                                    if (route.params.comingFrom === 'NotesScreen' || route.params.comingFrom === 'Chat') {
                                         if (selectedImageFN != null && imageToEdit.image.uri === selectedImageFN.uri) {
                                             let imageTemp = imageToEdit.image;
                                             imageTemp.imageName = name;
@@ -408,7 +440,9 @@ export default function ImageSelectorScreen({navigation, route}) {
                                                 images[i]['imageName'] = name;
                                             }
                                         }
-                                        route.params.onImageChangeFirebase(imageToEdit.image, true, name)
+                                        if (route.params.comingFrom === 'NotesScreen') {
+                                            route.params.onImageChangeFirebase(imageToEdit.image, true, name)
+                                        }
                                     }
                                     route.params.groupRef.collection('members').doc(user.toJSON().email).collection('images').doc(imageToEdit.image._id).update({
                                         imageName: name

@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useContext} from 'react';
-import {Dimensions, FlatList, ScrollView, StyleSheet, View} from 'react-native';
-import {Button, Dialog, IconButton, Portal, Provider, TextInput} from 'react-native-paper';
+import {Dimensions, FlatList, Image, ScrollView, StyleSheet, View} from 'react-native';
+import {Button, Dialog, IconButton, Portal, Provider, TextInput, Title} from 'react-native-paper';
 import CharacterCard from '../components/CharacterCard';
 import Chat from '../components/Chat';
 import CharacterTemplate from '../utils/character_template.json';
@@ -22,10 +22,15 @@ export default function DMScreen({route, navigation}) {
   const groupRef = firebase.firestore().collection('groups').doc(group._id);
   const [characters, setCharacters] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [members, setMembers] = useState(true);
-  const showRaceDialog = () => setRaceVisible(true);
-  const hideRaceDialog = () => setRaceVisible(false);
-  const [raceVisible, setRaceVisible] = useState(false);
+  const [items, setItems] = useState(null);
+  // const showRaceDialog = () => setRaceVisible(true);
+  // const hideRaceDialog = () => setRaceVisible(false);
+  // const [raceVisible, setRaceVisible] = useState(false);
+    const showImageDialog = () => setImageVisible(true);
+    const hideImageDialog = () => setImageVisible(false);
+    const [imageVisible, setImageVisible] = useState(false);
+    const [imageToShow, setImageToShow] = useState("");
+    const [nameToShow, setNameToShow] = useState("");
   const [newRaceName, setNewRaceName] = useState('');
   const [createRaceIndex, setCreateRaceIndex] = useState('');
   const {user} = useContext(AuthUserContext);
@@ -34,6 +39,17 @@ export default function DMScreen({route, navigation}) {
   global.showSettingsDialog = () => {showDialog()};
 
   useEffect(() => {
+      groupRef.onSnapshot((snapshot) => {
+          const itemsTemp = [];
+          snapshot.get('members').forEach((mem) => {
+              if (mem !== user.toJSON().email) {
+                  itemsTemp.push({
+                      value: mem, label: mem
+                  })
+                  setItems(itemsTemp);
+              }
+          })
+      })
     groupRef.collection('members').doc(user.toJSON().email).onSnapshot((ss) => {
       setIsDM(ss.get('isDM'));
       setChatImage(ss.get('chatImage'))
@@ -162,6 +178,62 @@ export default function DMScreen({route, navigation}) {
     setCharacters(newCharacters);
   }
 
+  function ButtonContainer() {
+      if (isDM) {
+          return (
+              <View>
+                  <Button
+                      mode="contained"
+                      style={styles.popUpEditButtons}
+                      onPress={() => {
+                          hideDialog();
+                          navigation.navigate('ImageSelector', {
+                              comingFrom: "DMScreen",
+                              groupRef: groupRef,
+                              chatImage: chatImage
+                          })
+                      }}
+                  >
+                      Change chat profile picture
+                  </Button>
+                  <Button
+                      style={styles.popUpEditButtons}
+                      mode={"contained"}
+                      onPress={() => {
+                          groupRef.collection('messages').get().then((snapshot) => {
+                              snapshot.docs.forEach(doc => {
+                                  doc.ref.delete();
+                              })
+                          }).then(() => {
+                              hideDialog();
+                          })
+                      }}
+                  >
+                      Delete all messages
+                  </Button>
+              </View>
+          )
+      }
+      else {
+          return (
+              <Button
+                  mode="contained"
+                  style={styles.popUpEditButtons}
+                  onPress={() => {
+                      hideDialog();
+                      navigation.navigate('ImageSelector', {
+                          comingFrom: "DMScreen",
+                          groupRef: groupRef,
+                          chatImage: chatImage
+                      })
+                  }}
+              >
+                  Change chat profile picture
+              </Button>
+          )
+      }
+  }
+
   let index = 0;
   if (characters == null || characters.length === 0) {
     return (
@@ -212,46 +284,75 @@ export default function DMScreen({route, navigation}) {
                     <Dialog
                         visible={visible}
                         onDismiss={hideDialog}
-                        style={styles.popUpEditWindow}
+                        style={isDM ? styles.popUpDMEditWindow : styles.popUpEditWindow}
                     >
                         <View
                             style = {styles.horzRow}
                         >
-                          <IconButton
-                              icon="keyboard-backspace" //Getting the back icon image
-                              size={36} //Setting the size
-                              color="#6646ee" //And the color
-                              style = {styles.backButton}
-                              onPress={() => {
-                                hideDialog()
-                              }}
-                          />
-                          <Dialog.Title style={styles.popUpTitle}>
-                            Settings
-                          </Dialog.Title>
+                              <Dialog.Title style={styles.popUpTitle}>
+                                Settings
+                              </Dialog.Title>
+                            <IconButton
+                                icon="keyboard-backspace" //Getting the back icon image
+                                size={36} //Setting the size
+                                color="#6646ee" //And the color
+                                style = {styles.backButton}
+                                onPress={() => {
+                                    hideDialog()
+                                }}
+                            />
                         </View>
                       <Dialog.Actions>
-                          <View style = {styles.centerView}>
-                        <Button
-                            mode="contained"
-                            style={styles.popUpEditButtons}
-                            onPress={() => {
-                                navigation.navigate('ImageSelector', {
-                                  comingFrom: "DMScreen",
-                                  groupRef: groupRef,
-                                    chatImage: chatImage
-                                })
-                            }}
-                        >
-                          Change chat profile picture
-                        </Button>
+                          <View style = {isDM ? styles.centerViewDM : styles.centerView}>
+                              <ButtonContainer/>
                           </View>
                       </Dialog.Actions>
                     </Dialog>
                   </Portal>
+                    <Portal>
+                        <Dialog
+                            visible={imageVisible}
+                            onDismiss={hideImageDialog}
+                            style = {styles.fullSizeWindow}
+                        >
+                            <View style = {styles.headingRow}>
+                                <IconButton
+                                    icon="keyboard-backspace" //Getting the back icon image
+                                    size={38} //Setting the size
+                                    color="#6646ee" //And the color
+                                    style = {styles.FSImageBackButton}
+                                    onPress={() => {
+                                        hideImageDialog()
+                                    }} //When clicked on make it go back to the previous route
+                                />
+                                <View style = {styles.centerFSImageTitle}>
+                                    <Title
+                                        style = {styles.helpTitle}
+                                    >
+                                        {nameToShow !== "" ? nameToShow : ""}
+                                    </Title>
+                                </View>
+                            </View>
+                            <Image
+                                source={imageToShow !== "" ? {uri: imageToShow} : {uri: ""}}
+                                style={styles.fullSizeImage}
+                            />
+                            <View/>
+                        </Dialog>
+
+                    </Portal>
                 </ScrollView>
               </View>
-              <Chat groupRef={groupRef} />
+              <Chat
+                  navigation={navigation}
+                  groupRef={groupRef}
+                  itemsT={items}
+                  showImage={(image, name) => {
+                      setImageToShow(image);
+                      setNameToShow(name);
+                      showImageDialog();
+                  }}
+              />
             </View>
           </KeyboardAvoidingView>
         </Provider>
@@ -316,30 +417,77 @@ DMScreen.navigationOptions = {
 };
 
 const styles = StyleSheet.create({
-    popUpTitle: {
-        marginLeft: screenWidth * 0.165,
-        marginTop: screenHeight * 0.02
+    fullSizeWindow: {
+        width: screenWidth * 0.973,
+        height: screenHeight * 0.90,
+        marginTop: screenHeight * 0.00133829787234
+    },
+    fullSizeImage: {
+        width: screenWidth * 0.973,
+        height: screenHeight * 0.80,
+        marginTop: screenHeight * 0.01163829787234,
+        resizeMode: "center"
+    },
+    FSImageBackButton: {
+        flex: 1,
+        alignSelf: 'center',
+        marginTop: screenHeight * 0.01163829787234,
+        marginLeft: screenWidth * 0.01363829787234,
+    },
+    headingRow: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        height: screenHeight * 0.04,
+        marginTop: screenHeight * 0.015
+    },
+    helpTitle: {
+        alignSelf: 'center',
+        fontSize: 23
+    },
+    centerFSImageTitle: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        flex: 40,
+    },
+    centerViewDM: {
+        marginTop: screenHeight * -0.045,
+        width: "100%",
+        alignContent: 'center',
+        justifyContent: 'center',
     },
     centerView: {
         width: "100%",
         alignContent: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
     },
     popUpEditButtons: {
         marginBottom: screenHeight * 0.015,
         alignSelf: 'center',
-        width: '55%',
+        width: '55%'
     },
     backButton: {
-
+        position: 'absolute',
+        left: 10,
+        top: 5
     },
     horzRow: {
+        height: "50%",
         flexDirection: 'row',
+        width: "100%",
+        alignContent: 'center',
+        justifyContent: 'center',
     },
     popUpEditWindow: {
         width: "50%",
         alignSelf: 'center',
         marginTop: screenHeight * -0.07,
+        height: "25%"
+    },
+    popUpDMEditWindow: {
+        width: "50%",
+        alignSelf: 'center',
+        marginTop: screenHeight * -0.07,
+        height: "33%"
     },
   gap: {
     height: screenHeight * 0.398936170212766
@@ -357,7 +505,7 @@ const styles = StyleSheet.create({
   },
   wrapper: {
     flexDirection: 'row',
-    height: '100%',
+      height: screenHeight * 0.89
   },
   popUpCreateRaceWindow: {
     width: '40%',

@@ -19,6 +19,7 @@ import Colors from '../utils/colors';
 
 global.screenWidth = Dimensions.get("window").width;
 global.screenHeight = Dimensions.get("window").height;
+global.selectedMsgs = [];
 
 export default function MenuScreen({navigation}) {
   const {user} = useContext(AuthUserContext);

@@ -79,6 +79,7 @@ export default function SignupScreen({navigation}) {
                 <Button
                     mode="contained" //Sets the style of the button to have background
                     style={styles.button} //Setting how much space the button will take up and it's margin
+                    disabled = {email.length === 0}
                     onPress={() => {
                         if (email.includes(',')) {
                             setInvalidEmail(true)

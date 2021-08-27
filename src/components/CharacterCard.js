@@ -254,12 +254,14 @@ export default function CharacterCard({
                                 icon="delete"
                                 size={28}
                                 color="#000"
+                                style={{width: "50%", marginLeft: screenWidth * 0.01}}
                                 onPress={deleteCharacter} //delete this character
                             />
                             <IconButton
                                 icon="arrow-expand-all"
                                 size={28}
                                 color="#000"
+                                style={{width: "50%", marginLeft: screenWidth * -0.0065}}
                                 onPress={async () => {
                                     navigation.navigate('CharacterSheet', {
                                         screen: 'Main',
@@ -374,8 +376,8 @@ const styles = StyleSheet.create({
     },
     iconRow: {
         flexDirection: 'row',
+        width: global.screenWidth * 0.084,
         marginTop: global.screenHeight * 0.0186170212765957,
-        marginLeft: global.screenWidth * 0.00750000001875,
     },
     intContainer: {
         marginBottom: screenHeight * 0.0026595744680851,
