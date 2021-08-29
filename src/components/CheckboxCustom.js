@@ -5,7 +5,7 @@ export default function CheckboxCustom({select, add, remove}) {
     const [selected, setSelected] = useState(false);
     if (select) {
         return (
-            <Checkbox
+            <Checkbox.Android
                 status={selected ? 'checked' : 'unchecked'}
                 onPress={() => {
                     if (selected) {

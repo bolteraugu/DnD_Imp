@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useContext} from 'react';
-import {Dimensions, FlatList, Image, ScrollView, StyleSheet, View} from 'react-native';
-import {Button, Dialog, IconButton, Portal, Provider, TextInput, Title} from 'react-native-paper';
+import {Dimensions, FlatList, Image, Platform, ScrollView, StyleSheet, View} from 'react-native';
+import {Button, Dialog, IconButton, Portal, Provider, Text, TextInput, Title, Checkbox} from 'react-native-paper';
 import CharacterCard from '../components/CharacterCard';
 import Chat from '../components/Chat';
 import CharacterTemplate from '../utils/character_template.json';
@@ -10,6 +10,9 @@ import 'firebase/firestore';
 import {AuthUserContext} from "../navigation/AuthUserProvider";
 import { KeyboardAvoidingView } from 'react-native';
 import {useFocusEffect} from "@react-navigation/native";
+import DropDown from "react-native-paper-dropdown";
+import {Picker} from "@react-native-picker/picker";
+import "../screens/NotesScreen"
 
 global.screenWidth = Dimensions.get("window").width;
 global.screenHeight = Dimensions.get("window").height;
@@ -22,7 +25,12 @@ export default function DMScreen({route, navigation}) {
   const groupRef = firebase.firestore().collection('groups').doc(group._id);
   const [characters, setCharacters] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [inChangeDM, setInChangeDM] = useState(false);
+    const [changePermissions, setChangePermissions] = useState(false);
+    const [userPermissions, setUserPermissions] = useState(null);
   const [items, setItems] = useState(null);
+  const [itemsWeb, setItemsWeb] = useState(null)
+    const [members, setMembers] = useState(null);
   // const showRaceDialog = () => setRaceVisible(true);
   // const hideRaceDialog = () => setRaceVisible(false);
   // const [raceVisible, setRaceVisible] = useState(false);
@@ -33,20 +41,41 @@ export default function DMScreen({route, navigation}) {
     const [nameToShow, setNameToShow] = useState("");
   const [newRaceName, setNewRaceName] = useState('');
   const [createRaceIndex, setCreateRaceIndex] = useState('');
+  const [showDropDown, setShowDropDown] = useState(false);
   const {user} = useContext(AuthUserContext);
   const [isDM, setIsDM] = useState(false);
+  const [newDM, setNewDM] = useState("");
     const [chatImage, setChatImage] = useState(false);
-  global.showSettingsDialog = () => {showDialog()};
+  global.showSettingsDialog = () => {
+      showDialog();
+  };
+
+  global.navigateToNotes = () => {
+      navigation.navigate('Notes', {
+          groupRef: groupRef,
+          isDM: isDM,
+          userPermissions: userPermissions
+      })
+  };
 
   useEffect(() => {
       groupRef.onSnapshot((snapshot) => {
           const itemsTemp = [];
+          const itemsWebTemp = [];
+          let count = 0;
+          setUserPermissions(snapshot.data());
           snapshot.get('members').forEach((mem) => {
               if (mem !== user.toJSON().email) {
                   itemsTemp.push({
                       value: mem, label: mem
-                  })
+                  });
+                  itemsWebTemp.push(mem);
                   setItems(itemsTemp);
+                  setItemsWeb(itemsWebTemp)
+                  if (Platform.OS === 'web' && count === 0) {
+                      setNewDM(mem);
+                  }
+                  count++;
               }
           })
       })
@@ -180,39 +209,195 @@ export default function DMScreen({route, navigation}) {
 
   function ButtonContainer() {
       if (isDM) {
-          return (
-              <View>
-                  <Button
-                      mode="contained"
-                      style={styles.popUpEditButtons}
-                      onPress={() => {
-                          hideDialog();
-                          navigation.navigate('ImageSelector', {
-                              comingFrom: "DMScreen",
-                              groupRef: groupRef,
-                              chatImage: chatImage
-                          })
-                      }}
-                  >
-                      Change chat profile picture
-                  </Button>
-                  <Button
-                      style={styles.popUpEditButtons}
-                      mode={"contained"}
-                      onPress={() => {
-                          groupRef.collection('messages').get().then((snapshot) => {
-                              snapshot.docs.forEach(doc => {
-                                  doc.ref.delete();
-                              })
-                          }).then(() => {
+          if (!inChangeDM && !changePermissions) {
+              return (
+                  <View style = {styles.dmButtonContainer}>
+                      <Button
+                          mode="contained"
+                          style={styles.popUpEditButtons}
+                          onPress={() => {
                               hideDialog();
-                          })
-                      }}
-                  >
-                      Delete all messages
-                  </Button>
-              </View>
-          )
+                              navigation.navigate('ImageSelector', {
+                                  comingFrom: "DMScreen",
+                                  groupRef: groupRef,
+                                  chatImage: chatImage
+                              })
+                          }}
+                      >
+                          Change chat profile picture
+                      </Button>
+                      <Button
+                          style={styles.popUpEditButtons}
+                          mode={"contained"}
+                          onPress={() => {
+                              groupRef.collection('messages').get().then((snapshot) => {
+                                  snapshot.docs.forEach(doc => {
+                                      doc.ref.delete();
+                                  })
+                              }).then(() => {
+                                  hideDialog();
+                              })
+                          }}
+                      >
+                          Delete all messages
+                      </Button>
+                      <Button
+                          style={styles.popUpEditButtons}
+                          mode={"contained"}
+                          disabled = {items == null}
+                          onPress={() => {
+                              setInChangeDM(true);
+                          }}
+                      >
+                          Change Dungeon Master
+                      </Button>
+                      <Button
+                          style={styles.popUpEditButtons}
+                          mode={"contained"}
+                          onPress={() => {
+                              setChangePermissions(true);
+                          }}
+                      >
+                          Change player characters' permissions
+                      </Button>
+                  </View>
+              )
+          }
+          else if (changePermissions) {
+              return (
+                  <View>
+                      <View
+                          style = {Platform.OS === 'web' ? styles.changePermissionsContainer : styles.changePermissionsContainer}
+                      >
+                          <View style={styles.checkboxContainer}>
+                              <Text style={styles.checkboxText}>Can add recipients to the group</Text>
+                              <Checkbox.Android
+                                  status={userPermissions != null && userPermissions.addRecipients ? 'checked' : 'unchecked'}
+                                  onPress={() => {
+                                      let userPermissionsCopy = JSON.parse(JSON.stringify(userPermissions));
+                                      userPermissionsCopy.addRecipients = !userPermissionsCopy.addRecipients
+                                      setUserPermissions(userPermissionsCopy);
+                                  }}
+                              />
+                          </View>
+                          <View style={styles.checkboxContainer}>
+                              <Text style={styles.checkboxText}>Can view anyone's notes</Text>
+                              <Checkbox.Android
+                                  status={userPermissions != null && userPermissions.viewAllNotes ? 'checked' : 'unchecked'}
+                                  onPress={() => {
+                                      let userPermissionsCopy = JSON.parse(JSON.stringify(userPermissions));
+                                      userPermissionsCopy.viewAllNotes = !userPermissionsCopy.viewAllNotes
+                                      setUserPermissions(userPermissionsCopy);
+                                  }}
+                              />
+                          </View>
+                          <View style={styles.checkboxContainer}>
+                              <Text style={styles.checkboxText}>Can share notes shared to them</Text>
+                              <Checkbox.Android
+                                  status={userPermissions != null && userPermissions.shareNotesSharedToThem ? 'checked' : 'unchecked'}
+                                  onPress={() => {
+                                      let userPermissionsCopy = JSON.parse(JSON.stringify(userPermissions));
+                                      userPermissionsCopy.shareNotesSharedToThem = !userPermissionsCopy.shareNotesSharedToThem
+                                      setUserPermissions(userPermissionsCopy);
+                                  }}
+                              />
+                          </View>
+                          <View style={styles.checkboxContainer}>
+                              <Text style={styles.checkboxText}>Can delete their own characters</Text>
+                              <Checkbox.Android
+                                  status={userPermissions != null && userPermissions.deleteOwnCharacters ? 'checked' : 'unchecked'}
+                                  onPress={() => {
+                                      let userPermissionsCopy = JSON.parse(JSON.stringify(userPermissions));
+                                      userPermissionsCopy.deleteOwnCharacters = !userPermissionsCopy.deleteOwnCharacters
+                                      setUserPermissions(userPermissionsCopy);
+                                  }}
+                              />
+                          </View>
+                          <View style={styles.checkboxContainer}>
+                              <Text style={styles.checkboxText}>Can view other players characters</Text>
+                              <Checkbox.Android
+                                  status={userPermissions != null && userPermissions.viewAllCharacters ? 'checked' : 'unchecked'}
+                                  onPress={() => {
+                                      let userPermissionsCopy = JSON.parse(JSON.stringify(userPermissions));
+                                      userPermissionsCopy.viewAllCharacters = !userPermissionsCopy.viewAllCharacters
+                                      setUserPermissions(userPermissionsCopy);
+                                  }}
+                              />
+                          </View>
+                          <View style = {{flexDirection: "row", marginTop: screenHeight * 0.025}}>
+                              <Button
+                                  style = {{width: screenWidth * 0.1}}
+                                  mode = "contained"
+                                  onPress = {() => {
+                                      groupRef.update({
+                                          isDM: false,
+                                          addRecipients: userPermissions.addRecipients,
+                                          viewAllNotes: userPermissions.viewAllNotes,
+                                          shareNotesSharedToThem: userPermissions.shareNotesSharedToThem,
+                                          deleteOwnCharacters: userPermissions.deleteOwnCharacters,
+                                          viewAllCharacters: userPermissions.viewAllCharacters
+                                      }).then(() => {
+                                          setChangePermissions(false);
+                                          hideDialog();
+                                      })
+                                  }}
+                              >
+                                  Change
+                              </Button>
+                              <View style = {styles.buttonGap}/>
+                              <Button
+                                  mode = "contained"
+                                  style = {{width: screenWidth * 0.1}}
+                                  onPress = {() => {
+                                      setChangePermissions(false)
+                                  }}
+                              >
+                                  Cancel
+                              </Button>
+                          </View>
+                      </View>
+                  </View>
+                )
+          }
+          else {
+              return (
+                  <View>
+                      <View
+                        style = {Platform.OS === 'web' ? styles.dmSubmitButtonContainerWeb : styles.dmSubmitButtonContainer}
+                      >
+                          <Button
+                            disabled = {newDM.length === 0}
+                            style = {{width: screenWidth * 0.1}}
+                            mode = "contained"
+                            onPress = {() => {
+                                setIsDM(false)
+                                groupRef.collection('members').doc(user.toJSON().email).update({
+                                    isDM: false
+                                }).then(() => {
+                                    groupRef.collection('members').doc(newDM).update({
+                                        isDM: true
+                                    })
+                                })
+                                setInChangeDM(false);
+                                hideDialog();
+                            }}
+                          >
+                              Change
+                          </Button>
+                          <View style = {styles.buttonGap}/>
+                          <Button
+                              mode = "contained"
+                              style = {{width: screenWidth * 0.1}}
+                              onPress = {() => {
+                                setInChangeDM(false)
+                              }}
+                          >
+                              Cancel
+                          </Button>
+                      </View>
+                  </View>
+              )
+          }
       }
       else {
           return (
@@ -237,17 +422,141 @@ export default function DMScreen({route, navigation}) {
   let index = 0;
   if (characters == null || characters.length === 0) {
     return (
-        <View style={styles.wrapper}>
-          <View style={styles.charactersContainer}>
-            <View>
-              <Button
-                  mode="contained" onPress={addCharacter}>
-                Add New Character
-              </Button>
+        <Provider>
+            <View style={styles.wrapper}>
+                <View style={styles.charactersContainer}>
+                    <View>
+                        <Button
+                            mode="contained" onPress={addCharacter}>
+                            Add New Character
+                        </Button>
+                    </View>
+                </View>
+                <Chat
+                    navigation={navigation}
+                    groupRef={groupRef}
+                    itemsT={items}
+                    isDM={isDM}
+                    userPermissions={userPermissions}
+                    showImage={(image, name) => {
+                        setImageToShow(image);
+                        setNameToShow(name);
+                        showImageDialog();
+                    }}
+                />
             </View>
-          </View>
-          <Chat groupRef={groupRef} />
-        </View>
+            <Portal>
+                <Dialog
+                    visible={visible}
+                    onDismiss={() => {
+                        setInChangeDM(false);
+                        setChangePermissions(false);
+                        hideDialog();
+                    }}
+                    style={isDM ? (inChangeDM ? styles.popUpChangeDMEditWindow : (changePermissions ? styles.permissionsWindow : styles.popUpDMEditWindow)) : styles.popUpEditWindow}
+                >
+                    <View
+                        style = {styles.horzRow}
+                    >
+                        <Dialog.Title style={styles.popUpTitle}>
+                            {inChangeDM ? "Change this group's Dungeon Master (DM)" : userPermissions ? "Change player characters' permissions" : "Settings"}
+                        </Dialog.Title>
+
+                        <IconButton
+                            icon="close" //Getting the back icon image
+                            size={36} //Setting the size
+                            color="#a60000" //And the color
+                            style = {styles.exitButton}
+                            onPress={() => {
+                                setInChangeDM(false);
+                                setChangePermissions(false);
+                                hideDialog()
+                            }}
+                        />
+                    </View>
+                    <Dialog.Actions>
+                        <View style = {isDM ? styles.centerViewDM : styles.centerView}>
+                            {inChangeDM && items != null ?
+                                <View style = {styles.dropdown}>
+                                    <Text
+                                        style = {styles.changeDMWarning}
+                                    >
+                                        Please note that a group can only have one DM. Therefore changing the DM to another group member means you will become a player
+                                        character and will have the default player permissions.
+                                    </Text>
+                                    {Platform.OS === 'web' ?
+                                        <Picker
+                                            selectedValue={newDM}
+                                            onValueChange={(itemValue, itemIndex) => {
+                                                setNewDM(itemValue)
+                                            }}
+                                            style={styles.totalDropdownStyle}
+                                        >
+                                            {
+                                                itemsWeb.map((mem) => {
+                                                    return (
+                                                        <Picker.Item label={mem} value={mem}/>
+                                                    );
+                                                })
+                                            }
+                                        </Picker>
+                                        :
+                                        <View style = {{marginTop: screenHeight * 0.015}}>
+                                            <DropDown
+                                                label={"Please select user..."}
+                                                list={items}
+                                                visible={showDropDown}
+                                                showDropDown={() => {
+                                                    setShowDropDown(true);
+                                                }}
+                                                onDismiss={() => setShowDropDown(false)}
+                                                dropDownStyle={styles.shareDropdown}
+                                                setValue={setNewDM}
+                                                value={newDM}
+                                            />
+                                        </View>
+                                    }
+                                </View>
+                                :
+                                null
+                            }
+                            <ButtonContainer/>
+                        </View>
+                    </Dialog.Actions>
+                </Dialog>
+            </Portal>
+            <Portal>
+                <Dialog
+                    visible={imageVisible}
+                    onDismiss={hideImageDialog}
+                    style = {styles.fullSizeWindow}
+                >
+                    <View style = {styles.headingRow}>
+                        <View style = {styles.centerFSImageTitle}>
+                            <Title
+                                style = {styles.helpTitle}
+                            >
+                                {nameToShow !== "" ? nameToShow : ""}
+                            </Title>
+                        </View>
+                        <IconButton
+                            icon="close" //Getting the back icon image
+                            size={38} //Setting the size
+                            color="#a60000" //And the color
+                            style = {styles.exitButtonWeb}
+                            onPress={() => {
+                                hideImageDialog()
+                            }} //When clicked on make it go back to the previous route
+                        />
+                    </View>
+                    <Image
+                        source={imageToShow !== "" ? {uri: imageToShow} : {uri: ""}}
+                        style={styles.fullSizeImage}
+                    />
+                    <View/>
+                </Dialog>
+            </Portal>
+        </Provider>
     );
   }
   else {
@@ -264,6 +573,7 @@ export default function DMScreen({route, navigation}) {
                       keyExtractor={(item) => item._id}
                       renderItem={({ item }) => (
                           <CharacterCard
+                              isDM={isDM}
                               character={item}
                               index={index++}
                               groupRef={groupRef}
@@ -283,27 +593,78 @@ export default function DMScreen({route, navigation}) {
                   <Portal>
                     <Dialog
                         visible={visible}
-                        onDismiss={hideDialog}
-                        style={isDM ? styles.popUpDMEditWindow : styles.popUpEditWindow}
+                        onDismiss={() => {
+                            setInChangeDM(false);
+                            setChangePermissions(false);
+                            hideDialog();
+                        }}
+                        style={isDM ? (inChangeDM ? styles.popUpChangeDMEditWindow : (changePermissions ? styles.permissionsWindow : styles.popUpDMEditWindow)) : styles.popUpEditWindow}
                     >
                         <View
                             style = {styles.horzRow}
                         >
                               <Dialog.Title style={styles.popUpTitle}>
-                                Settings
+                                  {inChangeDM ? "Change this group's Dungeon Master (DM)" : userPermissions ? "Change player characters' permissions" : "Settings"}
                               </Dialog.Title>
+
                             <IconButton
-                                icon="keyboard-backspace" //Getting the back icon image
+                                icon="close" //Getting the back icon image
                                 size={36} //Setting the size
-                                color="#6646ee" //And the color
-                                style = {styles.backButton}
+                                color="#a60000" //And the color
+                                style = {styles.exitButton}
                                 onPress={() => {
+                                    setInChangeDM(false);
+                                    setChangePermissions(false);
                                     hideDialog()
                                 }}
                             />
                         </View>
                       <Dialog.Actions>
                           <View style = {isDM ? styles.centerViewDM : styles.centerView}>
+                              {inChangeDM && items != null ?
+                                  <View style = {styles.dropdown}>
+                                      <Text
+                                          style = {styles.changeDMWarning}
+                                      >
+                                          Please note that a group can only have one DM. Therefore changing the DM to another group member means you will become a player
+                                          character and will have the default player permissions.
+                                      </Text>
+                                      {Platform.OS === 'web' ?
+                                          <Picker
+                                              selectedValue={newDM}
+                                              onValueChange={(itemValue, itemIndex) => {
+                                                  setNewDM(itemValue)
+                                              }}
+                                              style={styles.totalDropdownStyle}
+                                          >
+                                              {
+                                                  itemsWeb.map((mem) => {
+                                                      return (
+                                                          <Picker.Item label={mem} value={mem}/>
+                                                    );
+                                                  })
+                                              }
+                                          </Picker>
+                                          :
+                                          <View style = {{marginTop: screenHeight * 0.015}}>
+                                                  <DropDown
+                                                      label={"Please select user..."}
+                                                      list={items}
+                                                      visible={showDropDown}
+                                                      showDropDown={() => {
+                                                          setShowDropDown(true);
+                                                      }}
+                                                      onDismiss={() => setShowDropDown(false)}
+                                                      dropDownStyle={styles.shareDropdown}
+                                                      setValue={setNewDM}
+                                                      value={newDM}
+                                                  />
+                                          </View>
+                                      }
+                                  </View>
+                                  :
+                                  null
+                              }
                               <ButtonContainer/>
                           </View>
                       </Dialog.Actions>
@@ -316,15 +677,6 @@ export default function DMScreen({route, navigation}) {
                             style = {styles.fullSizeWindow}
                         >
                             <View style = {styles.headingRow}>
-                                <IconButton
-                                    icon="keyboard-backspace" //Getting the back icon image
-                                    size={38} //Setting the size
-                                    color="#6646ee" //And the color
-                                    style = {styles.FSImageBackButton}
-                                    onPress={() => {
-                                        hideImageDialog()
-                                    }} //When clicked on make it go back to the previous route
-                                />
                                 <View style = {styles.centerFSImageTitle}>
                                     <Title
                                         style = {styles.helpTitle}
@@ -332,6 +684,15 @@ export default function DMScreen({route, navigation}) {
                                         {nameToShow !== "" ? nameToShow : ""}
                                     </Title>
                                 </View>
+                                <IconButton
+                                    icon="close" //Getting the back icon image
+                                    size={38} //Setting the size
+                                    color="#a60000" //And the color
+                                    style = {styles.exitButtonWeb}
+                                    onPress={() => {
+                                        hideImageDialog()
+                                    }} //When clicked on make it go back to the previous route
+                                />
                             </View>
                             <Image
                                 source={imageToShow !== "" ? {uri: imageToShow} : {uri: ""}}
@@ -347,6 +708,8 @@ export default function DMScreen({route, navigation}) {
                   navigation={navigation}
                   groupRef={groupRef}
                   itemsT={items}
+                  isDM={isDM}
+                  userPermissions={userPermissions}
                   showImage={(image, name) => {
                       setImageToShow(image);
                       setNameToShow(name);
@@ -417,6 +780,56 @@ DMScreen.navigationOptions = {
 };
 
 const styles = StyleSheet.create({
+    permissionsWindow: {
+        width: "50%",
+        alignSelf: 'center',
+        marginTop: screenHeight * -0.07,
+        height: "53%"
+    },
+    checkboxContainer: {
+        flexDirection: 'row',
+        alignSelf: 'center'
+    },
+    checkboxText: {
+        marginTop: screenHeight * 0.0079787234042553,
+        marginLeft: screenWidth * 0.0045011252813203,
+    },
+    changePermissionsContainer: {
+        alignSelf: 'center',
+        flexDirection: 'column',
+        marginTop: screenHeight * -0.105,
+    },
+    totalDropdownStyle: {
+        marginTop: screenHeight * 0.048
+    },
+    shareDropdown: {
+        marginTop: screenHeight * -0.020363829787234
+    },
+    buttonGap: {
+        width: screenWidth * 0.0390037509377344
+    },
+    dropdown: {
+        alignSelf: 'center',
+        width: "85%",
+        marginTop: screenHeight * 0.05
+    },
+    dmSubmitButtonContainer: {
+        flexDirection: 'row',
+        marginTop: screenHeight * 0.02,
+        alignSelf: 'center'
+    },
+    dmSubmitButtonContainerWeb: {
+        flexDirection: 'row',
+        marginTop: screenHeight * 0.04,
+        alignSelf: 'center'
+    },
+    changeDMWarning: {
+        textAlign: 'center',
+        marginTop: screenHeight * -0.113
+    },
+    dmButtonContainer: {
+      marginTop: screenHeight * -0.06
+    },
     fullSizeWindow: {
         width: screenWidth * 0.973,
         height: screenHeight * 0.90,
@@ -463,12 +876,21 @@ const styles = StyleSheet.create({
     popUpEditButtons: {
         marginBottom: screenHeight * 0.015,
         alignSelf: 'center',
-        width: '55%'
+        width: '70%'
     },
     backButton: {
         position: 'absolute',
-        left: 10,
-        top: 5
+        left: screenWidth * 0.0075018754688672,
+        top: screenHeight * 0.0066489361702128
+    },
+    exitButton: {
+        position: 'absolute',
+        right: screenWidth * -0.005,
+        top: screenHeight * -0.014
+    },
+    exitButtonWeb: {
+        marginRight: screenWidth * -0.001,
+        marginTop: screenHeight * -0.023
     },
     horzRow: {
         height: "50%",
@@ -487,7 +909,13 @@ const styles = StyleSheet.create({
         width: "50%",
         alignSelf: 'center',
         marginTop: screenHeight * -0.07,
-        height: "33%"
+        height: "46%"
+    },
+    popUpChangeDMEditWindow: {
+        width: "50%",
+        alignSelf: 'center',
+        marginTop: screenHeight * -0.07,
+        height: "42.3%"
     },
   gap: {
     height: screenHeight * 0.398936170212766

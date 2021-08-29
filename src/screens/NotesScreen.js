@@ -4,6 +4,7 @@ import colors from '../utils/colors'; //Getting colors we are using for the app
 import Spinner from '../components/Spinner'; //Spinner icon that shows
 import {StyleSheet, View, FlatList, Dimensions, ScrollView} from 'react-native'; //FlatList for viewing things in a list, View and Stylesheet we know too
 import DropDown from "react-native-paper-dropdown";
+import { useRoute } from '@react-navigation/native';
 //Importing everything we need from react native paper. FAB stands for floating action button (represents the primary action in the screen). Portal is for rendering a component at
 //a different place in the parent (component) tree.
 import {
@@ -22,9 +23,7 @@ global.screenHeight = Dimensions.get("window").height;
 
 export default function NotesScreen({navigation, route}) {
     const {user} = useContext(AuthUserContext);
-    const {group} = route.params;
     const [showDropDown, setShowDropDown] = useState(false);
-    const groupRef = firebase.firestore().collection('groups').doc(group._id);
     const [notes, setNotes] = useState([]); //Notes
     const [visible, setVisible] = useState(false); //Whether the data is loading
     const [noShareVisible, setNoShareVisible] = useState(false); //Whether the data is loading
@@ -41,23 +40,32 @@ export default function NotesScreen({navigation, route}) {
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', e => {
             setRecipients("")
-            groupRef.get().then((snapshot) => {
+            route.params.groupRef.get().then((snapshot) => {
                 setMembers(snapshot.get('members'))
             })
             hideDialog()
-            groupRef.collection('notes').onSnapshot(
+            route.params.groupRef.collection('notes').onSnapshot(
                 //Pretty much gets a snapshot of the notes from the currently looked at character
                 (querySnapshot) => {
                     //Query this snapshot
                     //Pretty much gets each element from docs using map and using map applies the function below. The function gets the id from the item id and gets the data too using data().
                     let notes = []
                     querySnapshot.docs.map((doc) => {
-                        if (doc.get('members').includes(user.toJSON().email)) {
+                        if (route.params.isDM || route.params.userPermissions.viewAllNotes) {
                             const data = {
                                 _id: doc.id,
                                 ...doc.data(),
                             };
                             notes.push(data)
+                        }
+                        else {
+                            if (doc.get('members').includes(user.toJSON().email)) {
+                                const data = {
+                                    _id: doc.id,
+                                    ...doc.data(),
+                                };
+                                notes.push(data)
+                            }
                         }
                     });
                     //Sets notes to this new array that was made using map (the array contains the id and the data)
@@ -96,9 +104,12 @@ export default function NotesScreen({navigation, route}) {
                             <NoteCard
                                 title={item.title}
                                 note={item}
+                                user={user}
+                                isDM={route.params.isDM}
+                                userPermissions={route.params.userPermissions}
                                 index = {index++}
                                 content={item.content}
-                                groupRef = {groupRef}
+                                groupRef = {route.params.groupRef}
                                 navigation = {navigation}
                                 onChange = {updateNote}
                                 shareNote = { (noteToShare) => {
@@ -137,13 +148,14 @@ export default function NotesScreen({navigation, route}) {
                     style={styles.fab}
                      small icon="plus"
                      onPress={() => {
-                         groupRef
+                         route.params.groupRef
                              .collection('notes')
                              .add({
                                  //Add the title and the content
                                  title: "New Note",
                                  content: "",
-                                 members: new Array(user.toJSON().email)
+                                 members: new Array(user.toJSON().email),
+                                 creator: user.toJSON().email,
                              })
                          //navigation.navigate('AddNote', {groupRef: groupRef})
                      }} />
@@ -181,7 +193,7 @@ export default function NotesScreen({navigation, route}) {
                                     onPress={() => {
                                         const peopleToShare = recipients.split(',')
                                         for (let i = 1; i < peopleToShare.length; i++) {
-                                            groupRef.collection('notes').doc(noteToS.note._id).update({
+                                            route.params.groupRef.collection('notes').doc(noteToS.note._id).update({
                                                 members: firebase.firestore.FieldValue.arrayUnion(peopleToShare[i])
                                             })
                                         }

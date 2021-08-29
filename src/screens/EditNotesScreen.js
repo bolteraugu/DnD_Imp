@@ -238,15 +238,6 @@ export default function EditNotesScreen({navigation, route}) {
                     style = {styles.faqWindow}
                 >
                     <View style = {styles.headingRow}>
-                        <IconButton
-                            icon="keyboard-backspace" //Getting the back icon image
-                            size={36} //Setting the size
-                            color="#6646ee" //And the color
-                            style = {styles.backButton}
-                            onPress={() => {
-                                hideHelpDialog()
-                            }}
-                        />
                         <View style = {styles.centerTitle}>
                             <Title
                                 style = {styles.helpTitle}
@@ -254,6 +245,15 @@ export default function EditNotesScreen({navigation, route}) {
                                 Information about Editing Notes
                             </Title>
                         </View>
+                        <IconButton
+                            icon="close" //Getting the back icon image
+                            size={36} //Setting the size
+                            color="#a60000" //And the color
+                            style = {styles.exitButton}
+                            onPress={() => {
+                                hideHelpDialog()
+                            }}
+                        />
                     </View>
                     <Text style = {styles.body}>
                         When editing the notes content, whatever you write will be parsed as HTML. To write text in the note without any stylisation you don't need to write any HTML code
@@ -323,6 +323,10 @@ export default function EditNotesScreen({navigation, route}) {
 }
 
 const styles = StyleSheet.create({
+    exitButton: {
+        marginRight: screenWidth * -0.001,
+        marginTop: screenHeight * -0.037
+    },
     body: {
         marginTop: screenHeight * 0.05,
         marginLeft: screenWidth * 0.02,

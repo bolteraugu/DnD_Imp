@@ -69,7 +69,9 @@ export default function AppStack({navigation}) {
                         icon="note-multiple"
                         size={28}
                         color="#ffffff"
-                        onPress={() => navigation.navigate('Notes', {group: route.params.group})}
+                        onPress={() => {
+                            global.navigateToNotes();
+                        }}
                     />
                     <IconButton
                         icon="cog"

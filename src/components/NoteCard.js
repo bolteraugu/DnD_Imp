@@ -6,8 +6,7 @@ import {AuthUserContext} from "../navigation/AuthUserProvider";
 global.screenWidth = Dimensions.get("window").width;
 global.screenHeight = Dimensions.get("window").height;
 
-export default function NoteCard({title, content, groupRef, note, navigation, onChange, index, shareNote}) {
-    const {user} = useContext(AuthUserContext);
+export default function NoteCard({title, groupRef, note, navigation, onChange, index, shareNote, isDM, user, userPermissions}) {
     function deleteNote() {
         groupRef
             .collection('notes')
@@ -20,39 +19,74 @@ export default function NoteCard({title, content, groupRef, note, navigation, on
 
     return (
         <Card elevation={4} style={styles.card}>
-            <Card.Title title={title} />
-            <Card.Actions>
-                <Button onPress={ () => {
-                    navigation.navigate('ViewNote',
-                        {
-                            groupRef: groupRef,
-                            note: note,
-                        }
-                    )
-                }
-                }>
-                    View
-                </Button>
-                <Button onPress={ () => {
-                    navigation.navigate('EditNote',
-                        {
-                            groupRef: groupRef,
-                            note: note,
-                            executeOnChange: onChange,
-                            index: index
-                        }
-                    )
-                }
-                }>
-                    Edit
-                </Button>
-                <Button onPress={() => {
-                    shareNote({note})
-                }}>
-                    Share
-                </Button>
-                <Button onPress={deleteNote}>Delete</Button>
-            </Card.Actions>
+            <Card.Title title={title}/>
+            {isDM || note.creator === user.toJSON().email || userPermissions.shareNotesSharedToThem ?
+                <Card.Actions>
+                    <Button onPress={() => {
+                        navigation.navigate('ViewNote',
+                            {
+                                groupRef: groupRef,
+                                note: note,
+                            }
+                        )
+                    }
+                    }>
+                        View
+                    </Button>
+                    <Button onPress={() => {
+                        navigation.navigate('EditNote',
+                            {
+                                groupRef: groupRef,
+                                note: note,
+                                executeOnChange: onChange,
+                                index: index
+                            }
+                        )
+                    }
+                    }>
+                        Edit
+                    </Button>
+                    <Button
+                        onPress={() => {
+                            shareNote({note})
+                        }}
+                    >
+                        Share
+                    </Button>
+                    {isDM || note.creator === user.toJSON().email ?
+                        <Button onPress={deleteNote}>Delete</Button>
+                        :
+                        null
+                    }
+
+                </Card.Actions> :
+                <Card.Actions>
+                    <Button onPress={() => {
+                        navigation.navigate('ViewNote',
+                            {
+                                groupRef: groupRef,
+                                note: note,
+                            }
+                        )
+                    }
+                    }>
+                        View
+                    </Button>
+                    <Button onPress={() => {
+                        navigation.navigate('EditNote',
+                            {
+                                groupRef: groupRef,
+                                note: note,
+                                executeOnChange: onChange,
+                                index: index
+                            }
+                        )
+                    }
+                    }>
+                        Edit
+                    </Button>
+                </Card.Actions>
+            }
         </Card>
     );
 }

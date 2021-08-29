@@ -17,7 +17,7 @@ import {
     Dialog,
     Menu,
     Provider,
-    TextInput, Checkbox,
+    TextInput,
 } from 'react-native-paper';
 import {GiftedChat, Bubble, Send, Composer, MessageImage, Message} from 'react-native-gifted-chat';
 import firebase from 'firebase';
@@ -29,7 +29,7 @@ import CheckboxCustom from "./CheckboxCustom";
 global.screenWidth = Dimensions.get("window").width;
 global.screenHeight = Dimensions.get("window").height;
 
-export default function Chat({groupRef, navigation, showImage, itemsT}) {
+export default function Chat({groupRef, navigation, showImage, itemsT, isDM, userPermissions}) {
 
     // eslint-disable-next-line no-unused-vars
     const [recipients, setRecipients] = useState("");
@@ -261,26 +261,29 @@ export default function Chat({groupRef, navigation, showImage, itemsT}) {
                 else {
                     return (
                         <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                            <CheckboxCustom
-                                select={select}
-                                add={() => {
-                                    if (global.selectedMsgs === []) {
-                                        global.selectedMsgs = [props.currentMessage]
-                                    }
-                                    else {
-                                        global.selectedMsgs = [...selectedMsgs, props.currentMessage];
-                                    }
-                                }}
-                                remove={() => {
-                                    let selectedMsgsTemp = [];
-                                    for (let i = 0; i < global.selectedMsgs.length; i++) {
-                                        if(global.selectedMsgs[i]._id !== props.currentMessage._id) {
-                                            selectedMsgsTemp.push(global.selectedMsgs[i]);
+                            {
+                                isDM ? <CheckboxCustom
+                                    select={select}
+                                    add={() => {
+                                        if (global.selectedMsgs === []) {
+                                            global.selectedMsgs = [props.currentMessage]
                                         }
-                                    }
-                                    global.selectedMsgs = selectedMsgsTemp;
-                                }}
-                            />
+                                        else {
+                                            global.selectedMsgs = [...selectedMsgs, props.currentMessage];
+                                        }
+                                    }}
+                                    remove={() => {
+                                        let selectedMsgsTemp = [];
+                                        for (let i = 0; i < global.selectedMsgs.length; i++) {
+                                            if(global.selectedMsgs[i]._id !== props.currentMessage._id) {
+                                                selectedMsgsTemp.push(global.selectedMsgs[i]);
+                                            }
+                                        }
+                                        global.selectedMsgs = selectedMsgsTemp;
+                                    }}
+                                /> : null
+                            }
+
                             <Bubble
                                 {...props}
                                 renderMessageImage={renderMessageImage}
@@ -344,26 +347,29 @@ export default function Chat({groupRef, navigation, showImage, itemsT}) {
                 else {
                     return (
                         <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                            <CheckboxCustom
-                                select={select}
-                                add={() => {
-                                    if (global.selectedMsgs === []) {
-                                        global.selectedMsgs = [props.currentMessage]
-                                    }
-                                    else {
-                                        global.selectedMsgs = [...selectedMsgs, props.currentMessage];
-                                    }
-                                }}
-                                remove={() => {
-                                    let selectedMsgsTemp = [];
-                                    for (let i = 0; i < global.selectedMsgs.length; i++) {
-                                        if(global.selectedMsgs[i]._id !== props.currentMessage._id) {
-                                            selectedMsgsTemp.push(global.selectedMsgs[i]);
-                                        }
-                                    }
-                                    global.selectedMsgs = selectedMsgsTemp;
-                                }}
-                            />
+                            {
+                                isDM ?
+                                    <CheckboxCustom
+                                        select={select}
+                                        add={() => {
+                                            if (global.selectedMsgs === []) {
+                                                global.selectedMsgs = [props.currentMessage]
+                                            }
+                                            else {
+                                                global.selectedMsgs = [...selectedMsgs, props.currentMessage];
+                                            }
+                                        }}
+                                        remove={() => {
+                                            let selectedMsgsTemp = [];
+                                            for (let i = 0; i < global.selectedMsgs.length; i++) {
+                                                if(global.selectedMsgs[i]._id !== props.currentMessage._id) {
+                                                    selectedMsgsTemp.push(global.selectedMsgs[i]);
+                                                }
+                                            }
+                                            global.selectedMsgs = selectedMsgsTemp;
+                                        }}
+                                    /> : null
+                            }
                             <Bubble
                                 {...props}
                                 position={props.currentMessage.user.email === currentUser.email ? 'right' : 'left'}
@@ -572,7 +578,8 @@ export default function Chat({groupRef, navigation, showImage, itemsT}) {
         <Provider>
             <View style={styles.chatContainer}>
                 <View style={styles.recipientsContainer}>
-                    <View style = {styles.dropDownContainer}>
+                    <View style = {isDM || userPermissions.addRecipients ? styles.dropDownContainerDM : styles.dropDownContainer}>
+                        {items != null ?
                         <DropDown
                             label={"Select Recipients..."}
                             list={items}
@@ -583,16 +590,21 @@ export default function Chat({groupRef, navigation, showImage, itemsT}) {
                             dropDownStyle={styles.shareDropdown}
                             setValue={setRecipients}
                             value={recipients}
-                        />
+                        /> : null
+                        }
                     </View>
-                    <IconButton
-                        icon="account-multiple-plus"
-                        size={28}
-                        color="#000"
-                        onPress={() => {
-                            showDialog();
-                        }}
-                    />
+                    {isDM || userPermissions.addRecipients ?
+                        <IconButton
+                            icon="account-multiple-plus"
+                            size={28}
+                            color="#000"
+                            onPress={() => {
+                                showDialog();
+                            }}
+                        />
+                        :
+                        null
+                    }
                     <Portal>
                         <Dialog visible={visible} onDismiss={hideDialog} style = {styles.addWindow}>
                             <Dialog.Title>Add a User to the Group</Dialog.Title>
@@ -613,7 +625,7 @@ export default function Chat({groupRef, navigation, showImage, itemsT}) {
                                                 .update({
                                                     members:
                                                         firebase.firestore.FieldValue.arrayUnion(inputVal),
-                                                    numMembers: firebase.firestore.FieldValue.increment(1),
+                                                        numMembers: firebase.firestore.FieldValue.increment(1),
                                                 }).then(() => {
                                                 groupRef.collection('members').doc(inputVal).set({
                                                     isDM: false,
@@ -622,10 +634,20 @@ export default function Chat({groupRef, navigation, showImage, itemsT}) {
                                             })
                                                 .then(() => {
                                                     hideDialog();
-                                                    let itemsCopy = JSON.parse(JSON.stringify(items));
-                                                    itemsCopy.push({
-                                                        value: inputVal, label: inputVal
-                                                    })
+                                                    let itemsCopy;
+                                                    if (items != null) {
+                                                        itemsCopy = JSON.parse(JSON.stringify(items));
+                                                        itemsCopy.push({
+                                                            value: inputVal, label: inputVal
+                                                        })
+                                                    }
+                                                    else {
+                                                        itemsCopy = [];
+                                                        itemsCopy.push({
+                                                            value: inputVal, label: inputVal
+                                                        });
+                                                    }
+
                                                     setItems(itemsCopy);
                                                     let recipientsValues = recipients.split(',');
                                                     if (members.length === recipientsValues.length) {
@@ -825,6 +847,9 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     dropDownContainer: {
+        width: "98.15%"
+    },
+    dropDownContainerDM: {
         width: "88%"
     },
     dropDownItem: {

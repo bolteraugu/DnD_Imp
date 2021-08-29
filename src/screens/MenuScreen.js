@@ -47,9 +47,14 @@ export default function MenuScreen({navigation}) {
         .firestore()
         .collection('groups')
         .add({
-          name: groupName,
-          members: [user.toJSON().email],
-          numMembers: 1,
+            name: groupName,
+            members: [user.toJSON().email],
+            numMembers: 1,
+            addRecipients: false,
+            viewAllNotes: false,
+            shareNotesSharedToThem: false,
+            deleteOwnCharacters: false,
+            viewAllCharacters: false,
         })
         .then(
           (docRef) => {

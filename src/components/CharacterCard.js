@@ -14,7 +14,8 @@ export default function CharacterCard({
                                           character, index,
                                           onChange,
                                           groupRef,
-                                          navigation
+                                          navigation,
+                                          isDM
                                       }) {
 
     function updateCharacter() {
@@ -250,18 +251,20 @@ export default function CharacterCard({
                             }}
                         />
                         <View style={styles.iconRow}>
-                            <IconButton
-                                icon="delete"
-                                size={28}
-                                color="#000"
-                                style={{width: "50%", marginLeft: screenWidth * 0.01}}
-                                onPress={deleteCharacter} //delete this character
-                            />
+                            {isDM ?
+                                <IconButton
+                                    icon="delete"
+                                    size={28}
+                                    color="#000"
+                                    style={{width: "50%", marginLeft: screenWidth * 0.01}}
+                                    onPress={deleteCharacter} //delete this character
+                                /> : null
+                            }
                             <IconButton
                                 icon="arrow-expand-all"
                                 size={28}
                                 color="#000"
-                                style={{width: "50%", marginLeft: screenWidth * -0.0065}}
+                                style={isDM ? styles.expandIconDM : styles.expandIcon}
                                 onPress={async () => {
                                     navigation.navigate('CharacterSheet', {
                                         screen: 'Main',
@@ -284,6 +287,13 @@ export default function CharacterCard({
 }
 
 const styles = StyleSheet.create({
+    expandIconDM: {
+        width: "50%",
+        marginLeft: screenWidth * -0.0065
+    },
+    expandIcon: {
+        width: "100%"
+    },
     charImage: {
         width: global.screenWidth * 0.0750187546886722,
         height: global.screenWidth * 0.0750187546886722,
