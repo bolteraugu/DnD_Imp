@@ -1,16 +1,16 @@
 import {IconButton, TextInput} from "react-native-paper";
-import React from "react";
+import React, {useContext} from "react";
 import {Surface} from "react-native-paper";
 import {Dimensions, StyleSheet, Text, View, Platform} from "react-native";
 import {Picker} from "@react-native-picker/picker";
+import {AuthUserContext} from "../navigation/AuthUserProvider";
 
 global.screenWidth = Dimensions.get("window").width;
 global.screenHeight = Dimensions.get("window").height;
 
-export default function Armor({
-                                   armor,
-                                   onChange,
-                                   index}) {
+export default function Armor({armor, onChange, index, isDM, userPermissions}) {
+
+    const {user} = useContext(AuthUserContext);
 
     function updateArmor(field, value) {
         if (field === 'name') {
@@ -103,6 +103,7 @@ export default function Armor({
                         <TextInput
                             style={styles.nameContainer}
                             value={armor.name}
+                            editable={isDM || character.assignedTo === user.toJSON().email}
                             placeholder={"Enter name..."}
                             onChangeText={(text) => {
                                 updateArmor('name', text);
@@ -121,6 +122,7 @@ export default function Armor({
                         </View>
                             <Picker
                                 selectedValue={armor.type}
+                                enabled={isDM || character.assignedTo === user.toJSON().email}
                                 onValueChange={(itemValue, itemIndex) => {
                                     updateArmor('type', itemValue);
                                     onChange(index, 'type', itemValue);
@@ -143,6 +145,7 @@ export default function Armor({
                         <TextInput
                             style={styles.costContainer}
                             value={armor.cost}
+                            editable={isDM || character.assignedTo === user.toJSON().email}
                             placeholder={"Enter cost..."}
                             onChangeText={(text) => {
                                 updateArmor('cost', text);
@@ -162,6 +165,7 @@ export default function Armor({
                         <TextInput
                             style={styles.armorClassContainer}
                             value={armor.armor_class}
+                            editable={isDM || character.assignedTo === user.toJSON().email}
                             placeholder={"Enter armor class..."}
                             onChangeText={(text) => {
                                 updateArmor('armor_class', text);
@@ -181,6 +185,7 @@ export default function Armor({
                         <TextInput
                             style={styles.strengthContainer}
                             value={armor.strength}
+                            editable={isDM || character.assignedTo === user.toJSON().email}
                             placeholder={"Enter strength..."}
                             onChangeText={(text) => {
                                 updateArmor('strength', text)
@@ -200,6 +205,7 @@ export default function Armor({
                         <TextInput
                             style={styles.stealthContainer}
                             value={armor.stealth}
+                            editable={isDM || character.assignedTo === user.toJSON().email}
                             placeholder={"Enter stealth..."}
                             onChangeText={(text) => {
                                 updateArmor('stealth', text)
@@ -219,6 +225,7 @@ export default function Armor({
                         <TextInput
                             style={styles.weightContainer}
                             value={armor.weight}
+                            editable={isDM || character.assignedTo === user.toJSON().email}
                             placeholder={"Enter weight..."}
                             onChangeText={(text) => {
                                 updateArmor('weight', text)
@@ -227,13 +234,15 @@ export default function Armor({
                             }
                         />
                     </View>
-                    <IconButton
-                        icon="delete"
-                        size={28}
-                        style={styles.deleteButton}
-                        color="#000"
-                        onPress={deleteArmor} //delete this character
-                    />
+                            <IconButton
+                                icon="delete"
+                                size={28}
+                                disabled={!(isDM || character.assignedTo === user.toJSON().email)}
+                                style={styles.deleteButton}
+                                color="#000"
+                                onPress={deleteArmor} //delete this character
+                            />
+
                 </View>
             </Surface>
         );

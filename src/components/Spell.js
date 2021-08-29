@@ -1,16 +1,15 @@
 import {IconButton, TextInput} from "react-native-paper";
-import React from "react";
+import React, {useContext} from "react";
 import {Surface} from "react-native-paper";
 import {Dimensions, StyleSheet, Text, TextInput as NativeTextInput, View, Platform} from "react-native";
 import {Picker} from "@react-native-picker/picker";
+import {AuthUserContext} from "../navigation/AuthUserProvider";
 
 global.screenWidth = Dimensions.get("window").width;
 global.screenHeight = Dimensions.get("window").height;
 
-export default function Spell({
-                                   spell,
-                                   onChange,
-                                   index}) {
+export default function Spell({spell, onChange, index, isDM, character}) {
+    const {user} = useContext(AuthUserContext);
 
     function updateSpell(field, value) {
         if (field === 'name') {
@@ -103,6 +102,7 @@ export default function Spell({
                         <TextInput
                             style={styles.nameContainer}
                             value={spell.name}
+                            editable={isDM || character.assignedTo === user.toJSON().email}
                             placeholder={"Enter name..."}
                             onChangeText={(text) => {
                                 updateSpell('name', text);
@@ -121,6 +121,7 @@ export default function Spell({
                         </View>
                             <Picker
                                 selectedValue={spell.level}
+                                enabled={isDM || character.assignedTo === user.toJSON().email}
                                 onValueChange = {(itemValue, itemIndex) => {
                                     updateSpell('level', itemValue);
                                     onChange(index, 'level', itemValue);
@@ -151,6 +152,7 @@ export default function Spell({
                         <TextInput
                             style={styles.castingTimeContainer}
                             value={spell.casting_time}
+                            editable={isDM || character.assignedTo === user.toJSON().email}
                             placeholder={"Enter casting time..."}
                             onChangeText={(text) => {
                                 updateSpell('casting_time', text);
@@ -170,6 +172,7 @@ export default function Spell({
                         <TextInput
                             style={styles.rangeContainer}
                             value={spell.range}
+                            editable={isDM || character.assignedTo === user.toJSON().email}
                             placeholder={"Enter range..."}
                             onChangeText={(text) => {
                                 updateSpell('range', text);
@@ -189,6 +192,7 @@ export default function Spell({
                         <TextInput
                             style={styles.componentsContainer}
                             value={spell.components}
+                            editable={isDM || character.assignedTo === user.toJSON().email}
                             placeholder={"Enter components..."}
                             onChangeText={(text) => {
                                 updateSpell('components', text)
@@ -208,6 +212,7 @@ export default function Spell({
                         <TextInput
                             style={styles.durationContainer}
                             value={spell.duration}
+                            editable={isDM || character.assignedTo === user.toJSON().email}
                             placeholder={"Enter duration..."}
                             onChangeText={(text) => {
                                 updateSpell('duration', text);
@@ -227,6 +232,7 @@ export default function Spell({
                         <TextInput
                             style={styles.descriptionContainer}
                             value={spell.description}
+                            editable={isDM || character.assignedTo === user.toJSON().email}
                             multiline={true}
                             render={props => (
                                 <NativeTextInput
@@ -257,6 +263,7 @@ export default function Spell({
                     <IconButton
                         icon="delete"
                         size={28}
+                        disabled={!(isDM || character.assignedTo === user.toJSON().email)}
                         style = {styles.deleteButton}
                         color="#000"
                         onPress={deleteSpell} //delete this character

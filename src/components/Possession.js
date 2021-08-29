@@ -1,15 +1,15 @@
 import {IconButton, TextInput} from "react-native-paper";
-import React from "react";
+import React, {useContext} from "react";
 import {Surface} from "react-native-paper";
 import {Dimensions, StyleSheet, Text, TextInput as NativeTextInput, View} from "react-native";
+import {AuthUserContext} from "../navigation/AuthUserProvider";
 
 global.screenWidth = Dimensions.get("window").width;
 global.screenHeight = Dimensions.get("window").height;
 
-export default function Possession({
-                                   possession,
-                                   onChange,
-                                   index}) {
+export default function Possession({possession, onChange, index, isDM, userPermissions}) {
+
+    const {user} = useContext(AuthUserContext);
 
     function updatePossession(field, value) {
         if (field === 'name') {
@@ -56,6 +56,7 @@ export default function Possession({
                     <TextInput
                         style={styles.nameContainer}
                         value={possession.name}
+                        editable={isDM || character.assignedTo === user.toJSON().email}
                         placeholder={"Enter name..."}
                         onChangeText={(text) => {
                             updatePossession('name', text);
@@ -76,6 +77,7 @@ export default function Possession({
                         style={styles.descriptionContainer}
                         value={possession.description}
                         placeholder={"Enter description..."}
+                        editable={isDM || character.assignedTo === user.toJSON().email}
                         multiline={true}
                         render={props => (
                             <NativeTextInput
@@ -94,6 +96,7 @@ export default function Possession({
                                         : null,
                                 ]}
                                 placeholder={"Enter description..."}
+                                editable={isDM || character.assignedTo === user.toJSON().email}
                             />
                         )}
                         onChangeText={(text) => {
@@ -103,13 +106,15 @@ export default function Possession({
                         }
                     />
                 </View>
-                <IconButton
-                    icon="delete"
-                    size={28}
-                    style = {styles.deleteButton}
-                    color="#000"
-                    onPress={deletePossession} //delete this character
-                />
+                        <IconButton
+                            icon="delete"
+                            size={28}
+                            style = {styles.deleteButton}
+                            disabled={!(isDM || character.assignedTo === user.toJSON().email)}
+                            color="#000"
+                            onPress={deletePossession} //delete this character
+                        />
+
             </View>
         </Surface>
     );

@@ -1,5 +1,5 @@
 import {Button, Text, TextInput} from "react-native-paper";
-import React, {useEffect, useState} from "react"
+import React, {useContext, useEffect, useState} from "react"
 import {createMaterialTopTabNavigator} from "@react-navigation/material-top-tabs";
 import {
     View,
@@ -14,6 +14,7 @@ import Spinner from "../components/Spinner";
 import Weapon from "../components/Weapon";
 import Armor from "../components/Armor";
 import Possession from "../components/Possession";
+import {AuthUserContext} from "../navigation/AuthUserProvider";
 
 global.screenWidth = Dimensions.get("window").width;
 global.screenHeight = Dimensions.get("window").height;
@@ -25,6 +26,7 @@ export default function InventoryScreen({route, navigation}) {
     const [weapons, setWeapons] = useState([]);
     const [armor, setArmor] = useState([]);
     const [possessions, setPossessions] = useState([]);
+    const {user} = useContext(AuthUserContext);
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', e => {
@@ -183,6 +185,7 @@ export default function InventoryScreen({route, navigation}) {
                                         style = {styles.currencyTypeInput}
                                         underlineColor="transparent"
                                         keyboardType="number-pad"
+                                        editable={global.isDM || character.assignedTo === user.toJSON().email}
                                         value = {String(character.CP)}
                                         onChangeText={(text) => {
                                             pushChange(global.index, 'CP', text, true);
@@ -201,6 +204,7 @@ export default function InventoryScreen({route, navigation}) {
                                         style = {styles.currencyTypeInput}
                                         underlineColor="transparent"
                                         keyboardType="number-pad"
+                                        editable={global.isDM || character.assignedTo === user.toJSON().email}
                                         value = {String(character.SP)}
                                         onChangeText={(text) => {
                                             pushChange(global.index, 'SP', text, true);
@@ -219,6 +223,7 @@ export default function InventoryScreen({route, navigation}) {
                                         style = {styles.currencyTypeInput}
                                         underlineColor="transparent"
                                         keyboardType="number-pad"
+                                        editable={global.isDM || character.assignedTo === user.toJSON().email}
                                         value = {String(character.EP)}
                                         onChangeText={(text) => {
                                             pushChange(global.index, 'EP', text, true);
@@ -237,6 +242,7 @@ export default function InventoryScreen({route, navigation}) {
                                         style = {styles.currencyTypeInput}
                                         underlineColor="transparent"
                                         keyboardType="number-pad"
+                                        editable={global.isDM || character.assignedTo === user.toJSON().email}
                                         value = {String(character.GP)}
                                         onChangeText={(text) => {
                                             pushChange(global.index, 'GP', text, true);
@@ -255,6 +261,7 @@ export default function InventoryScreen({route, navigation}) {
                                         style = {styles.currencyTypeInput}
                                         underlineColor="transparent"
                                         keyboardType="number-pad"
+                                        editable={global.isDM || character.assignedTo === user.toJSON().email}
                                         value = {String(character.PP)}
                                         onChangeText={(text) => {
                                             pushChange(global.index, 'PP', text, true);
@@ -279,6 +286,8 @@ export default function InventoryScreen({route, navigation}) {
                                     <Weapon
                                         index={weaponIndex++}
                                         weapon={item}
+                                        isDM={global.isDM}
+                                        character={character}
                                         onChange={updateWeapon}
                                     />
                                 )}
@@ -287,6 +296,7 @@ export default function InventoryScreen({route, navigation}) {
                                         <Button
                                             mode="contained"
                                             style = {styles.addButton}
+                                            disabled = {!(global.isDM || character.assignedTo === user.toJSON().email)}
                                             onPress={() => {navigation.navigate('AddWeapon')}}>
                                             Add A New Weapon
                                         </Button>
@@ -308,6 +318,8 @@ export default function InventoryScreen({route, navigation}) {
                                     <Armor
                                         index={armorIndex++}
                                         armor={item}
+                                        character={character}
+                                        isDM={global.isDM}
                                         onChange={updateArmor}
                                     />
                                 )}
@@ -316,6 +328,7 @@ export default function InventoryScreen({route, navigation}) {
                                         <Button
                                             mode="contained"
                                             style = {styles.addButton}
+                                            disabled = {!(global.isDM || character.assignedTo === user.toJSON().email)}
                                             onPress={() => {navigation.navigate('AddArmor')}}>
                                             Add New Armor
                                         </Button>
@@ -337,6 +350,8 @@ export default function InventoryScreen({route, navigation}) {
                                     <Possession
                                         index={possessionIndex++}
                                         possession={item}
+                                        character={character}
+                                        isDM={global.isDM}
                                         onChange={updatePossession}
                                     />
                                 )}
@@ -345,6 +360,7 @@ export default function InventoryScreen({route, navigation}) {
                                         <Button
                                             mode="contained"
                                             style = {styles.addPossessionButton}
+                                            disabled = {!(global.isDM || character.assignedTo === user.toJSON().email)}
                                             onPress={() => {navigation.navigate('AddPossession')}}>
                                             Add A New Possession
                                         </Button>

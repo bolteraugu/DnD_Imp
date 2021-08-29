@@ -1,15 +1,15 @@
 import {IconButton, TextInput} from "react-native-paper";
-import React from "react";
+import React, {useContext} from "react";
 import {Surface} from "react-native-paper";
 import {Dimensions, StyleSheet, Text, View} from "react-native";
+import {AuthUserContext} from "../navigation/AuthUserProvider";
 
 global.screenWidth = Dimensions.get("window").width;
 global.screenHeight = Dimensions.get("window").height;
 
-export default function Weapon({
-                                   weapon,
-                                   onChange,
-                                   index}) {
+export default function Weapon({weapon, onChange, index, isDM}) {
+
+    const {user} = useContext(AuthUserContext);
 
     function updateWeapon(field, value) {
         if (field === 'name') {
@@ -83,6 +83,7 @@ export default function Weapon({
                     <TextInput
                         style={styles.nameContainer}
                         value={weapon.name}
+                        editable={isDM || character.assignedTo === user.toJSON().email}
                         placeholder={"Enter name..."}
                         onChangeText={(text) => {
                             updateWeapon('name', text);
@@ -102,6 +103,7 @@ export default function Weapon({
                     <TextInput
                         style={styles.costContainer}
                         value={weapon.cost}
+                        editable={isDM || character.assignedTo === user.toJSON().email}
                         placeholder={"Enter cost..."}
                         onChangeText={(text) => {
                             updateWeapon('cost', text);
@@ -121,6 +123,7 @@ export default function Weapon({
                     <TextInput
                         style={styles.damageContainer}
                         value={weapon.damage}
+                        editable={isDM || character.assignedTo === user.toJSON().email}
                         placeholder={"Enter damage..."}
                         onChangeText={(text) => {
                             updateWeapon('damage', text);
@@ -140,6 +143,7 @@ export default function Weapon({
                     <TextInput
                         style={styles.weightContainer}
                         value={weapon.weight}
+                        editable={isDM || character.assignedTo === user.toJSON().email}
                         placeholder={"Enter weight..."}
                         onChangeText={(text) => {
                             updateWeapon('weight', text);
@@ -159,6 +163,7 @@ export default function Weapon({
                     <TextInput
                         style={styles.propertiesContainer}
                         value={weapon.properties}
+                        editable={isDM || character.assignedTo === user.toJSON().email}
                         placeholder={"Enter properties..."}
                         onChangeText={(text) => {
                             updateWeapon('properties', text)
@@ -167,13 +172,15 @@ export default function Weapon({
                         }
                     />
                 </View>
-                <IconButton
-                    icon="delete"
-                    size={28}
-                    style = {styles.deleteButton}
-                    color="#000"
-                    onPress={deleteWeapon} //delete this character
-                />
+                    <IconButton
+                        icon="delete"
+                        size={28}
+                        style = {styles.deleteButton}
+                        disabled={!(isDM || character.assignedTo === user.toJSON().email)}
+                        color="#000"
+                        onPress={deleteWeapon} //delete this character
+                    />
+
             </View>
         </Surface>
     );

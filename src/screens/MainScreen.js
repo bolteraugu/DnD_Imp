@@ -9,18 +9,21 @@ import {
 import {TextInput, Text, Button} from "react-native-paper"; //Probably will need text...
 import colors from '../utils/colors';
 import Spinner from "../components/Spinner";
+import {AuthUserContext} from "../navigation/AuthUserProvider";
 
 export default function MainScreen({route, navigation}) {
     const [character, setCharacter] = useState(route.params.character);
     const [loading, setLoading] = useState(true);
+    const {user} = useContext(AuthUserContext);
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', e => {
             setLoading(true)
             global.charaRef = route.params.charRef;
-            global.character = route.params.character
-            global.onFSChange = route.params.onFSChange
-            global.index = route.params.index
+            global.character = route.params.character;
+            global.onFSChange = route.params.onFSChange;
+            global.index = route.params.index;
+            global.isDM = route.params.isDM;
             global.charaRef.onSnapshot((snapshot) => {
                 setCharacter(snapshot.data())
             })
@@ -568,6 +571,7 @@ export default function MainScreen({route, navigation}) {
                 <Button
                     mode="contained"
                     style={styles.changeImageStyle}
+                    disabled = {!(global.isDM || character.assignedTo === user.toJSON().email)}
                     onPress={() =>
                         navigation.navigate('ImageSelector', {
                             comingFrom: "MainScreen",
@@ -589,6 +593,7 @@ export default function MainScreen({route, navigation}) {
                             <TextInput
                                 style={styles.abilityScoresStyle}
                                 keyboardType="number-pad"
+                                editable={global.isDM || character.assignedTo === user.toJSON().email}
                                 underlineColor="transparent"
                                 value={String(character.strength)}
                                 onChangeText={(text) => {
@@ -607,6 +612,7 @@ export default function MainScreen({route, navigation}) {
                             <TextInput
                                 style={styles.abilityScoresStyle}
                                 keyboardType="number-pad"
+                                editable={global.isDM || character.assignedTo === user.toJSON().email}
                                 underlineColor="transparent"
                                 value={String(character.constitution)}
                                 onChangeText={(text) => {
@@ -625,6 +631,7 @@ export default function MainScreen({route, navigation}) {
                             <TextInput
                                 style={styles.abilityScoresStyle}
                                 keyboardType="number-pad"
+                                editable={global.isDM || character.assignedTo === user.toJSON().email}
                                 underlineColor="transparent"
                                 value={String(character.wisdom)}
                                 onChangeText={(text) => {
@@ -645,6 +652,7 @@ export default function MainScreen({route, navigation}) {
                             <TextInput
                                 style={styles.abilityScoresStyle}
                                 keyboardType="number-pad"
+                                editable={global.isDM || character.assignedTo === user.toJSON().email}
                                 underlineColor="transparent"
                                 value={String(character.dexterity)}
                                 onChangeText={(text) => {
@@ -663,6 +671,7 @@ export default function MainScreen({route, navigation}) {
                             <TextInput
                                 style={styles.abilityScoresStyle}
                                 keyboardType="number-pad"
+                                editable={global.isDM || character.assignedTo === user.toJSON().email}
                                 underlineColor="transparent"
                                 value={String(character.intelligence)}
                                 onChangeText={(text) => {
@@ -681,6 +690,7 @@ export default function MainScreen({route, navigation}) {
                             <TextInput
                                 style={styles.abilityScoresStyle}
                                 keyboardType="number-pad"
+                                editable={global.isDM || character.assignedTo === user.toJSON().email}
                                 underlineColor="transparent"
                                 value={String(character.charisma)}
                                 onChangeText={(text) => {
@@ -701,6 +711,7 @@ export default function MainScreen({route, navigation}) {
                     <TextInput
                         style={styles.proficiencyStyle}
                         keyboardType="number-pad"
+                        editable={global.isDM || character.assignedTo === user.toJSON().email}
                         underlineColor="transparent"
                         value={String(character.proficiency)}
                         onChangeText={(text) => {
@@ -722,6 +733,7 @@ export default function MainScreen({route, navigation}) {
                         style={styles.name}
                         value={character.name}
                         underlineColor="transparent"
+                        editable={global.isDM || character.assignedTo === user.toJSON().email}
                         placeholder={"Enter name..."}
                         onChangeText={(text) => {
                             route.params.onFSChange(route.params.index,'name', text, false);
@@ -740,6 +752,7 @@ export default function MainScreen({route, navigation}) {
                         style={styles.race}
                         value={character.char_race}
                         underlineColor="transparent"
+                        editable={global.isDM || character.assignedTo === user.toJSON().email}
                         placeholder={"Enter race..."}
                         onChangeText={(text) => {
                             console.log(text);
@@ -759,6 +772,7 @@ export default function MainScreen({route, navigation}) {
                         style={styles.class}
                         value={character.char_class}
                         underlineColor="transparent"
+                        editable={global.isDM || character.assignedTo === user.toJSON().email}
                         placeholder={"Enter class..."}
                         onChangeText={(text) => {
                             route.params.onFSChange(route.params.index,'char_class', text, false);
@@ -776,6 +790,7 @@ export default function MainScreen({route, navigation}) {
                     <TextInput
                         style={styles.levelCurrentHPHitDice}
                         keyboardType="number-pad"
+                        editable={global.isDM || character.assignedTo === user.toJSON().email}
                         underlineColor="transparent"
                         value={String(character.level)}
                         onChangeText={(text) => {
@@ -794,6 +809,7 @@ export default function MainScreen({route, navigation}) {
                     <TextInput
                         style={styles.levelCurrentHPHitDice}
                         keyboardType="number-pad"
+                        editable={global.isDM || character.assignedTo === user.toJSON().email}
                         underlineColor="transparent"
                         value={String(character.current_hp)}
                         onChangeText={(text) => {
@@ -813,6 +829,7 @@ export default function MainScreen({route, navigation}) {
                         style={styles.levelCurrentHPHitDice}
                         value={character.hit_dice}
                         underlineColor="transparent"
+                        editable={global.isDM || character.assignedTo === user.toJSON().email}
                         onChangeText={(text) => {
                             route.params.onFSChange(route.params.index,'hit_dice', text, false);
                             updateCharacterLocal('hit_dice', text, false);
@@ -831,6 +848,7 @@ export default function MainScreen({route, navigation}) {
                     <TextInput
                         style={styles.levelCurrentHPHitDice}
                         keyboardType="number-pad"
+                        editable={global.isDM || character.assignedTo === user.toJSON().email}
                         underlineColor="transparent"
                         value={String(character.armor_class)}
                         onChangeText={(text) => {
@@ -849,6 +867,7 @@ export default function MainScreen({route, navigation}) {
                     <TextInput
                         style={styles.levelCurrentHPHitDice}
                         keyboardType="number-pad"
+                        editable={global.isDM || character.assignedTo === user.toJSON().email}
                         underlineColor="transparent"
                         value={String(character.initiative)}
                         onChangeText={(text) => {
@@ -867,6 +886,7 @@ export default function MainScreen({route, navigation}) {
                     <TextInput
                         style={styles.levelCurrentHPHitDice}
                         keyboardType="number-pad"
+                        editable={global.isDM || character.assignedTo === user.toJSON().email}
                         value={String(character.speed)}
                         underlineColor="transparent"
                         onChangeText={(text) => {
@@ -886,6 +906,7 @@ export default function MainScreen({route, navigation}) {
                         style= {styles.class}
                         value={character.alignment}
                         underlineColor="transparent"
+                        editable={global.isDM || character.assignedTo === user.toJSON().email}
                         placeholder={"Enter alignment..."}
                         onChangeText={(text) => {
                             route.params.onFSChange(route.params.index,'alignment', text, false);
@@ -917,6 +938,7 @@ export default function MainScreen({route, navigation}) {
                             <TextInput
                                 style={styles.passiveInputs}
                                 keyboardType="number-pad"
+                                editable={global.isDM || character.assignedTo === user.toJSON().email}
                                 underlineColor="transparent"
                                 value={String(character.passive_perception)}
                                 onChangeText={(text) => {
@@ -935,6 +957,7 @@ export default function MainScreen({route, navigation}) {
                             <TextInput
                                 style={styles.passiveInputs}
                                 keyboardType="number-pad"
+                                editable={global.isDM || character.assignedTo === user.toJSON().email}
                                 underlineColor="transparent"
                                 value={String(character.passive_investigation)}
                                 onChangeText={(text) => {
@@ -953,6 +976,7 @@ export default function MainScreen({route, navigation}) {
                             <TextInput
                                 style={styles.passiveInputs}
                                 keyboardType="number-pad"
+                                editable={global.isDM || character.assignedTo === user.toJSON().email}
                                 underlineColor="transparent"
                                 value={String(character.passive_insight)}
                                 onChangeText={(text) => {
@@ -969,6 +993,7 @@ export default function MainScreen({route, navigation}) {
                         <TextInput
                             style={styles.maxHPInputs}
                             keyboardType="number-pad"
+                            editable={global.isDM || character.assignedTo === user.toJSON().email}
                             underlineColor="transparent"
                             value={String(character.max_hp)}
                             onChangeText={(text) => {
@@ -987,6 +1012,7 @@ export default function MainScreen({route, navigation}) {
                         <TextInput
                             style={styles.tempHPInputs}
                             keyboardType="number-pad"
+                            editable={global.isDM || character.assignedTo === user.toJSON().email}
                             underlineColor="transparent"
                             value={String(character.temp_hp)}
                             onChangeText={(text) => {
@@ -1026,14 +1052,16 @@ export default function MainScreen({route, navigation}) {
                                             borderRadius: 54,
                                         }}
                                         onPress = {() => {
-                                            if (character.DS_successCircle1  === "#00db79") {
-                                                route.params.onFSChange(route.params.index,'DS_successCircle1', "#ffffff", false);
-                                                updateCharacterLocal('DS_successCircle1', "#ffffff", false);
-                                                updateCharacter('DS_successCircle1', "#ffffff");
-                                            } else {
-                                                route.params.onFSChange(route.params.index,'DS_successCircle1', "#00db79", false);
-                                                updateCharacterLocal('DS_successCircle1', "#00db79", false);
-                                                updateCharacter('DS_successCircle1', "#00db79");
+                                            if (global.isDM || character.assignedTo === user.toJSON().email) {
+                                                if (character.DS_successCircle1  === "#00db79") {
+                                                    route.params.onFSChange(route.params.index,'DS_successCircle1', "#ffffff", false);
+                                                    updateCharacterLocal('DS_successCircle1', "#ffffff", false);
+                                                    updateCharacter('DS_successCircle1', "#ffffff");
+                                                } else {
+                                                    route.params.onFSChange(route.params.index,'DS_successCircle1', "#00db79", false);
+                                                    updateCharacterLocal('DS_successCircle1', "#00db79", false);
+                                                    updateCharacter('DS_successCircle1', "#00db79");
+                                                }
                                             }
                                         }}
                                     />
@@ -1051,15 +1079,16 @@ export default function MainScreen({route, navigation}) {
                                             borderRadius: 54,
                                         }}
                                         onPress = {() => {
-                                            if (character.DS_successCircle2 === "#00db79") {
-                                                route.params.onFSChange(route.params.index,'DS_successCircle2', "#ffffff", false);
-                                                updateCharacterLocal('DS_successCircle2', "#ffffff", false);
-                                                updateCharacter('DS_successCircle2', "#ffffff")
-                                            }
-                                            else {
-                                                route.params.onFSChange(route.params.index,'DS_successCircle2', "#00db79", false);
-                                                updateCharacterLocal('DS_successCircle2', "#00db79", false);
-                                                updateCharacter('DS_successCircle2', "#00db79")
+                                            if (global.isDM || character.assignedTo === user.toJSON().email) {
+                                                if (character.DS_successCircle2 === "#00db79") {
+                                                    route.params.onFSChange(route.params.index, 'DS_successCircle2', "#ffffff", false);
+                                                    updateCharacterLocal('DS_successCircle2', "#ffffff", false);
+                                                    updateCharacter('DS_successCircle2', "#ffffff")
+                                                } else {
+                                                    route.params.onFSChange(route.params.index, 'DS_successCircle2', "#00db79", false);
+                                                    updateCharacterLocal('DS_successCircle2', "#00db79", false);
+                                                    updateCharacter('DS_successCircle2', "#00db79")
+                                                }
                                             }
                                         }}
                                     />
@@ -1076,15 +1105,16 @@ export default function MainScreen({route, navigation}) {
                                         borderRadius: 54,
                                     }}
                                     onPress = {() => {
-                                        if (character.DS_successCircle3 === "#00db79") {
-                                            route.params.onFSChange(route.params.index,'DS_successCircle3', "#ffffff", false);
-                                            updateCharacterLocal('DS_successCircle3', "#ffffff", false);
-                                            updateCharacter('DS_successCircle3', "#ffffff")
-                                        }
-                                        else {
-                                            route.params.onFSChange(route.params.index,'DS_successCircle3', "#00db79", false);
-                                            updateCharacterLocal('DS_successCircle3', "#00db79", false);
-                                            updateCharacter('DS_successCircle3', "#00db79")
+                                        if (global.isDM || character.assignedTo === user.toJSON().email) {
+                                            if (character.DS_successCircle3 === "#00db79") {
+                                                route.params.onFSChange(route.params.index, 'DS_successCircle3', "#ffffff", false);
+                                                updateCharacterLocal('DS_successCircle3', "#ffffff", false);
+                                                updateCharacter('DS_successCircle3', "#ffffff")
+                                            } else {
+                                                route.params.onFSChange(route.params.index, 'DS_successCircle3', "#00db79", false);
+                                                updateCharacterLocal('DS_successCircle3', "#00db79", false);
+                                                updateCharacter('DS_successCircle3', "#00db79")
+                                            }
                                         }
                                     }}
                                 />
@@ -1107,15 +1137,16 @@ export default function MainScreen({route, navigation}) {
                                             borderRadius: 54,
                                         }}
                                         onPress = {() => {
-                                            if (character.DS_failureCircle1 === "#f51b1b") {
-                                                route.params.onFSChange(route.params.index,'DS_failureCircle1', "#ffffff", false);
-                                                updateCharacterLocal('DS_failureCircle1', "#ffffff", false);
-                                                updateCharacter('DS_failureCircle1', "#ffffff");
-                                            }
-                                            else {
-                                                route.params.onFSChange(route.params.index,'DS_failureCircle1', "#f51b1b", false);
-                                                updateCharacterLocal('DS_failureCircle1', "#f51b1b", false);
-                                                updateCharacter('DS_failureCircle1', "#f51b1b");
+                                            if (global.isDM || character.assignedTo === user.toJSON().email) {
+                                                if (character.DS_failureCircle1 === "#f51b1b") {
+                                                    route.params.onFSChange(route.params.index, 'DS_failureCircle1', "#ffffff", false);
+                                                    updateCharacterLocal('DS_failureCircle1', "#ffffff", false);
+                                                    updateCharacter('DS_failureCircle1', "#ffffff");
+                                                } else {
+                                                    route.params.onFSChange(route.params.index, 'DS_failureCircle1', "#f51b1b", false);
+                                                    updateCharacterLocal('DS_failureCircle1', "#f51b1b", false);
+                                                    updateCharacter('DS_failureCircle1', "#f51b1b");
+                                                }
                                             }
                                         }}
                                     />
@@ -1133,15 +1164,16 @@ export default function MainScreen({route, navigation}) {
                                             borderRadius: 54,
                                         }}
                                         onPress = {() => {
-                                            if (character.DS_failureCircle2 === "#f51b1b") {
-                                                route.params.onFSChange(route.params.index,'DS_failureCircle2', "#ffffff", false);
-                                                updateCharacterLocal('DS_failureCircle2', "#ffffff", false);
-                                                updateCharacter('DS_failureCircle2', "#ffffff");
-                                            }
-                                            else {
-                                                route.params.onFSChange(route.params.index,'DS_failureCircle2', "#f51b1b", false);
-                                                updateCharacterLocal('DS_failureCircle2', "#f51b1b", false);
-                                                updateCharacter('DS_failureCircle2', "#f51b1b");
+                                            if (global.isDM || character.assignedTo === user.toJSON().email) {
+                                                if (character.DS_failureCircle2 === "#f51b1b") {
+                                                    route.params.onFSChange(route.params.index, 'DS_failureCircle2', "#ffffff", false);
+                                                    updateCharacterLocal('DS_failureCircle2', "#ffffff", false);
+                                                    updateCharacter('DS_failureCircle2', "#ffffff");
+                                                } else {
+                                                    route.params.onFSChange(route.params.index, 'DS_failureCircle2', "#f51b1b", false);
+                                                    updateCharacterLocal('DS_failureCircle2', "#f51b1b", false);
+                                                    updateCharacter('DS_failureCircle2', "#f51b1b");
+                                                }
                                             }
                                         }}
                                     />
@@ -1158,15 +1190,16 @@ export default function MainScreen({route, navigation}) {
                                         borderRadius: 54,
                                     }}
                                     onPress = {() => {
-                                        if (character.DS_failureCircle3 === "#f51b1b") {
-                                            route.params.onFSChange(route.params.index,'DS_failureCircle3', "#ffffff", false);
-                                            updateCharacterLocal('DS_failureCircle3', "#ffffff", false);
-                                            updateCharacter('DS_failureCircle3', "#ffffff");
-                                        }
-                                        else {
-                                            route.params.onFSChange(route.params.index,'DS_failureCircle3', "#f51b1b", false);
-                                            updateCharacterLocal('DS_failureCircle3', "#f51b1b", false);
-                                            updateCharacter('DS_failureCircle3', "#f51b1b");
+                                        if (global.isDM || character.assignedTo === user.toJSON().email) {
+                                            if (character.DS_failureCircle3 === "#f51b1b") {
+                                                route.params.onFSChange(route.params.index, 'DS_failureCircle3', "#ffffff", false);
+                                                updateCharacterLocal('DS_failureCircle3', "#ffffff", false);
+                                                updateCharacter('DS_failureCircle3', "#ffffff");
+                                            } else {
+                                                route.params.onFSChange(route.params.index, 'DS_failureCircle3', "#f51b1b", false);
+                                                updateCharacterLocal('DS_failureCircle3', "#f51b1b", false);
+                                                updateCharacter('DS_failureCircle3', "#f51b1b");
+                                            }
                                         }
                                     }}
                                 />
@@ -1191,6 +1224,7 @@ export default function MainScreen({route, navigation}) {
                         <TextInput
                             style = {styles.STValue}
                             value = {String(character.ST_strength)}
+                            editable={global.isDM || character.assignedTo === user.toJSON().email}
                             underlineColor="transparent"
                             onChangeText={(text) => {
                                 route.params.onFSChange(route.params.index,'ST_strength', text, true);
@@ -1208,6 +1242,7 @@ export default function MainScreen({route, navigation}) {
                         <TextInput
                             style = {styles.STValue}
                             value = {String(character.ST_dexterity)}
+                            editable={global.isDM || character.assignedTo === user.toJSON().email}
                             underlineColor="transparent"
                             onChangeText={(text) => {
                                 route.params.onFSChange(route.params.index,'ST_dexterity', text, true);
@@ -1225,6 +1260,7 @@ export default function MainScreen({route, navigation}) {
                         <TextInput
                             style = {styles.STValue}
                             value = {String(character.ST_constitution)}
+                            editable={global.isDM || character.assignedTo === user.toJSON().email}
                             underlineColor="transparent"
                             onChangeText={(text) => {
                                 route.params.onFSChange(route.params.index,'ST_constitution', text, true);
@@ -1242,6 +1278,7 @@ export default function MainScreen({route, navigation}) {
                         <TextInput
                             style = {styles.STValue}
                             value = {String(character.ST_intelligence)}
+                            editable={global.isDM || character.assignedTo === user.toJSON().email}
                             underlineColor="transparent"
                             onChangeText={(text) => {
                                 route.params.onFSChange(route.params.index,'ST_intelligence', text, true);
@@ -1259,6 +1296,7 @@ export default function MainScreen({route, navigation}) {
                         <TextInput
                             style = {styles.STValue}
                             value = {String(character.ST_wisdom)}
+                            editable={global.isDM || character.assignedTo === user.toJSON().email}
                             underlineColor="transparent"
                             onChangeText={(text) => {
                                 route.params.onFSChange(route.params.index,'ST_wisdom', text, true);
@@ -1276,6 +1314,7 @@ export default function MainScreen({route, navigation}) {
                         <TextInput
                             style = {styles.STValue}
                             value = {String(character.ST_charisma)}
+                            editable={global.isDM || character.assignedTo === user.toJSON().email}
                             underlineColor="transparent"
                             onChangeText={(text) => {
                                 route.params.onFSChange(route.params.index,'ST_charisma', text, true);
@@ -1325,6 +1364,7 @@ export default function MainScreen({route, navigation}) {
                             <TextInput
                                 style = {styles.skillsValue}
                                 value = {String(character.acrobatics)}
+                                editable={global.isDM || character.assignedTo === user.toJSON().email}
                                 underlineColor="transparent"
                                 onChangeText={(text) => {
                                     route.params.onFSChange(route.params.index,'acrobatics', text, true);
@@ -1342,6 +1382,7 @@ export default function MainScreen({route, navigation}) {
                             <TextInput
                                 style = {styles.skillsValue}
                                 value = {String(character.animal_handling)}
+                                editable={global.isDM || character.assignedTo === user.toJSON().email}
                                 underlineColor="transparent"
                                 onChangeText={(text) => {
                                     route.params.onFSChange(route.params.index,'animal_handling', text, true);
@@ -1359,6 +1400,7 @@ export default function MainScreen({route, navigation}) {
                             <TextInput
                                 style = {styles.skillsValue}
                                 value = {String(character.arcana)}
+                                editable={global.isDM || character.assignedTo === user.toJSON().email}
                                 underlineColor="transparent"
                                 onChangeText={(text) => {
                                     route.params.onFSChange(route.params.index,'arcana', text, true);
@@ -1376,6 +1418,7 @@ export default function MainScreen({route, navigation}) {
                             <TextInput
                                 style = {styles.skillsValue}
                                 value = {String(character.athletics)}
+                                editable={global.isDM || character.assignedTo === user.toJSON().email}
                                 underlineColor="transparent"
                                 onChangeText={(text) => {
                                     route.params.onFSChange(route.params.index,'athletics', text, true);
@@ -1393,6 +1436,7 @@ export default function MainScreen({route, navigation}) {
                             <TextInput
                                 style = {styles.skillsValue}
                                 value = {String(character.deception)}
+                                editable={global.isDM || character.assignedTo === user.toJSON().email}
                                 underlineColor="transparent"
                                 onChangeText={(text) => {
                                     route.params.onFSChange(route.params.index,'deception', text, true);
@@ -1410,6 +1454,7 @@ export default function MainScreen({route, navigation}) {
                             <TextInput
                                 style = {styles.skillsValue}
                                 value = {String(character.history)}
+                                editable={global.isDM || character.assignedTo === user.toJSON().email}
                                 underlineColor="transparent"
                                 onChangeText={(text) => {
                                     route.params.onFSChange(route.params.index,'history', text, true);
@@ -1427,6 +1472,7 @@ export default function MainScreen({route, navigation}) {
                             <TextInput
                                 style = {styles.skillsValue}
                                 value = {String(character.insight)}
+                                editable={global.isDM || character.assignedTo === user.toJSON().email}
                                 underlineColor="transparent"
                                 onChangeText={(text) => {
                                     route.params.onFSChange(route.params.index,'insight', text, true);
@@ -1444,6 +1490,7 @@ export default function MainScreen({route, navigation}) {
                             <TextInput
                                 style = {styles.skillsValue}
                                 value = {String(character.intimidation)}
+                                editable={global.isDM || character.assignedTo === user.toJSON().email}
                                 underlineColor="transparent"
                                 onChangeText={(text) => {
                                     route.params.onFSChange(route.params.index,'intimidation', text, true);
@@ -1461,6 +1508,7 @@ export default function MainScreen({route, navigation}) {
                             <TextInput
                                 style = {styles.skillsValue}
                                 value = {String(character.investigation)}
+                                editable={global.isDM || character.assignedTo === user.toJSON().email}
                                 underlineColor="transparent"
                                 onChangeText={(text) => {
                                     route.params.onFSChange(route.params.index,'investigation', text, true);
@@ -1480,6 +1528,7 @@ export default function MainScreen({route, navigation}) {
                             <TextInput
                                 style = {styles.skillsValue}
                                 value = {String(character.medicine)}
+                                editable={global.isDM || character.assignedTo === user.toJSON().email}
                                 underlineColor="transparent"
                                 onChangeText={(text) => {
                                     route.params.onFSChange(route.params.index,'medicine', text, true);
@@ -1497,6 +1546,7 @@ export default function MainScreen({route, navigation}) {
                             <TextInput
                                 style = {styles.skillsValue}
                                 value = {String(character.nature)}
+                                editable={global.isDM || character.assignedTo === user.toJSON().email}
                                 underlineColor="transparent"
                                 onChangeText={(text) => {
                                     route.params.onFSChange(route.params.index,'nature', text, true);
@@ -1514,6 +1564,7 @@ export default function MainScreen({route, navigation}) {
                             <TextInput
                                 style = {styles.skillsValue}
                                 value = {String(character.perception)}
+                                editable={global.isDM || character.assignedTo === user.toJSON().email}
                                 underlineColor="transparent"
                                 onChangeText={(text) => {
                                     route.params.onFSChange(route.params.index,'perception', text, true);
@@ -1531,6 +1582,7 @@ export default function MainScreen({route, navigation}) {
                             <TextInput
                                 style = {styles.skillsValue}
                                 value = {String(character.performance)}
+                                editable={global.isDM || character.assignedTo === user.toJSON().email}
                                 underlineColor="transparent"
                                 onChangeText={(text) => {
                                     route.params.onFSChange(route.params.index,'performance', text, true);
@@ -1548,6 +1600,7 @@ export default function MainScreen({route, navigation}) {
                             <TextInput
                                 style = {styles.skillsValue}
                                 value = {String(character.persuasion)}
+                                editable={global.isDM || character.assignedTo === user.toJSON().email}
                                 underlineColor="transparent"
                                 onChangeText={(text) => {
                                     route.params.onFSChange(route.params.index,'persuasion', text, true);
@@ -1565,6 +1618,7 @@ export default function MainScreen({route, navigation}) {
                             <TextInput
                                 style = {styles.skillsValue}
                                 value = {String(character.religion)}
+                                editable={global.isDM || character.assignedTo === user.toJSON().email}
                                 underlineColor="transparent"
                                 onChangeText={(text) => {
                                     route.params.onFSChange(route.params.index,'religion', text, true);
@@ -1583,6 +1637,7 @@ export default function MainScreen({route, navigation}) {
                                 style = {styles.skillsValue}
                                 underlineColor="transparent"
                                 value = {String(character.sleight_of_hand)}
+                                editable={global.isDM || character.assignedTo === user.toJSON().email}
                                 onChangeText={(text) => {
                                     route.params.onFSChange(route.params.index,'sleight_of_hand', text, true);
                                     updateCharacterLocal('sleight_of_hand', text, true);
@@ -1600,6 +1655,7 @@ export default function MainScreen({route, navigation}) {
                                 style = {styles.skillsValue}
                                 underlineColor="transparent"
                                 value = {String(character.stealth)}
+                                editable={global.isDM || character.assignedTo === user.toJSON().email}
                                 onChangeText={(text) => {
                                     route.params.onFSChange(route.params.index,'stealth', text, true);
                                     updateCharacterLocal('stealth', text, true);
@@ -1617,6 +1673,7 @@ export default function MainScreen({route, navigation}) {
                                 style = {styles.skillsValue}
                                 underlineColor="transparent"
                                 value = {String(character.survival)}
+                                editable={global.isDM || character.assignedTo === user.toJSON().email}
                                 onChangeText={(text) => {
                                     route.params.onFSChange(route.params.index,'survival', text, true);
                                     updateCharacterLocal('survival', text, true);
@@ -1631,6 +1688,7 @@ export default function MainScreen({route, navigation}) {
                 style = {styles.profAndLanguages}
                 underlineColor="transparent"
                 multiline={true}
+                editable={global.isDM || character.assignedTo === user.toJSON().email}
                 value = {character.proficiencies_and_languages}
                 render={props => (
                     <NativeTextInput
@@ -1648,6 +1706,7 @@ export default function MainScreen({route, navigation}) {
                                 : null,
                         ]}
                         placeholder={"Enter proficiencies and languages..."}
+                        editable={global.isDM || character.assignedTo === user.toJSON().email}
                     />
                 )}
                 onChangeText={(text) => {
@@ -1674,6 +1733,9 @@ export default function MainScreen({route, navigation}) {
     // IDEALLY NOT HAVING TO BE RELOADED EACH TIME
 }
 const styles = StyleSheet.create({
+    gap: {
+      height: screenHeight * 0.0692
+    },
     tabContainer: {
         flexDirection: 'row',
         width: "100%",

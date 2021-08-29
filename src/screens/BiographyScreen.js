@@ -1,8 +1,9 @@
 import {Text, TextInput} from "react-native-paper";
-import React, {useEffect, useState} from "react"
+import React, {useContext, useEffect, useState} from "react"
 import {createMaterialTopTabNavigator} from "@react-navigation/material-top-tabs";
 import {View, StyleSheet, TextInput as NativeTextInput, Dimensions} from "react-native";
 import colors from "../utils/colors";
+import {AuthUserContext} from "../navigation/AuthUserProvider";
 
 global.screenWidth = Dimensions.get("window").width;
 global.screenHeight = Dimensions.get("window").height;
@@ -11,6 +12,7 @@ export default function BiographyScreen({navigation}) {
     const [loading, setLoading] = useState(true);
     const [character, setCharacter] = useState(global.character);
     const pushChange = global.onFSChange
+    const {user} = useContext(AuthUserContext);
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', e => {
@@ -109,6 +111,7 @@ export default function BiographyScreen({navigation}) {
                                 style = {styles.personalityTraitsInput}
                                 underlineColor="transparent"
                                 multiline={true}
+                                editable={global.isDM || character.assignedTo === user.toJSON().email}
                                 value = {character.personality_traits}
                                 render={props => (
                                     <NativeTextInput
@@ -125,6 +128,7 @@ export default function BiographyScreen({navigation}) {
                                                 }
                                                 : null,
                                         ]}
+                                        editable={global.isDM || character.assignedTo === user.toJSON().email}
                                         placeholder={"Enter personality traits..."}
                                     />
                                 )}
@@ -144,6 +148,7 @@ export default function BiographyScreen({navigation}) {
                             <TextInput
                                 style = {styles.idealsInput}
                                 underlineColor="transparent"
+                                editable={global.isDM || character.assignedTo === user.toJSON().email}
                                 multiline={true}
                                 value = {character.ideals}
                                 render={props => (
@@ -161,6 +166,7 @@ export default function BiographyScreen({navigation}) {
                                                 }
                                                 : null,
                                         ]}
+                                        editable={global.isDM || character.assignedTo === user.toJSON().email}
                                         placeholder={"Enter ideals..."}
                                     />
                                 )}
@@ -183,6 +189,7 @@ export default function BiographyScreen({navigation}) {
                                 style = {styles.bondsInput}
                                 underlineColor="transparent"
                                 multiline={true}
+                                editable={global.isDM || character.assignedTo === user.toJSON().email}
                                 value = {character.bonds}
                                 render={props => (
                                     <NativeTextInput
@@ -199,6 +206,7 @@ export default function BiographyScreen({navigation}) {
                                                 }
                                                 : null,
                                         ]}
+                                        editable={global.isDM || character.assignedTo === user.toJSON().email}
                                         placeholder={"Enter bonds..."}
                                     />
                                 )}
@@ -219,6 +227,7 @@ export default function BiographyScreen({navigation}) {
                                 style = {styles.flawsInput}
                                 underlineColor="transparent"
                                 multiline={true}
+                                editable={global.isDM || character.assignedTo === user.toJSON().email}
                                 value = {character.flaws}
                                 render={props => (
                                     <NativeTextInput
@@ -235,6 +244,7 @@ export default function BiographyScreen({navigation}) {
                                                 }
                                                 : null,
                                         ]}
+                                        editable={global.isDM || character.assignedTo === user.toJSON().email}
                                         placeholder={"Enter flaws..."}
                                     />
                                 )}
@@ -258,6 +268,7 @@ export default function BiographyScreen({navigation}) {
                             style = {styles.featuresAndTraitsInput}
                             underlineColor="transparent"
                             multiline={true}
+                            editable={global.isDM || character.assignedTo === user.toJSON().email}
                             value = {character.features_and_traits}
                             render={props => (
                                 <NativeTextInput
@@ -274,6 +285,7 @@ export default function BiographyScreen({navigation}) {
                                             }
                                             : null,
                                     ]}
+                                    editable={global.isDM || character.assignedTo === user.toJSON().email}
                                     placeholder={"Enter features & traits..."}
                                 />
                             )}
@@ -298,6 +310,7 @@ export default function BiographyScreen({navigation}) {
                             style = {styles.appearanceInput}
                             underlineColor="transparent"
                             multiline={true}
+                            editable={global.isDM || character.assignedTo === user.toJSON().email}
                             value = {character.appearance}
                             render={props => (
                                 <NativeTextInput
@@ -314,6 +327,7 @@ export default function BiographyScreen({navigation}) {
                                             }
                                             : null,
                                     ]}
+                                    editable={global.isDM || character.assignedTo === user.toJSON().email}
                                     placeholder={"Enter character appearance..."}
                                 />
                             )}
@@ -336,7 +350,8 @@ export default function BiographyScreen({navigation}) {
                             style = {styles.backstoryInput}
                             underlineColor="transparent"
                             multiline={true}
-                            defaultValue = {character.backstory}
+                            editable={global.isDM || character.assignedTo === user.toJSON().email}
+                            value = {character.backstory}
                             render={props => (
                                 <NativeTextInput
                                     {...props}
@@ -352,6 +367,7 @@ export default function BiographyScreen({navigation}) {
                                             }
                                             : null,
                                     ]}
+                                    editable={global.isDM || character.assignedTo === user.toJSON().email}
                                     placeholder={"Enter character backstory..."}
                                 />
                             )}

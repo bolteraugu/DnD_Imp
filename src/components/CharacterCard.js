@@ -4,6 +4,7 @@ import {IconButton, Surface, TextInput, Text, Dialog, Portal, Button, Provider} 
 import 'firebase/firestore';
 import firebase from 'firebase';
 import 'firebase/auth';
+import {AuthUserContext} from "../navigation/AuthUserProvider";
 // import ModalDropdown from "react-native-modal-dropdown";
 // import {AuthUserContext} from "../navigation/AuthUserProvider";
 
@@ -15,8 +16,11 @@ export default function CharacterCard({
                                           onChange,
                                           groupRef,
                                           navigation,
-                                          isDM
+                                          isDM,
+                                          userPermissions,
                                       }) {
+
+    const {user} = useContext(AuthUserContext);
 
     function updateCharacter() {
         groupRef
@@ -45,6 +49,7 @@ export default function CharacterCard({
                     <View style={styles.cardRow}>
                         <TextInput
                             label="Name"
+                            editable={isDM || character.assignedTo === user.toJSON().email}
                             style={styles.stringContainer}
                             value={character.name}
                             placeholder={"Enter name..."}
@@ -56,6 +61,7 @@ export default function CharacterCard({
                         />
                         <TextInput
                             label="Race"
+                            editable={isDM || character.assignedTo === user.toJSON().email}
                             style={styles.stringContainer}
                             value={character.char_race}
                             placeholder={"Enter race..."}
@@ -68,6 +74,7 @@ export default function CharacterCard({
                         />
                         <TextInput
                             label="Class"
+                            editable={isDM || character.assignedTo === user.toJSON().email}
                             style={styles.stringContainer}
                             value={character.char_class}
                             placeholder={"Enter class..."}
@@ -79,6 +86,7 @@ export default function CharacterCard({
                         />
                         <TextInput
                             label="Level"
+                            editable={isDM || character.assignedTo === user.toJSON().email}
                             keyboardType="number-pad"
                             style={styles.levelContainer}
                             value={String(character.level)}
@@ -96,6 +104,7 @@ export default function CharacterCard({
                     <View style={styles.cardRow}>
                         <TextInput
                             label="STR"
+                            editable={isDM || character.assignedTo === user.toJSON().email}
                             keyboardType="number-pad"
                             style={styles.abilityScoresContainer}
                             value={String(character.strength)}
@@ -107,6 +116,7 @@ export default function CharacterCard({
                         />
                         <TextInput
                             label="CON"
+                            editable={isDM || character.assignedTo === user.toJSON().email}
                             keyboardType="number-pad"
                             style={styles.abilityScoresContainer}
                             value={String(character.constitution)}
@@ -118,6 +128,7 @@ export default function CharacterCard({
                         />
                         <TextInput
                             label="DEX"
+                            editable={isDM || character.assignedTo === user.toJSON().email}
                             keyboardType="number-pad"
                             style={styles.abilityScoresContainer}
                             value={String(character.dexterity)}
@@ -129,6 +140,7 @@ export default function CharacterCard({
                         />
                         <TextInput
                             label="INT"
+                            editable={isDM || character.assignedTo === user.toJSON().email}
                             keyboardType="number-pad"
                             style={styles.abilityScoresContainer}
                             value={String(character.intelligence)}
@@ -140,6 +152,7 @@ export default function CharacterCard({
                         />
                         <TextInput
                             label="WIS"
+                            editable={isDM || character.assignedTo === user.toJSON().email}
                             keyboardType="number-pad"
                             style={styles.abilityScoresContainer}
                             value={String(character.wisdom)}
@@ -151,6 +164,7 @@ export default function CharacterCard({
                         />
                         <TextInput
                             label="CHA"
+                            editable={isDM || character.assignedTo === user.toJSON().email}
                             keyboardType="number-pad"
                             style={styles.abilityScoresContainer}
                             value={String(character.charisma)}
@@ -162,6 +176,7 @@ export default function CharacterCard({
                         />
                         <TextInput
                             label="PROF"
+                            editable={isDM || character.assignedTo === user.toJSON().email}
                             keyboardType="number-pad"
                             style={styles.abilityScoresContainer}
                             value={String(character.proficiency)}
@@ -173,6 +188,7 @@ export default function CharacterCard({
                         />
                         <TextInput
                             label="INIT"
+                            editable={isDM || character.assignedTo === user.toJSON().email}
                             keyboardType="number-pad"
                             style={styles.abilityScoresContainer}
                             value={String(character.initiative)}
@@ -188,6 +204,7 @@ export default function CharacterCard({
                     <View style={styles.cardRow}>
                         <TextInput
                             label="Alignment"
+                            editable={isDM || character.assignedTo === user.toJSON().email}
                             style={styles.stringContainer}
                             placeholder={"Enter alignment..."}
                             value={character.alignment}
@@ -199,6 +216,7 @@ export default function CharacterCard({
                         />
                         <TextInput
                             label="Max HP"
+                            editable={isDM || character.assignedTo === user.toJSON().email}
                             keyboardType="number-pad"
                             style={styles.intContainer}
                             value={String(character.max_hp)}
@@ -210,6 +228,7 @@ export default function CharacterCard({
                         />
                         <TextInput
                             label="Current HP"
+                            editable={isDM || character.assignedTo === user.toJSON().email}
                             keyboardType="number-pad"
                             style={styles.intContainer}
                             value={String(character.current_hp)}
@@ -221,6 +240,7 @@ export default function CharacterCard({
                         />
                         <TextInput
                             label="Temp HP"
+                            editable={isDM || character.assignedTo === user.toJSON().email}
                             keyboardType="number-pad"
                             style={styles.intContainer}
                             value={String(character.temp_hp)}
@@ -232,6 +252,7 @@ export default function CharacterCard({
                         />
                         <TextInput
                             label="AC"
+                            editable={isDM || character.assignedTo === user.toJSON().email}
                             keyboardType="number-pad"
                             style={styles.bottomrowIntContainer}
                             value={String(character.armor_class)}
@@ -242,6 +263,7 @@ export default function CharacterCard({
                         />
                         <TextInput
                             label="SPD"
+                            editable={isDM || character.assignedTo === user.toJSON().email}
                             keyboardType="number-pad"
                             style={styles.bottomrowIntContainer}
                             value={String(character.speed)}
@@ -251,7 +273,7 @@ export default function CharacterCard({
                             }}
                         />
                         <View style={styles.iconRow}>
-                            {isDM ?
+                            {isDM || (character.assignedTo === user.toJSON().email && userPermissions != null && userPermissions.deleteOwnCharacters ) ?
                                 <IconButton
                                     icon="delete"
                                     size={28}
@@ -264,7 +286,7 @@ export default function CharacterCard({
                                 icon="arrow-expand-all"
                                 size={28}
                                 color="#000"
-                                style={isDM ? styles.expandIconDM : styles.expandIcon}
+                                style={isDM || (character.assignedTo === user.toJSON().email && userPermissions != null && userPermissions.deleteOwnCharacters) ? styles.expandIconDM : styles.expandIcon}
                                 onPress={async () => {
                                     navigation.navigate('CharacterSheet', {
                                         screen: 'Main',
@@ -274,6 +296,7 @@ export default function CharacterCard({
                                             index: index,
                                             groupRef: groupRef,
                                             onFSChange: onChange,
+                                            isDM: isDM
                                         },
                                     })
                                 }}

@@ -27,7 +27,7 @@ export default function DMScreen({route, navigation}) {
   const [loading, setLoading] = useState(true);
   const [inChangeDM, setInChangeDM] = useState(false);
     const [changePermissions, setChangePermissions] = useState(false);
-    const [userPermissions, setUserPermissions] = useState(null);
+    const [userPermissions, setUserPermissions] = useState(group);
   const [items, setItems] = useState(null);
   const [itemsWeb, setItemsWeb] = useState(null)
     const [members, setMembers] = useState(null);
@@ -46,6 +46,7 @@ export default function DMScreen({route, navigation}) {
   const [isDM, setIsDM] = useState(false);
   const [newDM, setNewDM] = useState("");
     const [chatImage, setChatImage] = useState(false);
+
   global.showSettingsDialog = () => {
       showDialog();
   };
@@ -78,59 +79,72 @@ export default function DMScreen({route, navigation}) {
                   count++;
               }
           })
+          groupRef.collection('members').doc(user.toJSON().email).onSnapshot((ss) => {
+              setIsDM(ss.get('isDM'));
+              setChatImage(ss.get('chatImage'))
+              if (ss.get('isDM')) {
+                  const characterListener = groupRef.collection('characters').onSnapshot(
+                      (querySnapshot) => {
+                          let index = 0;
+                          const characters = querySnapshot.docs.map((doc) => {
+                              const data = {
+                                  _id: doc.id,
+                                  index: index++,
+                                  ...doc.data(),
+                              };
+                              return data;
+                          });
+                          setCharacters(characters);
+
+                          if (loading) {
+                              setLoading(false);
+                          }
+                      },
+                      (error) => {
+                          alert(error);
+                      }
+                  );
+                  return characterListener;
+              }
+              else {
+                  const characterListener = groupRef.collection('characters').onSnapshot(
+                      (querySnapshot) => {
+                          let index = 0;
+                          const characters = querySnapshot.docs.map((doc) => {
+                              if (doc.get('assignedTo') === user.toJSON().email || userPermissions.viewAllCharacters) {
+                                  const data = {
+                                      _id: doc.id,
+                                      index: index++,
+                                      ...doc.data(),
+                                  };
+                                  return data;
+                              }
+                          });
+                          let charactersTemp = [];
+                          for (let i = 0; i < characters.length; i++) {
+                              if (characters[i] !== undefined && characters[i].assignedTo === user.toJSON().email) {
+                                  charactersTemp.push(characters[i])
+                              }
+                          }
+                          for (let i = 0; i < characters.length; i++) {
+                              if (characters[i] !== undefined && !charactersTemp.includes(characters[i])) {
+                                  charactersTemp.push(characters[i])
+                              }
+                          }
+                          setCharacters(charactersTemp);
+
+                          if (loading) {
+                              setLoading(false);
+                          }
+                      },
+                      (error) => {
+                          alert(error);
+                      }
+                  );
+                  return characterListener;
+              }
       })
-    groupRef.collection('members').doc(user.toJSON().email).onSnapshot((ss) => {
-      setIsDM(ss.get('isDM'));
-      setChatImage(ss.get('chatImage'))
-      if (ss.get('isDM')) {
-        const characterListener = groupRef.collection('characters').onSnapshot(
-            (querySnapshot) => {
-              const characters = querySnapshot.docs.map((doc) => {
-                const data = {
-                  _id: doc.id,
-                  ...doc.data(),
-                };
-                return data;
-              });
-              setCharacters(characters);
-
-              if (loading) {
-                setLoading(false);
-              }
-            },
-            (error) => {
-              alert(error);
-            }
-        );
-        return characterListener;
-      }
-      else {
-        const characterListener = groupRef.collection('characters').onSnapshot(
-            (querySnapshot) => {
-              const characters = querySnapshot.docs.map((doc) => {
-                if (doc.get('assignedTo') === user.toJSON().email) {
-                  const data = {
-                    _id: doc.id,
-                    ...doc.data(),
-                  };
-                  return data;
-                }
-              });
-              setCharacters(characters.filter(function( element ) {
-                return element !== undefined;
-              }));
-
-              if (loading) {
-                setLoading(false);
-              }
-            },
-            (error) => {
-              alert(error);
-            }
-        );
-        return characterListener;
-      }
-    })
+    }, )
 
 
     //DM View - old code (works if firestore structure characters are separated by being put in different collections rather than using assignedTo field
@@ -330,7 +344,6 @@ export default function DMScreen({route, navigation}) {
                                   mode = "contained"
                                   onPress = {() => {
                                       groupRef.update({
-                                          isDM: false,
                                           addRecipients: userPermissions.addRecipients,
                                           viewAllNotes: userPermissions.viewAllNotes,
                                           shareNotesSharedToThem: userPermissions.shareNotesSharedToThem,
@@ -419,7 +432,6 @@ export default function DMScreen({route, navigation}) {
       }
   }
 
-  let index = 0;
   if (characters == null || characters.length === 0) {
     return (
         <Provider>
@@ -575,7 +587,8 @@ export default function DMScreen({route, navigation}) {
                           <CharacterCard
                               isDM={isDM}
                               character={item}
-                              index={index++}
+                              index={item.index}
+                              userPermissions={userPermissions}
                               groupRef={groupRef}
                               onChange={updateCharacter}
                               navigation={navigation}

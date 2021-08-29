@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import React from "react"
 import {
     Dimensions,
@@ -13,6 +13,7 @@ import {
 import {Button, Text, TextInput} from "react-native-paper";
 import Spinner from "../components/Spinner";
 import Spell from "../components/Spell";
+import {AuthUserContext} from "../navigation/AuthUserProvider";
 
 global.screenWidth = Dimensions.get("window").width;
 global.screenHeight = Dimensions.get("window").height;
@@ -22,6 +23,8 @@ export default function SpellsScreen({route, navigation}) {
     const pushChange = global.onFSChange
     const [spells, setSpells] = useState([]);
     const [loading, setLoading] = useState(true);
+    const {user} = useContext(AuthUserContext);
+
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', e => {
             setLoading(true)
@@ -192,6 +195,7 @@ export default function SpellsScreen({route, navigation}) {
                                     <TextInput
                                         style={styles.spellcastingInput}
                                         underlineColor="transparent"
+                                        editable={isDM || character.assignedTo === user.toJSON().email}
                                         placeholder={"Enter spellcasting ability..."}
                                         value={character.spellcasting_ability}
                                         onChangeText={(text) => {
@@ -210,6 +214,7 @@ export default function SpellsScreen({route, navigation}) {
                                     <TextInput
                                         style={styles.spellsInput}
                                         keyboardType="number-pad"
+                                        editable={isDM || character.assignedTo === user.toJSON().email}
                                         placeholder={"Enter spell save DC..."}
                                         underlineColor="transparent"
                                         value={String(character.spell_save_DC)}
@@ -229,6 +234,7 @@ export default function SpellsScreen({route, navigation}) {
                                     <TextInput
                                         style={styles.spellsInput}
                                         keyboardType="number-pad"
+                                        editable={isDM || character.assignedTo === user.toJSON().email}
                                         placeholder={"Enter spell attack bonus..."}
                                         underlineColor="transparent"
                                         value={String(character.spell_attack_bonus)}
@@ -257,6 +263,7 @@ export default function SpellsScreen({route, navigation}) {
                                             style={styles.spellSlotInput}
                                             underlineColor="transparent"
                                             keyboardType="number-pad"
+                                            editable={isDM || character.assignedTo === user.toJSON().email}
                                             placeholder={"Enter 1st-level spell slots..."}
                                             value={String(character.first_level_spell_slots)}
                                             onChangeText={(text) => {
@@ -275,6 +282,7 @@ export default function SpellsScreen({route, navigation}) {
                                         <TextInput
                                             style={styles.spellSlotInput}
                                             keyboardType="number-pad"
+                                            editable={isDM || character.assignedTo === user.toJSON().email}
                                             placeholder={"Enter 2nd-level spell slots..."}
                                             underlineColor="transparent"
                                             value={String(character.second_level_spell_slots)}
@@ -294,6 +302,7 @@ export default function SpellsScreen({route, navigation}) {
                                         <TextInput
                                             style={styles.spellSlotInput}
                                             keyboardType="number-pad"
+                                            editable={isDM || character.assignedTo === user.toJSON().email}
                                             placeholder={"Enter 3rd-level spell slots..."}
                                             underlineColor="transparent"
                                             value={String(character.third_level_spell_slots)}
@@ -316,6 +325,7 @@ export default function SpellsScreen({route, navigation}) {
                                             style={styles.spellSlotInput}
                                             underlineColor="transparent"
                                             keyboardType="number-pad"
+                                            editable={isDM || character.assignedTo === user.toJSON().email}
                                             placeholder={"Enter 4th-level spell slots..."}
                                             value={String(character.fourth_level_spell_slots)}
                                             onChangeText={(text) => {
@@ -334,6 +344,7 @@ export default function SpellsScreen({route, navigation}) {
                                         <TextInput
                                             style={styles.spellSlotInput}
                                             keyboardType="number-pad"
+                                            editable={isDM || character.assignedTo === user.toJSON().email}
                                             placeholder={"Enter 5th-level spell slots..."}
                                             underlineColor="transparent"
                                             value={String(character.fifth_level_spell_slots)}
@@ -353,6 +364,7 @@ export default function SpellsScreen({route, navigation}) {
                                         <TextInput
                                             style={styles.spellSlotInput}
                                             keyboardType="number-pad"
+                                            editable={isDM || character.assignedTo === user.toJSON().email}
                                             placeholder={"Enter 6th-level spell slots..."}
                                             underlineColor="transparent"
                                             value={String(character.sixth_level_spell_slots)}
@@ -375,6 +387,7 @@ export default function SpellsScreen({route, navigation}) {
                                             style={styles.spellSlotInput}
                                             underlineColor="transparent"
                                             keyboardType="number-pad"
+                                            editable={isDM || character.assignedTo === user.toJSON().email}
                                             placeholder={"Enter 7th-level spell slots..."}
                                             value={String(character.seventh_level_spell_slots)}
                                             onChangeText={(text) => {
@@ -393,6 +406,7 @@ export default function SpellsScreen({route, navigation}) {
                                         <TextInput
                                             style={styles.spellSlotInput}
                                             keyboardType="number-pad"
+                                            editable={isDM || character.assignedTo === user.toJSON().email}
                                             placeholder={"Enter 8th-level spell slots..."}
                                             underlineColor="transparent"
                                             value={String(character.eighth_level_spell_slots)}
@@ -412,6 +426,7 @@ export default function SpellsScreen({route, navigation}) {
                                         <TextInput
                                             style={styles.spellSlotInput}
                                             keyboardType="number-pad"
+                                            editable={isDM || character.assignedTo === user.toJSON().email}
                                             placeholder={"Enter 9th-level spell slots..."}
                                             underlineColor="transparent"
                                             value={String(character.ninth_level_spell_slots)}
@@ -445,6 +460,8 @@ export default function SpellsScreen({route, navigation}) {
                                     <Spell
                                         index={index++}
                                         spell={item}
+                                        isDM={global.isDM}
+                                        character={character}
                                         onChange={updateSpell}
                                     />
                                 )}
@@ -453,6 +470,7 @@ export default function SpellsScreen({route, navigation}) {
                                         <Button
                                             mode="contained"
                                             style = {styles.addButton}
+                                            disabled = {!(global.isDM || character.assignedTo === user.toJSON().email)}
                                             onPress={() => {navigation.navigate('AddSpell')}}>
                                             Add A New Spell
                                         </Button>
