@@ -12,19 +12,24 @@ export default function ImageCard({image, onSelect, shareImage, groupRef, editNa
     const {user} = useContext(AuthUserContext);
 
     function deleteImage() {
+        console.log(image.imageNameStatic)
         groupRef.collection('characters').onSnapshot((snapshot) => {
             snapshot.docs.map((doc) => {
-                if (doc.get('assignedTo') === user.toJSON().email && doc.get('imageName') === image.uri) {
+                if (doc.get('imageUUID') === image.uuid) {
                     groupRef.collection('characters').doc(doc.id).update({
-                        imageName: "https://firebasestorage.googleapis.com/v0/b/improving-dungeon-minion-5e.appspot.com/o/default_character.png?alt=media&token=84c93a85-ce56-45a7-9b01-0df6e257c6db"
+                        imageName: "https://firebasestorage.googleapis.com/v0/b/improving-dungeon-minion-5e.appspot.com/o/default_character.png?alt=media&token=84c93a85-ce56-45a7-9b01-0df6e257c6db",
+                        actualImageName: "default_character.png",
+                        imageUUID: ""
                     })
                 }
             })
         })
         groupRef.collection('members').doc(user.toJSON().email).onSnapshot((snapshot) => {
-            if (snapshot.get('chatImage') === image.uri) {
+            if (snapshot.get('uuid') === image.uuid) {
                 groupRef.collection('members').doc(user.toJSON().email).update({
-                    chatImage: "https://firebasestorage.googleapis.com/v0/b/improving-dungeon-minion-5e.appspot.com/o/default_character.png?alt=media&token=84c93a85-ce56-45a7-9b01-0df6e257c6db"
+                    chatImage: "https://firebasestorage.googleapis.com/v0/b/improving-dungeon-minion-5e.appspot.com/o/default_character.png?alt=media&token=84c93a85-ce56-45a7-9b01-0df6e257c6db",
+                    actualImageName: "default_character.png",
+                    imageUUID: ""
                 });
                 groupRef.collection('messages').onSnapshot((snapshot) => {
                     snapshot.docs.map((doc) => {
@@ -56,38 +61,35 @@ export default function ImageCard({image, onSelect, shareImage, groupRef, editNa
         })
             groupRef.collection('members').doc(user.toJSON().email).collection('images').onSnapshot((snapshot) => {
                 snapshot.docs.map((doc2) => {
-                    if (doc2.get('uri') === image.uri) {
+                    if (doc2.get('uuid') === image.uuid) {
                         groupRef.collection('members').doc(user.toJSON().email).collection('images').doc(doc2.id).delete();
                     }
                 })
             })
-            if (metadata.numShared === 1) {
-                groupRef.collection('imageCanBeShared').doc(image._id).delete().then(() => {
-                    firebase.storage().ref("/" + image.imageNameStatic).delete().then(() => {
-                        groupRef
-                            .collection('images').doc(image._id)
-                            .delete()
+            groupRef.collection('imageCanBeShared').doc(image._id).onSnapshot((doc3) => {
+                if (doc3.get('numShared') === 1) {
+                    groupRef.collection('imageCanBeShared').doc(doc3.id).delete().then(() => {
+                        firebase.storage().ref("/" + image.imageNameStatic).delete();
                     })
-                })
-                console.log("see");
-                groupRef.collection('notes').onSnapshot((snapshot) => {
-                    snapshot.docs.map(async (doc) => {
-                        let content = await doc.get('content')
-                        //console.log('<img src ="' + image.uri + '">');
-                        let newContent = content.replace(/<img src="' + image.uri + '">/g,'The image ' + image.imageName + ' has been deleted');
-                        groupRef.collection('notes').doc(doc.id).update({
-                            content: newContent
+                    groupRef.collection('notes').onSnapshot((snapshot) => {
+                        snapshot.docs.map(async (doc) => {
+                            let content = await doc.get('content')
+                            //console.log('<img src ="' + image.uri + '">');
+                            let newContent = content.replace(/<img src="' + image.uri + '">/g,'The image ' + image.imageName + ' has been deleted');
+                            groupRef.collection('notes').doc(doc.id).update({
+                                content: newContent
+                            })
                         })
                     })
-                })
-            }
-            else {
-                groupRef.collection('imageCanBeShared').doc(image._id).update({
-                    numShared: firebase.firestore.FieldValue.increment(-1),
-                    sharedWith: firebase.firestore.FieldValue.arrayRemove(user.toJSON().email)
-                })
-            }
-            resetSelect(image)
+                }
+                else {
+                    groupRef.collection('imageCanBeShared').doc(image._id).update({
+                        numShared: firebase.firestore.FieldValue.increment(-1),
+                        sharedWith: firebase.firestore.FieldValue.arrayRemove(user.toJSON().email)
+                    })
+                }
+                resetSelect(image)
+            })
     }
 
     return (

@@ -6,7 +6,7 @@ import {
     View,
     TextInput as NativeTextInput
 } from 'react-native';
-import {TextInput, Text, Button} from "react-native-paper"; //Probably will need text...
+import {TextInput, Text, Button, Portal, Dialog, Title, IconButton, Provider} from "react-native-paper"; //Probably will need text...
 import colors from '../utils/colors';
 import Spinner from "../components/Spinner";
 import {AuthUserContext} from "../navigation/AuthUserProvider";
@@ -15,6 +15,9 @@ export default function MainScreen({route, navigation}) {
     const [character, setCharacter] = useState(route.params.character);
     const [loading, setLoading] = useState(true);
     const {user} = useContext(AuthUserContext);
+    const showImageDialog = () => setImageVisible(true);
+    const hideImageDialog = () => setImageVisible(false);
+    const [imageVisible, setImageVisible] = useState(false);
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', e => {
@@ -531,6 +534,24 @@ export default function MainScreen({route, navigation}) {
                     console.log('Failed to update character: ' + error)
                 );
         }
+        else if (fieldName === 'actualImageName') {
+            global.charaRef
+                .update({
+                    actualImageName: value
+                })
+                .then(console.log('Successfully updated character'), (error) =>
+                    console.log('Failed to update character: ' + error)
+                );
+        }
+        else if (fieldName === 'imageUUID') {
+            global.charaRef
+                .update({
+                    imageUUID: value
+                })
+                .then(console.log('Successfully updated character'), (error) =>
+                    console.log('Failed to update character: ' + error)
+                );
+        }
     }
 
     // function tabNavigator() {
@@ -561,13 +582,20 @@ export default function MainScreen({route, navigation}) {
     // }
 
     return (
-        <View>
+        <Provider>
+        <View style = {{height: screenHeight * 0.85}}>
             {/*<tabNavigator/>*/}
             <View style = {styles.imageAndAbilitiesContainer}>
-                <Image
-                    source={{uri: character.imageName}}
-                    style = {styles.charImage}
-                />
+                <TouchableOpacity
+                    onPress={() => {
+                        showImageDialog();
+                    }}
+                >
+                    <Image
+                        source={{uri: character.imageName}}
+                        style = {styles.charImage}
+                    />
+                </TouchableOpacity>
                 <Button
                     mode="contained"
                     style={styles.changeImageStyle}
@@ -1721,6 +1749,38 @@ export default function MainScreen({route, navigation}) {
                 Proficiencies and languages
             </Text>
         </View>
+            <Portal>
+                <Dialog
+                    visible={imageVisible}
+                    onDismiss={hideImageDialog}
+                    style = {styles.fullSizeWindow}
+                >
+                    <View style = {styles.headingRow}>
+                        <View style = {styles.centerFSImageTitle}>
+                            <Title
+                                style = {styles.helpTitle}
+                            >
+                                {character.actualImageName !== "" ? character.actualImageName : ""}
+                            </Title>
+                        </View>
+                    </View>
+                    <IconButton
+                        icon="close" //Getting the back icon image
+                        size={38} //Setting the size
+                        color="#a60000" //And the color
+                        style = {styles.exitButton}
+                        onPress={() => {
+                            hideImageDialog()
+                        }} //When clicked on make it go back to the previous route
+                    />
+                    <Image
+                        source={character.imageName !== "" ? {uri: character.imageName} : {uri: ""}}
+                        style={styles.fullSizeImage}
+                    />
+                    <View/>
+                </Dialog>
+            </Portal>
+        </Provider>
     );
     // TOP NESTED TAB NAVIGATION
     // MAIN | NOTES | SPELLS
@@ -1733,6 +1793,33 @@ export default function MainScreen({route, navigation}) {
     // IDEALLY NOT HAVING TO BE RELOADED EACH TIME
 }
 const styles = StyleSheet.create({
+    fullSizeWindow: {
+        width: screenWidth * 0.973,
+        height: screenHeight * 0.82,
+        marginTop: screenHeight * 0.0233829787234
+    },
+    fullSizeImage: {
+        width: screenWidth * 0.973,
+        height: screenHeight * 0.72,
+        marginTop: screenHeight * 0.01163829787234,
+        resizeMode: "center"
+    },
+    headingRow: {
+        height: screenHeight * 0.04,
+        marginTop: screenHeight * 0.015
+    },
+    helpTitle: {
+        alignSelf: 'center',
+        fontSize: 23
+    },
+    centerFSImageTitle: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+    },
+    exitButton: {
+        marginLeft: screenWidth * 0.937,
+        marginTop: screenHeight * -0.067
+    },
     gap: {
       height: screenHeight * 0.0692
     },

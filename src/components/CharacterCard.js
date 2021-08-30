@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useRef, useState} from 'react';
-import {Image, StyleSheet, View, Dimensions} from 'react-native';
+import {Image, StyleSheet, View, Dimensions, TouchableOpacity} from 'react-native';
 import {IconButton, Surface, TextInput, Text, Dialog, Portal, Button, Provider} from 'react-native-paper';
 import 'firebase/firestore';
 import firebase from 'firebase';
@@ -11,14 +11,7 @@ import {AuthUserContext} from "../navigation/AuthUserProvider";
 global.screenWidth = Dimensions.get("window").width;
 global.screenHeight = Dimensions.get("window").height;
 
-export default function CharacterCard({
-                                          character, index,
-                                          onChange,
-                                          groupRef,
-                                          navigation,
-                                          isDM,
-                                          userPermissions,
-                                      }) {
+export default function CharacterCard({character, index, onChange, groupRef, navigation, isDM, showImage, userPermissions}) {
 
     const {user} = useContext(AuthUserContext);
 
@@ -97,10 +90,18 @@ export default function CharacterCard({
                             }
                         />
                     </View>
-                    <Image
-                        source={{uri: character.imageName}}
-                        style = {styles.charImage}
-                    />
+                    <TouchableOpacity
+                        onPress={() => {
+                            showImage(character.imageName, character.actualImageName)
+                        }}
+                        style = {styles.charImageContainer}
+                    >
+                        <Image
+                            source={{uri: character.imageName}}
+                            style = {styles.charImage}
+                        />
+                    </TouchableOpacity>
+
                     <View style={styles.cardRow}>
                         <TextInput
                             label="STR"
@@ -318,12 +319,16 @@ const styles = StyleSheet.create({
         width: "100%"
     },
     charImage: {
+        width: "100%",
+        height: "100%",
+        resizeMode: "center"
+    },
+    charImageContainer: {
         width: global.screenWidth * 0.0750187546886722,
         height: global.screenWidth * 0.0750187546886722,
         position: 'absolute',
         left: global.screenWidth * 0.56639,
         top: global.screenHeight * 0.0132978723404255,
-        resizeMode: "center"
     },
     levelContainer: {
         width: global.screenWidth * 0.082521,

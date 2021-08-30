@@ -47,6 +47,7 @@ export default function Chat({groupRef, navigation, showImage, itemsT, isDM, use
     const [messages, setMessages] = useState([]);
     const [messagesCopy, setMessagesCopy] = useState([]);
     const [chatImage, setChatImage] = React.useState("");
+    const [chatImageName, setChatImageName] = React.useState("");
     const [items, setItems] = useState(itemsT);
     const [showDropDown, setShowDropDown] = useState(false);
     const showSearchDialog = () => setSearchVisible(true);
@@ -78,7 +79,8 @@ export default function Chat({groupRef, navigation, showImage, itemsT, isDM, use
 
     useEffect(() => {
         groupRef.collection('members').doc(currentUser.email).onSnapshot((snapshot) => {
-            setChatImage(snapshot.get('chatImage'))
+            setChatImage(snapshot.get('chatImage'));
+            setChatImageName(snapshot.get('actualImageName'));
         })
         const messagesListener = groupRef
             .collection('messages')
@@ -629,7 +631,9 @@ export default function Chat({groupRef, navigation, showImage, itemsT, isDM, use
                                                 }).then(() => {
                                                 groupRef.collection('members').doc(inputVal).set({
                                                     isDM: false,
-                                                    chatImage: "https://firebasestorage.googleapis.com/v0/b/improving-dungeon-minion-5e.appspot.com/o/default_character.png?alt=media&token=84c93a85-ce56-45a7-9b01-0df6"
+                                                    chatImage: "https://firebasestorage.googleapis.com/v0/b/improving-dungeon-minion-5e.appspot.com/o/default_character.png?alt=media&token=84c93a85-ce56-45a7-9b01-0df6",
+                                                    actualImageName: "default_character.png",
+                                                    imageUUID: ""
                                                 })
                                             })
                                                 .then(() => {
@@ -730,6 +734,9 @@ export default function Chat({groupRef, navigation, showImage, itemsT, isDM, use
                     renderBubble={renderBubble}
                     placeholder= {recipients.length === 0 ? "Chat disabled. Please select recipients." : "Type your message here..."}
                     showUserAvatar
+                    onPressAvatar={() => {
+                        showImage(chatImage, chatImageName)
+                    }}
                     renderMessage={renderMessage}
                     renderLoading={renderLoading}
                     renderComposer = {renderComposer}

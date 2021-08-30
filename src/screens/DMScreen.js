@@ -45,7 +45,9 @@ export default function DMScreen({route, navigation}) {
   const {user} = useContext(AuthUserContext);
   const [isDM, setIsDM] = useState(false);
   const [newDM, setNewDM] = useState("");
-    const [chatImage, setChatImage] = useState(false);
+  const [chatImage, setChatImage] = useState("");
+  const [chatImageName, setChatImageName] = useState("");
+    const [chatImageUUID, setChatImageUUID] = useState("");
 
   global.showSettingsDialog = () => {
       showDialog();
@@ -81,7 +83,9 @@ export default function DMScreen({route, navigation}) {
           })
           groupRef.collection('members').doc(user.toJSON().email).onSnapshot((ss) => {
               setIsDM(ss.get('isDM'));
-              setChatImage(ss.get('chatImage'))
+              setChatImage(ss.get('chatImage'));
+              setChatImageName(ss.get('actualImageName'));
+              setChatImageUUID(ss.get('imageUUID'));
               if (ss.get('isDM')) {
                   const characterListener = groupRef.collection('characters').onSnapshot(
                       (querySnapshot) => {
@@ -234,7 +238,9 @@ export default function DMScreen({route, navigation}) {
                               navigation.navigate('ImageSelector', {
                                   comingFrom: "DMScreen",
                                   groupRef: groupRef,
-                                  chatImage: chatImage
+                                  chatImage: chatImage,
+                                  actualImageName: chatImageName,
+                                  imageUUID: chatImageUUID
                               })
                           }}
                       >
@@ -422,7 +428,9 @@ export default function DMScreen({route, navigation}) {
                       navigation.navigate('ImageSelector', {
                           comingFrom: "DMScreen",
                           groupRef: groupRef,
-                          chatImage: chatImage
+                          chatImage: chatImage,
+                          actualImageName: chatImageName,
+                          imageUUID: chatImageUUID
                       })
                   }}
               >
@@ -589,6 +597,11 @@ export default function DMScreen({route, navigation}) {
                               character={item}
                               index={item.index}
                               userPermissions={userPermissions}
+                              showImage={(image, name) => {
+                                  setImageToShow(image);
+                                  setNameToShow(name);
+                                  showImageDialog();
+                              }}
                               groupRef={groupRef}
                               onChange={updateCharacter}
                               navigation={navigation}
@@ -845,8 +858,8 @@ const styles = StyleSheet.create({
     },
     fullSizeWindow: {
         width: screenWidth * 0.973,
-        height: screenHeight * 0.90,
-        marginTop: screenHeight * 0.00133829787234
+        height: screenHeight * 0.88,
+        marginTop: screenHeight * 0.0253829787234
     },
     fullSizeImage: {
         width: screenWidth * 0.973,

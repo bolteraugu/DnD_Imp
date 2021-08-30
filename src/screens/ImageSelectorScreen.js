@@ -17,6 +17,8 @@ export default function ImageSelectorScreen({navigation, route}) {
     const [images, setImages] = useState([]);
     const [imagesMetaData, setImagesMetaData] = useState([]);
     const [selectedImage, setSelectedImage] = useState("");
+    const [selectedImageName, setSelectedImageName] = useState("");
+    const [selectedImageUUID, setSelectedImageUUID] = useState("");
     const [selectedImageFN, setSelectedImageFN] = useState(null);
     const [imageToS, setImageToS] = useState([]);
     const [imageToEdit, setImageToEdit] = useState([]);
@@ -58,18 +60,19 @@ export default function ImageSelectorScreen({navigation, route}) {
                 querySnapshot.docs.map((doc) => {
                     if (route.params.comingFrom === 'MainScreen') {
                         if (route.params.character.imageName !== "https://firebasestorage.googleapis.com/v0/b/improving-dungeon-minion-5e.appspot.com/o/default_character.png?alt=media&token=84c93a85-ce56-45a7-9b01-0df6") {
-                            if (doc.get('uri') === route.params.character.imageName) {
-                                setSelectedImage(route.params.character.imageName)
+                            if (doc.get('uuid') === route.params.character.imageUUID) {
+                                setSelectedImage(route.params.character.imageName);
+                                setSelectedImageName(route.params.character.actualImageName);
+                                setSelectedImageUUID(route.params.character.imageUUID);
                             }
-                        }
-                        else {
-                            setSelectedImage("")
                         }
                     }
                     else if (route.params.comingFrom === 'DMScreen') {
                         if (route.params.chatImage !== "https://firebasestorage.googleapis.com/v0/b/improving-dungeon-minion-5e.appspot.com/o/default_character.png?alt=media&token=84c93a85-ce56-45a7-9b01-0df6") {
                             if (doc.get('uri') === route.params.chatImage) {
-                                setSelectedImage(route.params.chatImage)
+                                setSelectedImage(route.params.chatImage);
+                                setSelectedImageName(route.params.actualImageName);
+                                setSelectedImageUUID(route.params.imageUUID);
                             }
                         }
                         else {
@@ -150,11 +153,16 @@ export default function ImageSelectorScreen({navigation, route}) {
                 //Add the title and the content
                 uri: url,
                 imageName: uuid,
-                imageNameStatic: uuid
+                imageNameStatic: uuid,
+                uuid: uuid
             }).then((docRef) => {
                 route.params.groupRef.collection('imageCanBeShared').doc(docRef.id).set({
                     numShared: 1,
                     sharedWith: new Array(user.toJSON().email)
+                }).then((doc2) => {
+                    let tempImagesMetaData = JSON.parse(JSON.stringify(imagesMetaData));
+                    tempImagesMetaData.push(doc2);
+                    setImagesMetaData(tempImagesMetaData);
                 })
                 if (route.params.comingFrom === 'NotesScreen' || route.params.comingFrom === 'Chat') {
                     route.params.groupRef.collection('members').doc(user.toJSON().email).collection('images').doc(docRef.id).onSnapshot((snapshot) => {
@@ -163,14 +171,18 @@ export default function ImageSelectorScreen({navigation, route}) {
                 }
         }).then(() => {
             if (route.params.comingFrom === 'MainScreen' || route.params.comingFrom === 'DMScreen') {
-                setSelectedImage(url)
+                setSelectedImage(url);
+                setSelectedImageName(uuid);
+                setSelectedImageUUID(uuid);
             }
         })
     };
 
     function onSelect(image) {
         if (route.params.comingFrom === 'MainScreen' || route.params.comingFrom === 'DMScreen') {
-            setSelectedImage(image.image.uri)
+            setSelectedImage(image.image.uri);
+            setSelectedImageName(image.image.imageName);
+            setSelectedImageUUID(image.image.uuid);
         } else {
             setSelectedImageFN(image.image)
         }
@@ -178,10 +190,16 @@ export default function ImageSelectorScreen({navigation, route}) {
 
     function confirmImage() {
         if (route.params.comingFrom === "MainScreen") {
-            route.params.onImageChange(route.params.index, 'imageName', selectedImage, true)
-            route.params.onImageChangeLocal('imageName', selectedImage, false)
-            route.params.onImageChangeFirebase('imageName', selectedImage)
-            navigation.goBack()
+            route.params.onImageChange(route.params.index, 'imageName', selectedImage, false);
+            route.params.onImageChange(route.params.index, 'actualImageName', selectedImageName, false);
+            route.params.onImageChange(route.params.index, 'imageUUID', selectedImageUUID, false);
+            route.params.onImageChangeLocal('imageName', selectedImage, false);
+            route.params.onImageChangeLocal('actualImageName', selectedImageName, false);
+            route.params.onImageChangeLocal('imageUUID', selectedImageUUID, false);
+            route.params.onImageChangeFirebase('imageName', selectedImage);
+            route.params.onImageChangeFirebase('actualImageName', selectedImageName);
+            route.params.onImageChangeFirebase('imageUUID', selectedImageUUID);
+            navigation.goBack();
         }
         else if (route.params.comingFrom === 'DMScreen') {
             for (let i = 0; i < avatars.length; i++) {
@@ -196,7 +214,9 @@ export default function ImageSelectorScreen({navigation, route}) {
                 }
             }
             route.params.groupRef.collection('members').doc(user.toJSON().email).update({
-                chatImage: selectedImage
+                chatImage: selectedImage,
+                actualImageName: selectedImageName,
+                imageUUID: selectedImageUUID
             })
             navigation.goBack()
         }
@@ -205,7 +225,7 @@ export default function ImageSelectorScreen({navigation, route}) {
             navigation.goBack()
         }
         else {
-            route.params.onImageChangeFirebase(selectedImageFN, false);
+            route.params.onImageChangeFirebase(selectedImageFN);
             navigation.goBack()
         }
     }
@@ -237,8 +257,8 @@ export default function ImageSelectorScreen({navigation, route}) {
                             renderItem={(
                                 {item} //Render each item with the title and content
                             ) =>
-                                <View style={[(((route.params.comingFrom === 'MainScreen' || route.params.comingFrom === 'DMScreen') && item.uri === selectedImage) ||
-                                    ((route.params.comingFrom === 'NotesScreen' || route.params.comingFrom === 'Chat') && selectedImageFN != null && item.uri === selectedImageFN.uri)) ?
+                                <View style={[(((route.params.comingFrom === 'MainScreen' || route.params.comingFrom === 'DMScreen') && (item.uuid === selectedImageUUID)) ||
+                                    ((route.params.comingFrom === 'NotesScreen' || route.params.comingFrom === 'Chat') && selectedImageFN != null && item.uuid === selectedImageFN.uuid)) ?
                                     styles.border : styles.empty]}>
                                     <ImageCard
                                         image={item}
@@ -248,7 +268,9 @@ export default function ImageSelectorScreen({navigation, route}) {
                                         resetSelect={(image) => {
                                             if (route.params.comingFrom === "MainScreen" || route.params.comingFrom === 'DMScreen') {
                                                 if (image.uri === selectedImage) {
-                                                    setSelectedImage("")
+                                                    setSelectedImage("");
+                                                    setSelectedImageName("");
+                                                    setSelectedImageUUID("")
                                                 }
                                             } else {
                                                 if (selectedImageFN != null && image.uri === selectedImageFN.uri) {
@@ -376,12 +398,14 @@ export default function ImageSelectorScreen({navigation, route}) {
                                 style={styles.button}
                                 disabled={recipients.length === 0}
                                 onPress={() => {
+                                    const id = uuidv4();
                                     const peopleToShare = recipients.split(',')
                                     for (let i = 1; i < peopleToShare.length; i++) {
                                         route.params.groupRef.collection('members').doc(peopleToShare[i]).collection('images').doc(imageToS.image._id).set({
                                             imageName: imageToS.image.imageName,
-                                            imageNameStatic: imageToS.image.imageName,
-                                            uri: imageToS.image.uri
+                                            imageNameStatic: imageToS.image.imageNameStatic,
+                                            uri: imageToS.image.uri,
+                                            uuid: id
                                         })
                                         route.params.groupRef.collection('imageCanBeShared').doc(imageToS.image._id).update({
                                             numShared: firebase.firestore.FieldValue.increment(1),
@@ -435,15 +459,46 @@ export default function ImageSelectorScreen({navigation, route}) {
                                             imageTemp.imageName = name;
                                             setSelectedImageFN(imageTemp);
                                         }
-                                        for (let i = 0; i < images.length; i++) {
-                                            if (images[i]._id === imageToEdit.image._id) {
-                                                images[i]['imageName'] = name;
-                                            }
+                                    }
+                                    else {
+                                        if (selectedImageUUID !== "" && imageToEdit.image.uuid === selectedImage.uuid) {
+                                            setSelectedImageName(name);
                                         }
-                                        if (route.params.comingFrom === 'NotesScreen') {
-                                            route.params.onImageChangeFirebase(imageToEdit.image, true, name)
+                                        if (route.params.comingFrom === 'MainScreen') {
+                                            route.params.groupRef.collection('characters').onSnapshot((snapshot) => {
+                                                snapshot.docs.forEach((doc) => {
+                                                    if (doc.get('imageUUID') === imageToEdit.image.uuid) {
+                                                        route.params.groupRef.collection('characters').doc(doc.id).update({
+                                                            actualImageName: name
+                                                        })
+                                                    }
+                                                })
+                                            })
+                                        }
+                                        else {
+                                            groupRef.collection('members').doc(user.toJSON().email).onSnapshot((snapshot) => {
+                                                if (snapshot.get('imageUUID') === image.uuid) {
+                                                    groupRef.collection('members').doc(user.toJSON().email).update({
+                                                        actualImageName: name
+                                                    });
+                                                }
+                                            })
                                         }
                                     }
+                                    for (let i = 0; i < images.length; i++) {
+                                        if (images[i]._id === imageToEdit.image._id) {
+                                            images[i]['imageName'] = name;
+                                        }
+                                    }
+                                    route.params.groupRef.collection('messages').onSnapshot((snapshot) => {
+                                        snapshot.docs.forEach((doc) => {
+                                            if (doc.get('user').email === user.toJSON().email && doc.get('image') === imageToEdit.image.uri) {
+                                                route.params.groupRef.collection('messages').doc(doc.id).update({
+                                                    imageName: name
+                                                })
+                                            }
+                                        })
+                                    })
                                     route.params.groupRef.collection('members').doc(user.toJSON().email).collection('images').doc(imageToEdit.image._id).update({
                                         imageName: name
                                     })
