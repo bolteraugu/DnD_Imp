@@ -90,7 +90,6 @@ export default function DMScreen({route, navigation}) {
                   itemsWebTemp.push(mem);
                   setItems(itemsTemp);
                   setAssignItems(itemsTemp);
-                  console.log(itemsTemp);
                   setItemsWeb(itemsWebTemp)
                   if (Platform.OS === 'web' && count === 0) {
                       setNewDM(mem);
@@ -106,11 +105,9 @@ export default function DMScreen({route, navigation}) {
               if (ss.get('isDM')) {
                   const characterListener = groupRef.collection('characters').onSnapshot(
                       (querySnapshot) => {
-                          let index = 0;
                           const characters = querySnapshot.docs.map((doc) => {
                               const data = {
                                   _id: doc.id,
-                                  index: index++,
                                   ...doc.data(),
                               };
                               return data;
@@ -620,6 +617,7 @@ export default function DMScreen({route, navigation}) {
     );
   }
   else {
+      let index = 0;
     return (
         <Provider>
           <KeyboardAvoidingView
@@ -635,7 +633,7 @@ export default function DMScreen({route, navigation}) {
                           <CharacterCard
                               isDM={isDM}
                               character={item}
-                              index={item.index}
+                              index={index++}
                               showConfirmationDialog={(character) => {
                                   setDeleteChar(character);
                                   showDeleteDialog();

@@ -8,99 +8,7 @@ import 'firebase/firestore';
 global.screenWidth = Dimensions.get("window").width;
 global.screenHeight = Dimensions.get("window").height;
 
-export default function ImageCard({image, onSelect, shareImage, groupRef, editName, resetSelect}) {
-    const {user} = useContext(AuthUserContext);
-
-    function deleteImage() {
-        console.log(image.imageNameStatic)
-        groupRef.collection('characters').onSnapshot((snapshot) => {
-            snapshot.docs.map((doc) => {
-                if (doc.get('imageUUID') === image.uuid) {
-                    groupRef.collection('characters').doc(doc.id).update({
-                        imageName: "https://firebasestorage.googleapis.com/v0/b/improving-dungeon-minion-5e.appspot.com/o/default_character.png?alt=media&token=84c93a85-ce56-45a7-9b01-0df6e257c6db",
-                        actualImageName: "default_character.png",
-                        imageUUID: ""
-                    })
-                }
-            })
-        })
-        groupRef.collection('members').doc(user.toJSON().email).onSnapshot((snapshot) => {
-            if (snapshot.get('uuid') === image.uuid) {
-                groupRef.collection('members').doc(user.toJSON().email).update({
-                    chatImage: "https://firebasestorage.googleapis.com/v0/b/improving-dungeon-minion-5e.appspot.com/o/default_character.png?alt=media&token=84c93a85-ce56-45a7-9b01-0df6e257c6db",
-                    actualImageName: "default_character.png",
-                    imageUUID: ""
-                });
-                groupRef.collection('messages').onSnapshot((snapshot) => {
-                    snapshot.docs.map((doc) => {
-                        if (doc.get('user').email === user.toJSON().email) {
-                            groupRef.collection('messages').doc(doc.id).update({
-                                user: {
-                                    uid: user.toJSON().uid,
-                                    email: user.toJSON().email,
-                                    avatar: "https://firebasestorage.googleapis.com/v0/b/improving-dungeon-minion-5e.appspot.com/o/default_character.png?alt=media&token=84c93a85-ce56-45a7-9b01-0df6e257c6db"
-                                }
-                            })
-                        }
-                    })
-                })
-            }
-        });
-
-        groupRef.collection('messages').onSnapshot((snapshot) => {
-            snapshot.docs.map((doc) => {
-                if (doc.get('image') === image.uri) {
-                    groupRef.collection('messages').doc(doc.id).update({
-                        image: "",
-                        imageName: "",
-                        text: "This image no longer exists",
-                        deletedOrMissing: true
-                    })
-                }
-            })
-        })
-        if (image.numShared === 1) {
-            firebase.storage().ref("/" + image.imageNameStatic).delete();
-            groupRef.collection('notes').onSnapshot((snapshot) => {
-                snapshot.docs.map(async (doc) => {
-                    let content = await doc.get('content')
-                    //console.log('<img src ="' + image.uri + '">');
-                    let newContent = content.replace(/<img src="' + image.uri + '">/g,'The image ' + image.imageName + ' has been deleted');
-                    groupRef.collection('notes').doc(doc.id).update({
-                        content: newContent
-                    })
-                })
-            })
-        }
-        else {
-            let sharedWith = [];
-            for (let i = 0; i < image.sharedWith.length; i++) {
-                if (image.sharedWith[i] !== user.toJSON().email) {
-                    sharedWith.push(image.sharedWith[i]);
-                }
-            }
-            for (let i = 0; i < sharedWith.length; i++) {
-                groupRef.collection('members').doc(sharedWith[i]).collection('images').onSnapshot((snapshot) => {
-                    snapshot.docs.map((doc2) => {
-                        if (doc2.get('uuid') === image.uuid) {
-                            groupRef.collection('members').doc(user.toJSON().email).collection('images').doc(doc2.id).update({
-                                numShared: firebase.firestore.FieldValue.increment(-1),
-                                sharedWith: firebase.firestore.FieldValue.arrayRemove(user.toJSON().email)
-                            });
-                        }
-                    })
-                })
-            }
-        }
-            groupRef.collection('members').doc(user.toJSON().email).collection('images').onSnapshot((snapshot) => {
-                snapshot.docs.map((doc2) => {
-                    if (doc2.get('uuid') === image.uuid) {
-                        groupRef.collection('members').doc(user.toJSON().email).collection('images').doc(doc2.id).delete();
-                    }
-                })
-            })
-        resetSelect(image)
-    }
+export default function ImageCard({image, onSelect, shareImage, editName, showConfirmationDialog}) {
 
     return (
         <Card elevation={4} style={styles.card}>
@@ -136,7 +44,9 @@ export default function ImageCard({image, onSelect, shareImage, groupRef, editNa
                             Share
                         </Button>
                         <Button
-                            onPress={deleteImage}>
+                            onPress={() => {
+                                showConfirmationDialog(image);
+                            }}>
                             Delete
                         </Button>
                     </View>

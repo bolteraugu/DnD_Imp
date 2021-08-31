@@ -271,7 +271,7 @@ export default function NotesScreen({navigation, route}) {
                             style={styles.assignTitle}
                         >
                             NOTE: If you delete this note you will not be able to recover it.
-                            If you have shared this note with any users then it will be deleted for them too.
+                            It will also be deleted for any user who has access to it.
                         </Text>
                     </Dialog.Content>
                     <Dialog.Actions>

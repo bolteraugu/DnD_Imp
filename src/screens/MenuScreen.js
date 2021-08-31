@@ -103,7 +103,7 @@ export default function MenuScreen({navigation}) {
     const unsubscribe = firebase
       .firestore()
       .collection('groups')
-      .where('members', 'array-contains', user.toJSON().email)
+      .where('members', 'array-contains', user.toJSON().email || user.toJSON().email.toLowerCase())
       .onSnapshot(
         (querySnapshot) => {
           const groups = querySnapshot.docs.map((documentSnapshot) => {

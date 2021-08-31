@@ -36,6 +36,10 @@ export default function ImageSelectorScreen({navigation, route}) {
     const [recipients, setRecipients] = useState("");
     const [avatars, setAvatars] = useState([]);
     const [items, setItems] = useState("");
+    const [deleteI, setDeleteI] = useState(null);
+    const [deleteVisible, setDeleteVisible] = useState(false); //Whether the data is loading
+    const showDeleteDialog = () => setDeleteVisible(true);
+    const hideDeleteDialog = () => setDeleteVisible(false);
     let membersTemp = [];
 
     useEffect(() => {
@@ -90,6 +94,107 @@ export default function ImageSelectorScreen({navigation, route}) {
         })
         return unsubscribe;
     })
+
+    function deleteImage(image) {
+        console.log(image.imageNameStatic)
+        route.params.groupRef.collection('characters').onSnapshot((snapshot) => {
+            snapshot.docs.map((doc) => {
+                if (doc.get('imageUUID') === image.uuid) {
+                    groupRef.collection('characters').doc(doc.id).update({
+                        imageName: "https://firebasestorage.googleapis.com/v0/b/improving-dungeon-minion-5e.appspot.com/o/default_character.png?alt=media&token=84c93a85-ce56-45a7-9b01-0df6e257c6db",
+                        actualImageName: "default_character.png",
+                        imageUUID: ""
+                    })
+                }
+            })
+        })
+        route.params.groupRef.collection('members').doc(user.toJSON().email).onSnapshot((snapshot) => {
+            if (snapshot.get('uuid') === image.uuid) {
+                route.params.groupRef.collection('members').doc(user.toJSON().email).update({
+                    chatImage: "https://firebasestorage.googleapis.com/v0/b/improving-dungeon-minion-5e.appspot.com/o/default_character.png?alt=media&token=84c93a85-ce56-45a7-9b01-0df6e257c6db",
+                    actualImageName: "default_character.png",
+                    imageUUID: ""
+                });
+                route.params.groupRef.collection('messages').onSnapshot((snapshot) => {
+                    snapshot.docs.map((doc) => {
+                        if (doc.get('user').email === user.toJSON().email) {
+                            route.params.groupRef.collection('messages').doc(doc.id).update({
+                                user: {
+                                    uid: user.toJSON().uid,
+                                    email: user.toJSON().email,
+                                    avatar: "https://firebasestorage.googleapis.com/v0/b/improving-dungeon-minion-5e.appspot.com/o/default_character.png?alt=media&token=84c93a85-ce56-45a7-9b01-0df6e257c6db"
+                                }
+                            })
+                        }
+                    })
+                })
+            }
+        });
+
+        route.params.groupRef.collection('messages').onSnapshot((snapshot) => {
+            snapshot.docs.map((doc) => {
+                if (doc.get('image') === image.uri) {
+                    route.params.groupRef.collection('messages').doc(doc.id).update({
+                        image: "",
+                        imageName: "",
+                        text: "This image no longer exists",
+                        deletedOrMissing: true
+                    })
+                }
+            })
+        })
+        if (image.numShared === 1) {
+            firebase.storage().ref("/" + image.imageNameStatic).delete();
+            route.params.groupRef.collection('notes').onSnapshot((snapshot) => {
+                snapshot.docs.map(async (doc) => {
+                    let content = await doc.get('content')
+                    //console.log('<img src ="' + image.uri + '">');
+                    let newContent = content.replace(/<img src="' + image.uri + '">/g,'The image ' + image.imageName + ' has been deleted');
+                    groupRef.collection('notes').doc(doc.id).update({
+                        content: newContent
+                    })
+                })
+            })
+        }
+        else {
+            let sharedWith = [];
+            for (let i = 0; i < image.sharedWith.length; i++) {
+                if (image.sharedWith[i] !== user.toJSON().email) {
+                    sharedWith.push(image.sharedWith[i]);
+                }
+            }
+            for (let i = 0; i < sharedWith.length; i++) {
+                route.params.groupRef.collection('members').doc(sharedWith[i]).collection('images').onSnapshot((snapshot) => {
+                    snapshot.docs.map((doc2) => {
+                        if (doc2.get('uuid') === image.uuid) {
+                            route.params.groupRef.collection('members').doc(user.toJSON().email).collection('images').doc(doc2.id).update({
+                                numShared: firebase.firestore.FieldValue.increment(-1),
+                                sharedWith: firebase.firestore.FieldValue.arrayRemove(user.toJSON().email)
+                            });
+                        }
+                    })
+                })
+            }
+        }
+        route.params.groupRef.collection('members').doc(user.toJSON().email).collection('images').onSnapshot((snapshot) => {
+            snapshot.docs.map((doc2) => {
+                if (doc2.get('uuid') === image.uuid) {
+                    route.params.groupRef.collection('members').doc(user.toJSON().email).collection('images').doc(doc2.id).delete();
+                }
+            })
+        })
+        if (route.params.comingFrom === "MainScreen" || route.params.comingFrom === 'DMScreen') {
+            if (image.uri === selectedImage) {
+                setSelectedImage("");
+                setSelectedImageName("");
+                setSelectedImageUUID("")
+            }
+        } else {
+            if (selectedImageFN != null && image.uri === selectedImageFN.uri) {
+                setSelectedImageFN(null)
+            }
+        }
+    }
 
     function uuidv4() {
         return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
@@ -239,21 +344,11 @@ export default function ImageSelectorScreen({navigation, route}) {
                                         styles.border : styles.empty]}>
                                     <ImageCard
                                         image={item}
-                                        onSelect={onSelect}
-                                        groupRef={route.params.groupRef}
-                                        resetSelect={(image) => {
-                                            if (route.params.comingFrom === "MainScreen" || route.params.comingFrom === 'DMScreen') {
-                                                if (image.uri === selectedImage) {
-                                                    setSelectedImage("");
-                                                    setSelectedImageName("");
-                                                    setSelectedImageUUID("")
-                                                }
-                                            } else {
-                                                if (selectedImageFN != null && image.uri === selectedImageFN.uri) {
-                                                    setSelectedImageFN(null)
-                                                }
-                                            }
+                                        showConfirmationDialog={(image) => {
+                                            setDeleteI(image);
+                                            showDeleteDialog();
                                         }}
+                                        onSelect={onSelect}
                                         editName={(imageToEdit) => {
                                             setImageToEdit(imageToEdit)
                                             setName(imageToEdit.image.imageName)
@@ -503,11 +598,74 @@ export default function ImageSelectorScreen({navigation, route}) {
                     </Dialog.Actions>
                 </Dialog>
             </Portal>
+            <Portal>
+                <Dialog
+                    visible={deleteVisible}
+                    onDismiss={hideDeleteDialog}
+                    style={styles.assignWindow}
+                >
+                    <Dialog.Title
+                        style={styles.assignTitle}
+                    >
+                        Are you sure you want to delete this image?
+                    </Dialog.Title>
+                    <Dialog.Content>
+                        <Text
+                            style={styles.assignTitle}
+                        >
+                            NOTE: If you delete this note you will not be able to recover it.
+                        </Text>
+                    </Dialog.Content>
+                    <Dialog.Actions>
+                        <View style={styles.assignButtonContainer}>
+                            <Button
+                                mode="contained"
+                                style={styles.assignButton}
+                                onPress={() => {
+                                    deleteImage(deleteI);
+                                    hideDeleteDialog();
+                                }}
+                            >
+                                Yes
+                            </Button>
+                            <View style={styles.assignGap}/>
+                            <Button
+                                mode="contained"
+                                style={styles.assignButton}
+                                onPress={hideDeleteDialog}
+                            >
+                                No
+                            </Button>
+                        </View>
+                    </Dialog.Actions>
+                </Dialog>
+            </Portal>
         </Provider>
     );
 }
 
 const styles = StyleSheet.create({
+    assignGap: {
+        width: screenWidth * 0.04
+    },
+    assignWindow: {
+        width: screenWidth * 0.525,
+        alignSelf: 'center',
+        marginTop: screenHeight * -0.1663829787234
+    },
+    assignTitle: {
+        alignSelf: 'center',
+        textAlign: 'center'
+    },
+    assignButtonContainer: {
+        justifyContent: 'center',
+        marginBottom: screenHeight * 0.020363829787234,
+        width: "100%",
+        flexDirection: 'row',
+    },
+    assignButton: {
+        width: screenWidth * 0.1
+    },
     empty: {},
     border: {
         borderWidth: 2,
