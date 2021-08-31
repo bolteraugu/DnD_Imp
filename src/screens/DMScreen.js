@@ -738,7 +738,7 @@ export default function DMScreen({route, navigation}) {
                                 <Text
                                     style={styles.assignTitle}
                                 >
-                                    NOTE: If you delete this character you will not be able to recover it.
+                                    NOTE: If you delete this character you will not be able to recover it. It will also be deleted for any user who has access to it.
                                 </Text>
                             </Dialog.Content>
                             <Dialog.Actions>
@@ -1012,7 +1012,8 @@ const styles = StyleSheet.create({
         marginTop: screenHeight * -0.1663829787234
     },
     assignTitle: {
-        alignSelf: 'center'
+        alignSelf: 'center',
+        textAlign: 'center'
     },
     assignButtonContainer: {
         justifyContent: 'center',
