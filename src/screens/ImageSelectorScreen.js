@@ -15,7 +15,6 @@ export default function ImageSelectorScreen({navigation, route}) {
     const {user} = useContext(AuthUserContext);
     const [loading, setLoading] = useState(true);
     const [images, setImages] = useState([]);
-    const [imagesMetaData, setImagesMetaData] = useState([]);
     const [selectedImage, setSelectedImage] = useState("");
     const [selectedImageName, setSelectedImageName] = useState("");
     const [selectedImageUUID, setSelectedImageUUID] = useState("");
@@ -66,16 +65,14 @@ export default function ImageSelectorScreen({navigation, route}) {
                                 setSelectedImageUUID(route.params.character.imageUUID);
                             }
                         }
-                    }
-                    else if (route.params.comingFrom === 'DMScreen') {
+                    } else if (route.params.comingFrom === 'DMScreen') {
                         if (route.params.chatImage !== "https://firebasestorage.googleapis.com/v0/b/improving-dungeon-minion-5e.appspot.com/o/default_character.png?alt=media&token=84c93a85-ce56-45a7-9b01-0df6") {
                             if (doc.get('uri') === route.params.chatImage) {
                                 setSelectedImage(route.params.chatImage);
                                 setSelectedImageName(route.params.actualImageName);
                                 setSelectedImageUUID(route.params.imageUUID);
                             }
-                        }
-                        else {
+                        } else {
                             setSelectedImage("")
                         }
                     }
@@ -87,17 +84,6 @@ export default function ImageSelectorScreen({navigation, route}) {
                 });
                 setImages(images)
             });
-            route.params.groupRef.collection('imageCanBeShared').onSnapshot((querySnapshot) => {
-                let imagesMetaData = []
-                querySnapshot.docs.map((doc) => {
-                    const data = {
-                        _id: doc.id,
-                        ...doc.data(),
-                    };
-                    imagesMetaData.push(data)
-                });
-                setImagesMetaData(imagesMetaData)
-            });
             if (loading) {
                 setLoading(false);
             }
@@ -106,7 +92,7 @@ export default function ImageSelectorScreen({navigation, route}) {
     })
 
     function uuidv4() {
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
             var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
             return v.toString(16);
         });
@@ -154,21 +140,15 @@ export default function ImageSelectorScreen({navigation, route}) {
                 uri: url,
                 imageName: uuid,
                 imageNameStatic: uuid,
-                uuid: uuid
+                uuid: uuid,
+                numShared: 1,
+                sharedWith: new Array(user.toJSON().email)
             }).then((docRef) => {
-                route.params.groupRef.collection('imageCanBeShared').doc(docRef.id).set({
-                    numShared: 1,
-                    sharedWith: new Array(user.toJSON().email)
-                }).then((doc2) => {
-                    let tempImagesMetaData = JSON.parse(JSON.stringify(imagesMetaData));
-                    tempImagesMetaData.push(doc2);
-                    setImagesMetaData(tempImagesMetaData);
+            if (route.params.comingFrom === 'NotesScreen' || route.params.comingFrom === 'Chat') {
+                route.params.groupRef.collection('members').doc(user.toJSON().email).collection('images').doc(docRef.id).onSnapshot((snapshot) => {
+                    setSelectedImageFN(snapshot.data())
                 })
-                if (route.params.comingFrom === 'NotesScreen' || route.params.comingFrom === 'Chat') {
-                    route.params.groupRef.collection('members').doc(user.toJSON().email).collection('images').doc(docRef.id).onSnapshot((snapshot) => {
-                        setSelectedImageFN(snapshot.data())
-                    })
-                }
+            }
         }).then(() => {
             if (route.params.comingFrom === 'MainScreen' || route.params.comingFrom === 'DMScreen') {
                 setSelectedImage(url);
@@ -190,18 +170,17 @@ export default function ImageSelectorScreen({navigation, route}) {
 
     function confirmImage() {
         if (route.params.comingFrom === "MainScreen") {
-            route.params.onImageChange(route.params.index, 'imageName', selectedImage, false);
-            route.params.onImageChange(route.params.index, 'actualImageName', selectedImageName, false);
-            route.params.onImageChange(route.params.index, 'imageUUID', selectedImageUUID, false);
-            route.params.onImageChangeLocal('imageName', selectedImage, false);
-            route.params.onImageChangeLocal('actualImageName', selectedImageName, false);
-            route.params.onImageChangeLocal('imageUUID', selectedImageUUID, false);
+            route.params.onImageChange(route.params.index, 'imageName', selectedImage);
+            route.params.onImageChange(route.params.index, 'actualImageName', selectedImageName);
+            route.params.onImageChange(route.params.index, 'imageUUID', selectedImageUUID);
+            route.params.onImageChangeLocal('imageName', selectedImage);
+            route.params.onImageChangeLocal('actualImageName', selectedImageName);
+            route.params.onImageChangeLocal('imageUUID', selectedImageUUID);
             route.params.onImageChangeFirebase('imageName', selectedImage);
             route.params.onImageChangeFirebase('actualImageName', selectedImageName);
             route.params.onImageChangeFirebase('imageUUID', selectedImageUUID);
             navigation.goBack();
-        }
-        else if (route.params.comingFrom === 'DMScreen') {
+        } else if (route.params.comingFrom === 'DMScreen') {
             for (let i = 0; i < avatars.length; i++) {
                 if (avatars[i].user.email === user.toJSON().email) {
                     route.params.groupRef.collection('messages').doc(avatars[i]._id).update({
@@ -219,12 +198,10 @@ export default function ImageSelectorScreen({navigation, route}) {
                 imageUUID: selectedImageUUID
             })
             navigation.goBack()
-        }
-        else if (route.params.comingFrom === 'Chat') {
+        } else if (route.params.comingFrom === 'Chat') {
             route.params.updateChatFirebase(selectedImageFN.uri, route.params.chatImage, selectedImageFN.imageName)
             navigation.goBack()
-        }
-        else {
+        } else {
             route.params.onImageChangeFirebase(selectedImageFN);
             navigation.goBack()
         }
@@ -246,7 +223,6 @@ export default function ImageSelectorScreen({navigation, route}) {
                 </View>
             );
         } else {
-            let index = 0;
             return (
                 <View>
                     <ScrollView>
@@ -257,14 +233,14 @@ export default function ImageSelectorScreen({navigation, route}) {
                             renderItem={(
                                 {item} //Render each item with the title and content
                             ) =>
-                                <View style={[(((route.params.comingFrom === 'MainScreen' || route.params.comingFrom === 'DMScreen') && (item.uuid === selectedImageUUID)) ||
-                                    ((route.params.comingFrom === 'NotesScreen' || route.params.comingFrom === 'Chat') && selectedImageFN != null && item.uuid === selectedImageFN.uuid)) ?
-                                    styles.border : styles.empty]}>
+                                <View
+                                    style={[(((route.params.comingFrom === 'MainScreen' || route.params.comingFrom === 'DMScreen') && (item.uuid === selectedImageUUID)) ||
+                                        ((route.params.comingFrom === 'NotesScreen' || route.params.comingFrom === 'Chat') && selectedImageFN != null && item.uuid === selectedImageFN.uuid)) ?
+                                        styles.border : styles.empty]}>
                                     <ImageCard
                                         image={item}
                                         onSelect={onSelect}
                                         groupRef={route.params.groupRef}
-                                        metadata={imagesMetaData[index++]}
                                         resetSelect={(image) => {
                                             if (route.params.comingFrom === "MainScreen" || route.params.comingFrom === 'DMScreen') {
                                                 if (image.uri === selectedImage) {
@@ -286,22 +262,20 @@ export default function ImageSelectorScreen({navigation, route}) {
                                         shareImage={(imageToShare) => {
                                             setImageToS(imageToShare)
                                             membersTemp = []
-                                            for (let i = 0; i < imagesMetaData.length; i++) {
-                                                if (imagesMetaData[i]._id === imageToShare.image._id) {
-                                                    if (imagesMetaData[i].numShared !== members.length) {
-                                                        for (let j = 0; j < members.length; j++) {
-                                                            if (!imagesMetaData[i].sharedWith.includes(members[j])) {
-                                                                membersTemp.push({
-                                                                    value: members[j], label: members[j]
-                                                                })
-                                                                setItems(membersTemp)
-                                                            }
-                                                            showDialog()
-                                                        }
-                                                    } else {
-                                                        showNoShareDialog();
+                                            setItems("");
+                                            if (imageToShare.image.numShared !== members.length) {
+                                                for (let j = 0; j < members.length; j++) {
+                                                    if (!imageToShare.image.sharedWith.includes(members[j]) && !membersTemp.includes(members[j])) {
+                                                        console.log(members[j]);
+                                                        membersTemp.push({
+                                                            value: members[j], label: members[j]
+                                                        })
+                                                        setItems(membersTemp)
                                                     }
+                                                    showDialog()
                                                 }
+                                            } else {
+                                                showNoShareDialog();
                                             }
                                         }
                                         }
@@ -323,7 +297,7 @@ export default function ImageSelectorScreen({navigation, route}) {
                             onPress={confirmImage}
                             style={[(((route.params.comingFrom === 'MainScreen' || route.params.comingFrom === 'DMScreen') && selectedImage.length === 0) ||
                                 ((route.params.comingFrom === 'NotesScreen' || route.params.comingFrom === 'Chat') && selectedImageFN == null)) ? styles.disabledButton : styles.confirmCancelButton]}
-                            disabled = {(route.params.comingFrom === 'MainScreen' || route.params.comingFrom === 'DMScreen') ? selectedImage.length === 0 : selectedImageFN == null}
+                            disabled={(route.params.comingFrom === 'MainScreen' || route.params.comingFrom === 'DMScreen') ? selectedImage.length === 0 : selectedImageFN == null}
                         >
                             Confirm
                         </Button>
@@ -400,19 +374,31 @@ export default function ImageSelectorScreen({navigation, route}) {
                                 onPress={() => {
                                     const id = uuidv4();
                                     const peopleToShare = recipients.split(',')
+                                    const peopleWhoHaveIt = [...imageToS.image.sharedWith];
+                                    const numPeople = imageToS.image.numShared + (peopleToShare.length - 1);
                                     for (let i = 1; i < peopleToShare.length; i++) {
-                                        route.params.groupRef.collection('members').doc(peopleToShare[i]).collection('images').doc(imageToS.image._id).set({
-                                            imageName: imageToS.image.imageName,
-                                            imageNameStatic: imageToS.image.imageNameStatic,
-                                            uri: imageToS.image.uri,
-                                            uuid: id
-                                        })
-                                        route.params.groupRef.collection('imageCanBeShared').doc(imageToS.image._id).update({
-                                            numShared: firebase.firestore.FieldValue.increment(1),
-                                            sharedWith: firebase.firestore.FieldValue.arrayUnion(peopleToShare[i])
+                                        peopleWhoHaveIt.push(peopleToShare[i])
+                                    }
+                                    for (let i = 0; i < imageToS.image.sharedWith.length; i++) {
+                                        route.params.groupRef.collection('members').doc(imageToS.image.sharedWith[i]).collection('images').doc(imageToS.image._id).update({
+                                            numShared: numPeople,
+                                            sharedWith: peopleWhoHaveIt
+                                        }).then(() => {
+                                            for (let i = 1; i < peopleToShare.length; i++) {
+                                                route.params.groupRef.collection('members').doc(peopleToShare[i]).collection('images').doc(imageToS.image._id).set({
+                                                    imageName: imageToS.image.imageName,
+                                                    imageNameStatic: imageToS.image.imageNameStatic,
+                                                    uri: imageToS.image.uri,
+                                                    uuid: id,
+                                                    numShared: numPeople,
+                                                    sharedWith: peopleWhoHaveIt
+                                                })
+                                            }
+                                        }).then(() => {
+                                            setRecipients("")
+                                            hideDialog()
                                         })
                                     }
-                                    hideDialog()
                                 }}
                             >
                                 Share
@@ -459,8 +445,7 @@ export default function ImageSelectorScreen({navigation, route}) {
                                             imageTemp.imageName = name;
                                             setSelectedImageFN(imageTemp);
                                         }
-                                    }
-                                    else {
+                                    } else {
                                         if (selectedImageUUID !== "" && imageToEdit.image.uuid === selectedImage.uuid) {
                                             setSelectedImageName(name);
                                         }
@@ -474,8 +459,7 @@ export default function ImageSelectorScreen({navigation, route}) {
                                                     }
                                                 })
                                             })
-                                        }
-                                        else {
+                                        } else {
                                             groupRef.collection('members').doc(user.toJSON().email).onSnapshot((snapshot) => {
                                                 if (snapshot.get('imageUUID') === image.uuid) {
                                                     groupRef.collection('members').doc(user.toJSON().email).update({

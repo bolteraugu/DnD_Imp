@@ -6,16 +6,7 @@ import {AuthUserContext} from "../navigation/AuthUserProvider";
 global.screenWidth = Dimensions.get("window").width;
 global.screenHeight = Dimensions.get("window").height;
 
-export default function NoteCard({title, groupRef, note, navigation, onChange, index, shareNote, isDM, user, userPermissions}) {
-    function deleteNote() {
-        groupRef
-            .collection('notes')
-            .doc(note._id)
-            .delete()
-            .then(console.log('Successfully deleted note'), (error) =>
-                console.log('Failed to delete note: ' + error)
-            );
-    }
+export default function NoteCard({title, groupRef, note, navigation, onChange, index, shareNote, isDM, user, userPermissions, showConfirmationDialog}) {
 
     return (
         <Card elevation={4} style={styles.card}>
@@ -54,7 +45,12 @@ export default function NoteCard({title, groupRef, note, navigation, onChange, i
                         Share
                     </Button>
                     {isDM || note.creator === user.toJSON().email ?
-                        <Button onPress={deleteNote}>Delete</Button>
+                        <Button onPress={() => {
+                            showConfirmationDialog(note);
+                        }}
+                        >
+                            Delete
+                        </Button>
                         :
                         null
                     }

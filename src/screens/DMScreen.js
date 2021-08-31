@@ -48,6 +48,21 @@ export default function DMScreen({route, navigation}) {
   const [chatImage, setChatImage] = useState("");
   const [chatImageName, setChatImageName] = useState("");
     const [chatImageUUID, setChatImageUUID] = useState("");
+    const [assignVisible, setAssignVisible] = useState(false); //Whether the data is loading
+    const showAssignDialog = () => setAssignVisible(true);
+    const hideAssignDialog = () => setAssignVisible(false);
+    const [assignItems, setAssignItems] = useState([]);
+    const [showAssignDropDown, setShowAssignDropDown] = useState(false);
+    const [recipients, setRecipients] = useState("");
+    const [assignCharacter, setAssignCharacter] = useState("");
+    const [charIndex, setCharIndex] = useState("");
+    const [deleteVisible, setDeleteVisible] = useState(false); //Whether the data is loading
+    const showDeleteDialog = () => setDeleteVisible(true);
+    const hideDeleteDialog = () => setDeleteVisible(false);
+    const [deleteChar, setDeleteChar] = useState("");
+    const [deleteAllVisible, setDeleteAllVisible] = useState(false); //Whether the data is loading
+    const showDeleteAllDialog = () => setDeleteAllVisible(true);
+    const hideDeleteAllDialog = () => setDeleteAllVisible(false);
 
   global.showSettingsDialog = () => {
       showDialog();
@@ -74,6 +89,8 @@ export default function DMScreen({route, navigation}) {
                   });
                   itemsWebTemp.push(mem);
                   setItems(itemsTemp);
+                  setAssignItems(itemsTemp);
+                  console.log(itemsTemp);
                   setItemsWeb(itemsWebTemp)
                   if (Platform.OS === 'web' && count === 0) {
                       setNewDM(mem);
@@ -205,23 +222,49 @@ export default function DMScreen({route, navigation}) {
     return <Spinner />;
   }
 
-  function addCharacter() {
-    groupRef
-        .collection('characters')
-        .add(CharacterTemplate)
-        .then((char) => {
-          char.update({
-            assignedTo: user.toJSON().email
-          })
-        })
-        .then(console.log('Successfully added character'), (error) =>
-            alert(error)
-        );
+  function deleteCharacter(character) {
+        groupRef
+            .collection('characters')
+            .doc(character._id)
+            .delete()
+            .then(console.log('Successfully deleted character'), (error) =>
+                console.log('Failed to delete character: ' + error)
+            );
   }
 
-  function updateCharacter(index, field, text, isInt) {
+  function addCharacter() {
+      if (isDM) {
+          groupRef
+              .collection('characters')
+              .add(CharacterTemplate)
+              .then((char) => {
+                  char.update({
+                      assignedTo: ""
+                  })
+              })
+              .then(console.log('Successfully added character'), (error) =>
+                  alert(error)
+              );
+      }
+      else {
+          groupRef
+              .collection('characters')
+              .add(CharacterTemplate)
+              .then((char) => {
+                  char.update({
+                      assignedTo: user.toJSON().email
+                  })
+              })
+              .then(console.log('Successfully added character'), (error) =>
+                  alert(error)
+              );
+      }
+
+  }
+
+  function updateCharacter(index, field, text) {
     const newCharacters = [...characters];
-    newCharacters[index][field] = isInt ? Number(text) : text;
+    newCharacters[index][field] = text;
     setCharacters(newCharacters);
   }
 
@@ -250,13 +293,7 @@ export default function DMScreen({route, navigation}) {
                           style={styles.popUpEditButtons}
                           mode={"contained"}
                           onPress={() => {
-                              groupRef.collection('messages').get().then((snapshot) => {
-                                  snapshot.docs.forEach(doc => {
-                                      doc.ref.delete();
-                                  })
-                              }).then(() => {
-                                  hideDialog();
-                              })
+                              showDeleteAllDialog();
                           }}
                       >
                           Delete all messages
@@ -447,7 +484,10 @@ export default function DMScreen({route, navigation}) {
                 <View style={styles.charactersContainer}>
                     <View>
                         <Button
-                            mode="contained" onPress={addCharacter}>
+                            mode="contained"
+                            onPress={addCharacter}
+                            style = {{marginLeft: screenWidth * 0.0037509377344336, marginRight: screenWidth * 0.0037109377344336, marginTop: screenHeight * 0.0046489361702128}}
+                        >
                             Add New Character
                         </Button>
                     </View>
@@ -596,6 +636,15 @@ export default function DMScreen({route, navigation}) {
                               isDM={isDM}
                               character={item}
                               index={item.index}
+                              showConfirmationDialog={(character) => {
+                                  setDeleteChar(character);
+                                  showDeleteDialog();
+                              }}
+                              showAssign={(character, index) => {
+                                  setAssignCharacter(character);
+                                  setCharIndex(index);
+                                  showAssignDialog();
+                              }}
                               userPermissions={userPermissions}
                               showImage={(image, name) => {
                                   setImageToShow(image);
@@ -610,12 +659,112 @@ export default function DMScreen({route, navigation}) {
                       ListFooterComponent={
                         <View style = {styles.gap}>
                           <Button
-                              mode="contained" onPress={addCharacter}>
+                              style = {{marginLeft: screenWidth * 0.0037509377344336, marginRight: screenWidth * 0.0037109377344336, marginTop: screenHeight * 0.0046489361702128}}
+                              mode="contained"
+                              onPress={addCharacter}
+                          >
                             Add New Character
                           </Button>
                         </View>
                       }
                   />
+                    <Portal>
+                        <Dialog
+                            visible={assignVisible}
+                            onDismiss={hideAssignDialog}
+                            style={styles.assignWindow}
+                        >
+                            <Dialog.Title
+                                style={styles.assignTitle}>
+                                Assign a user to this character
+                            </Dialog.Title>
+                            <Dialog.Content>
+                                <DropDown
+                                    label={"Please select users..."}
+                                    list={assignItems.filter(val => val !== assignCharacter.assignedTo)}
+                                    visible={showAssignDropDown}
+                                    showDropDown={() => setShowAssignDropDown(true)}
+                                    onDismiss={() => setShowAssignDropDown(false)}
+                                    dropDownStyle={styles.shareDropdown}
+                                    setValue={setRecipients}
+                                    value={recipients}
+                                />
+                            </Dialog.Content>
+                            <Dialog.Actions>
+                                <View style={styles.assignButtonContainer}>
+                                    <Button
+                                        mode="contained"
+                                        style={styles.assignButton}
+                                        disabled={recipients.length === 0}
+                                        onPress={() => {
+                                            updateCharacter(charIndex, 'assignedTo', recipients);
+                                            groupRef
+                                                .collection('characters')
+                                                .doc(assignCharacter._id)
+                                                .update(assignCharacter)
+                                                .then(console.log('Successfully updated character'), (error) =>
+                                                    console.log('Failed to update character: ' + error)
+                                                );
+                                            setRecipients("");
+                                            hideAssignDialog();
+                                        }}
+                                    >
+                                        Share
+                                    </Button>
+                                    <View style={styles.assignGap}/>
+                                    <Button
+                                        mode="contained"
+                                        style={styles.assignButton}
+                                        onPress={hideAssignDialog}
+                                    >
+                                        Cancel
+                                    </Button>
+                                </View>
+                            </Dialog.Actions>
+                        </Dialog>
+                    </Portal>
+                    <Portal>
+                        <Dialog
+                            visible={deleteVisible}
+                            onDismiss={hideDeleteDialog}
+                            style={styles.assignWindow}
+                        >
+                            <Dialog.Title
+                                style={styles.assignTitle}
+                            >
+                                Are you sure you want to delete this character?
+                            </Dialog.Title>
+                            <Dialog.Content>
+                                <Text
+                                    style={styles.assignTitle}
+                                >
+                                    NOTE: If you delete this character you will not be able to recover it.
+                                </Text>
+                            </Dialog.Content>
+                            <Dialog.Actions>
+                                <View style={styles.assignButtonContainer}>
+                                    <Button
+                                        mode="contained"
+                                        style={styles.assignButton}
+                                        onPress={() => {
+                                            deleteCharacter(deleteChar);
+                                            hideDeleteDialog();
+                                        }}
+                                    >
+                                        Yes
+                                    </Button>
+                                    <View style={styles.assignGap}/>
+                                    <Button
+                                        mode="contained"
+                                        style={styles.assignButton}
+                                        onPress={hideDeleteDialog}
+                                    >
+                                        No
+                                    </Button>
+                                </View>
+                            </Dialog.Actions>
+                        </Dialog>
+                    </Portal>
                   <Portal>
                     <Dialog
                         visible={visible}
@@ -696,6 +845,54 @@ export default function DMScreen({route, navigation}) {
                       </Dialog.Actions>
                     </Dialog>
                   </Portal>
+                    <Portal>
+                        <Dialog
+                            visible={deleteAllVisible}
+                            onDismiss={hideDeleteAllDialog}
+                            style={styles.assignWindow}
+                        >
+                            <Dialog.Title
+                                style={styles.assignTitle}
+                            >
+                                Are you sure you want to delete all chat messages?
+                            </Dialog.Title>
+                            <Dialog.Content>
+                                <Text
+                                    style={styles.assignTitle}
+                                >
+                                    NOTE: If you delete all chat messages you will not be able to recover them.
+                                </Text>
+                            </Dialog.Content>
+                            <Dialog.Actions>
+                                <View style={styles.assignButtonContainer}>
+                                    <Button
+                                        mode="contained"
+                                        style={styles.assignButton}
+                                        onPress={() => {
+                                            groupRef.collection('messages').get().then((snapshot) => {
+                                                snapshot.docs.forEach(doc => {
+                                                    doc.ref.delete();
+                                                })
+                                            }).then(() => {
+                                                hideDeleteAllDialog();
+                                                hideDialog();
+                                            })
+                                        }}
+                                    >
+                                        Yes
+                                    </Button>
+                                    <View style={styles.assignGap}/>
+                                    <Button
+                                        mode="contained"
+                                        style={styles.assignButton}
+                                        onPress={hideDeleteAllDialog}
+                                    >
+                                        No
+                                    </Button>
+                                </View>
+                            </Dialog.Actions>
+                        </Dialog>
+                    </Portal>
                     <Portal>
                         <Dialog
                             visible={imageVisible}
@@ -806,6 +1003,26 @@ DMScreen.navigationOptions = {
 };
 
 const styles = StyleSheet.create({
+    assignGap: {
+        width: screenWidth * 0.04
+    },
+    assignWindow: {
+        width: screenWidth * 0.525,
+        alignSelf: 'center',
+        marginTop: screenHeight * -0.1663829787234
+    },
+    assignTitle: {
+        alignSelf: 'center'
+    },
+    assignButtonContainer: {
+        justifyContent: 'center',
+        marginBottom: screenHeight * 0.020363829787234,
+        width: "100%",
+        flexDirection: 'row',
+    },
+    assignButton: {
+        width: screenWidth * 0.1
+    },
     permissionsWindow: {
         width: "50%",
         alignSelf: 'center',

@@ -35,6 +35,10 @@ export default function NotesScreen({navigation, route}) {
     const hideNoShareDialog = () => setNoShareVisible(false);
     const [items, setItems] = useState("");
     const [noteToS, setNoteToS] = useState([]);
+    const [deleteN, setDeleteN] = useState(null);
+    const [deleteVisible, setDeleteVisible] = useState(false); //Whether the data is loading
+    const showDeleteDialog = () => setDeleteVisible(true);
+    const hideDeleteDialog = () => setDeleteVisible(false);
 
     // Load data from firebase
     useEffect(() => {
@@ -82,6 +86,16 @@ export default function NotesScreen({navigation, route}) {
         return unsubscribe;
     }, []);
 
+    function deleteNote(note) {
+        route.params.groupRef
+            .collection('notes')
+            .doc(note._id)
+            .delete()
+            .then(console.log('Successfully deleted note'), (error) =>
+                console.log('Failed to delete note: ' + error)
+            );
+    }
+
     function updateNote(index, fieldName, text) {
         const tempNotes = [...notes];
         tempNotes[index][fieldName] = text;
@@ -104,6 +118,10 @@ export default function NotesScreen({navigation, route}) {
                             <NoteCard
                                 title={item.title}
                                 note={item}
+                                showConfirmationDialog={(note) => {
+                                    setDeleteN(note);
+                                    showDeleteDialog();
+                                }}
                                 user={user}
                                 isDM={route.params.isDM}
                                 userPermissions={route.params.userPermissions}
@@ -237,12 +255,76 @@ export default function NotesScreen({navigation, route}) {
                     </Dialog.Actions>
                 </Dialog>
             </Portal>
+            <Portal>
+                <Dialog
+                    visible={deleteVisible}
+                    onDismiss={hideDeleteDialog}
+                    style={styles.assignWindow}
+                >
+                    <Dialog.Title
+                        style={styles.assignTitle}
+                    >
+                        Are you sure you want to delete this note?
+                    </Dialog.Title>
+                    <Dialog.Content>
+                        <Text
+                            style={styles.assignTitle}
+                        >
+                            NOTE: If you delete this note you will not be able to recover it.
+                            If you have shared this note with any users then it will be deleted for them too.
+                        </Text>
+                    </Dialog.Content>
+                    <Dialog.Actions>
+                        <View style={styles.assignButtonContainer}>
+                            <Button
+                                mode="contained"
+                                style={styles.assignButton}
+                                onPress={() => {
+                                    deleteNote(deleteN);
+                                    hideDeleteDialog();
+                                }}
+                            >
+                                Yes
+                            </Button>
+                            <View style={styles.assignGap}/>
+                            <Button
+                                mode="contained"
+                                style={styles.assignButton}
+                                onPress={hideDeleteDialog}
+                            >
+                                No
+                            </Button>
+                        </View>
+                    </Dialog.Actions>
+                </Dialog>
+            </Portal>
         </Provider>
     );
 }
 
 //Styles for the content
 const styles = StyleSheet.create({
+    assignGap: {
+        width: screenWidth * 0.04
+    },
+    assignWindow: {
+        width: screenWidth * 0.525,
+        alignSelf: 'center',
+        marginTop: screenHeight * -0.1663829787234
+    },
+    assignTitle: {
+        alignSelf: 'center',
+        textAlign: 'center'
+    },
+    assignButtonContainer: {
+        justifyContent: 'center',
+        marginBottom: screenHeight * 0.020363829787234,
+        width: "100%",
+        flexDirection: 'row',
+    },
+    assignButton: {
+        width: screenWidth * 0.1
+    },
     shareTitle: {
       alignSelf: 'center'
     },

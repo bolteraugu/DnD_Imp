@@ -51,8 +51,8 @@ export default function AddSpellScreen({navigation}) {
                                     props.style,
                                     props.multiline
                                         ? {
-                                            paddingTop: screenHeight * 0.0199468085106383,
-                                            paddingLeft: screenWidth * 0.018754688672168,
+                                            paddingTop: screenHeight * 0.0132978723404255,
+                                            paddingLeft: screenWidth * 0.0090022505626407,
                                             paddingRight: screenWidth * 0.018754688672168,
                                             paddingBottom: screenHeight * 0.0106382978723404,
                                             height: screenHeight * 0.2659574468085106,

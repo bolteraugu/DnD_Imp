@@ -199,8 +199,8 @@ export default function SpellsScreen({route, navigation}) {
                                         placeholder={"Enter spellcasting ability..."}
                                         value={character.spellcasting_ability}
                                         onChangeText={(text) => {
-                                            pushChange(global.index, 'spellcasting_ability', text, false);
-                                            updateCharacterLocal('spellcasting_ability', text, false);
+                                            pushChange(global.index, 'spellcasting_ability', text);
+                                            updateCharacterLocal('spellcasting_ability', text);
                                             updateCharacter('spellcasting_ability', text);
                                         }}
                                     />
@@ -213,14 +213,14 @@ export default function SpellsScreen({route, navigation}) {
                                 <View style =  {styles.spellsContainer}>
                                     <TextInput
                                         style={styles.spellsInput}
-                                        keyboardType="number-pad"
+                                        keyboardType="phone-pad"
                                         editable={isDM || character.assignedTo === user.toJSON().email}
                                         placeholder={"Enter spell save DC..."}
                                         underlineColor="transparent"
-                                        value={String(character.spell_save_DC)}
+                                        value={character.spell_save_DC}
                                         onChangeText={(text) => {
-                                            pushChange(global.index, 'spell_save_DC', text, true);
-                                            updateCharacterLocal('spell_save_DC', text, true);
+                                            pushChange(global.index, 'spell_save_DC', text);
+                                            updateCharacterLocal('spell_save_DC', text);
                                             updateCharacter('spell_save_DC', text);
                                         }}
                                     />
@@ -233,14 +233,14 @@ export default function SpellsScreen({route, navigation}) {
                                 <View style =  {styles.spellsContainer}>
                                     <TextInput
                                         style={styles.spellsInput}
-                                        keyboardType="number-pad"
+                                        keyboardType="phone-pad"
                                         editable={isDM || character.assignedTo === user.toJSON().email}
                                         placeholder={"Enter spell attack bonus..."}
                                         underlineColor="transparent"
-                                        value={String(character.spell_attack_bonus)}
+                                        value={character.spell_attack_bonus}
                                         onChangeText={(text) => {
-                                            pushChange(global.index, 'spell_attack_bonus', text, true);
-                                            updateCharacterLocal('spell_attack_bonus', text, true);
+                                            pushChange(global.index, 'spell_attack_bonus', text);
+                                            updateCharacterLocal('spell_attack_bonus', text);
                                             updateCharacter('spell_attack_bonus', text);
                                         }}
                                     />
@@ -262,13 +262,13 @@ export default function SpellsScreen({route, navigation}) {
                                         <TextInput
                                             style={styles.spellSlotInput}
                                             underlineColor="transparent"
-                                            keyboardType="number-pad"
+                                            keyboardType="phone-pad"
                                             editable={isDM || character.assignedTo === user.toJSON().email}
                                             placeholder={"Enter 1st-level spell slots..."}
-                                            value={String(character.first_level_spell_slots)}
+                                            value={character.first_level_spell_slots}
                                             onChangeText={(text) => {
-                                                pushChange(global.index, 'first_level_spell_slots', text, true);
-                                                updateCharacterLocal('first_level_spell_slots', text, true);
+                                                pushChange(global.index, 'first_level_spell_slots', text);
+                                                updateCharacterLocal('first_level_spell_slots', text);
                                                 updateCharacter('first_level_spell_slots', text);
                                             }}
                                         />
@@ -281,14 +281,14 @@ export default function SpellsScreen({route, navigation}) {
                                     <View style =  {styles.spellsContainer}>
                                         <TextInput
                                             style={styles.spellSlotInput}
-                                            keyboardType="number-pad"
+                                            keyboardType="phone-pad"
                                             editable={isDM || character.assignedTo === user.toJSON().email}
                                             placeholder={"Enter 2nd-level spell slots..."}
                                             underlineColor="transparent"
-                                            value={String(character.second_level_spell_slots)}
+                                            value={character.second_level_spell_slots}
                                             onChangeText={(text) => {
-                                                pushChange(global.index, 'second_level_spell_slots', text, true);
-                                                updateCharacterLocal('second_level_spell_slots', text, true);
+                                                pushChange(global.index, 'second_level_spell_slots', text);
+                                                updateCharacterLocal('second_level_spell_slots', text);
                                                 updateCharacter('second_level_spell_slots', text);
                                             }}
                                         />
@@ -301,14 +301,14 @@ export default function SpellsScreen({route, navigation}) {
                                     <View style =  {styles.spellsContainer}>
                                         <TextInput
                                             style={styles.spellSlotInput}
-                                            keyboardType="number-pad"
+                                            keyboardType="phone-pad"
                                             editable={isDM || character.assignedTo === user.toJSON().email}
                                             placeholder={"Enter 3rd-level spell slots..."}
                                             underlineColor="transparent"
-                                            value={String(character.third_level_spell_slots)}
+                                            value={character.third_level_spell_slots}
                                             onChangeText={(text) => {
-                                                pushChange(global.index, 'third_level_spell_slots', text, true);
-                                                updateCharacterLocal('third_level_spell_slots', text, true);
+                                                pushChange(global.index, 'third_level_spell_slots', text);
+                                                updateCharacterLocal('third_level_spell_slots', text);
                                                 updateCharacter('third_level_spell_slots', text);
                                             }}
                                         />
@@ -324,13 +324,13 @@ export default function SpellsScreen({route, navigation}) {
                                         <TextInput
                                             style={styles.spellSlotInput}
                                             underlineColor="transparent"
-                                            keyboardType="number-pad"
+                                            keyboardType="phone-pad"
                                             editable={isDM || character.assignedTo === user.toJSON().email}
                                             placeholder={"Enter 4th-level spell slots..."}
-                                            value={String(character.fourth_level_spell_slots)}
+                                            value={character.fourth_level_spell_slots}
                                             onChangeText={(text) => {
-                                                pushChange(global.index, 'fourth_level_spell_slots', text, true);
-                                                updateCharacterLocal('fourth_level_spell_slots', text, true);
+                                                pushChange(global.index, 'fourth_level_spell_slots', text);
+                                                updateCharacterLocal('fourth_level_spell_slots', text);
                                                 updateCharacter('fourth_level_spell_slots', text);
                                             }}
                                         />
@@ -343,14 +343,14 @@ export default function SpellsScreen({route, navigation}) {
                                     <View style =  {styles.spellsContainer}>
                                         <TextInput
                                             style={styles.spellSlotInput}
-                                            keyboardType="number-pad"
+                                            keyboardType="phone-pad"
                                             editable={isDM || character.assignedTo === user.toJSON().email}
                                             placeholder={"Enter 5th-level spell slots..."}
                                             underlineColor="transparent"
-                                            value={String(character.fifth_level_spell_slots)}
+                                            value={character.fifth_level_spell_slots}
                                             onChangeText={(text) => {
-                                                pushChange(global.index, 'fifth_level_spell_slots', text, true);
-                                                updateCharacterLocal('fifth_level_spell_slots', text, true);
+                                                pushChange(global.index, 'fifth_level_spell_slots', text);
+                                                updateCharacterLocal('fifth_level_spell_slots', text);
                                                 updateCharacter('fifth_level_spell_slots', text);
                                             }}
                                         />
@@ -363,14 +363,14 @@ export default function SpellsScreen({route, navigation}) {
                                     <View style =  {styles.spellsContainer}>
                                         <TextInput
                                             style={styles.spellSlotInput}
-                                            keyboardType="number-pad"
+                                            keyboardType="phone-pad"
                                             editable={isDM || character.assignedTo === user.toJSON().email}
                                             placeholder={"Enter 6th-level spell slots..."}
                                             underlineColor="transparent"
-                                            value={String(character.sixth_level_spell_slots)}
+                                            value={character.sixth_level_spell_slots}
                                             onChangeText={(text) => {
-                                                pushChange(global.index, 'sixth_level_spell_slots', text, true);
-                                                updateCharacterLocal('sixth_level_spell_slots', text, true);
+                                                pushChange(global.index, 'sixth_level_spell_slots', text);
+                                                updateCharacterLocal('sixth_level_spell_slots', text);
                                                 updateCharacter('sixth_level_spell_slots', text);
                                             }}
                                         />
@@ -386,13 +386,13 @@ export default function SpellsScreen({route, navigation}) {
                                         <TextInput
                                             style={styles.spellSlotInput}
                                             underlineColor="transparent"
-                                            keyboardType="number-pad"
+                                            keyboardType="phone-pad"
                                             editable={isDM || character.assignedTo === user.toJSON().email}
                                             placeholder={"Enter 7th-level spell slots..."}
-                                            value={String(character.seventh_level_spell_slots)}
+                                            value={character.seventh_level_spell_slots}
                                             onChangeText={(text) => {
-                                                pushChange(global.index, 'seventh_level_spell_slots', text, true);
-                                                updateCharacterLocal('seventh_level_spell_slots', text, true);
+                                                pushChange(global.index, 'seventh_level_spell_slots', text);
+                                                updateCharacterLocal('seventh_level_spell_slots', text);
                                                 updateCharacter('seventh_level_spell_slots', text);
                                             }}
                                         />
@@ -405,14 +405,14 @@ export default function SpellsScreen({route, navigation}) {
                                     <View style =  {styles.spellsContainer}>
                                         <TextInput
                                             style={styles.spellSlotInput}
-                                            keyboardType="number-pad"
+                                            keyboardType="phone-pad"
                                             editable={isDM || character.assignedTo === user.toJSON().email}
                                             placeholder={"Enter 8th-level spell slots..."}
                                             underlineColor="transparent"
-                                            value={String(character.eighth_level_spell_slots)}
+                                            value={character.eighth_level_spell_slots}
                                             onChangeText={(text) => {
-                                                pushChange(global.index, 'eighth_level_spell_slots', text, true);
-                                                updateCharacterLocal('eighth_level_spell_slots', text, true);
+                                                pushChange(global.index, 'eighth_level_spell_slots', text);
+                                                updateCharacterLocal('eighth_level_spell_slots', text);
                                                 updateCharacter('eighth_level_spell_slots', text);
                                             }}
                                         />
@@ -425,14 +425,14 @@ export default function SpellsScreen({route, navigation}) {
                                     <View style =  {styles.spellsContainer}>
                                         <TextInput
                                             style={styles.spellSlotInput}
-                                            keyboardType="number-pad"
+                                            keyboardType="phone-pad"
                                             editable={isDM || character.assignedTo === user.toJSON().email}
                                             placeholder={"Enter 9th-level spell slots..."}
                                             underlineColor="transparent"
-                                            value={String(character.ninth_level_spell_slots)}
+                                            value={character.ninth_level_spell_slots}
                                             onChangeText={(text) => {
-                                                pushChange(global.index, 'ninth_level_spell_slots', text, true);
-                                                updateCharacterLocal('ninth_level_spell_slots', text, true);
+                                                pushChange(global.index, 'ninth_level_spell_slots', text);
+                                                updateCharacterLocal('ninth_level_spell_slots', text);
                                                 updateCharacter('ninth_level_spell_slots', text);
                                             }}
                                         />

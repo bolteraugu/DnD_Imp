@@ -41,9 +41,9 @@ export default function MainScreen({route, navigation}) {
         return <Spinner />;
     }
 
-    function updateCharacterLocal(fieldName, text, isNumber) {
+    function updateCharacterLocal(fieldName, text) {
         let tempCharacter = JSON.parse(JSON.stringify(character));
-        tempCharacter[fieldName] = isNumber ? Number(text) : text;
+        tempCharacter[fieldName] = text;
         setCharacter(tempCharacter);
     }
 
@@ -51,7 +51,7 @@ export default function MainScreen({route, navigation}) {
         if (fieldName === 'strength') {
             global.charaRef
                 .update({
-                    strength: Number(value)
+                    strength: value
                 })
                 .then(console.log('Successfully updated character'), (error) =>
                     console.log('Failed to update character: ' + error)
@@ -60,7 +60,7 @@ export default function MainScreen({route, navigation}) {
         else if (fieldName === 'constitution') {
             global.charaRef
                 .update({
-                    constitution: Number(value)
+                    constitution: value
                 })
                 .then(console.log('Successfully updated character'), (error) =>
                     console.log('Failed to update character: ' + error)
@@ -69,7 +69,7 @@ export default function MainScreen({route, navigation}) {
         else if (fieldName === 'dexterity') {
             global.charaRef
                 .update({
-                    dexterity: Number(value)
+                    dexterity: value
                 })
                 .then(console.log('Successfully updated character'), (error) =>
                     console.log('Failed to update character: ' + error)
@@ -78,7 +78,7 @@ export default function MainScreen({route, navigation}) {
         else if (fieldName === 'wisdom') {
             global.charaRef
                 .update({
-                    wisdom: Number(value)
+                    wisdom: value
                 })
                 .then(console.log('Successfully updated character'), (error) =>
                     console.log('Failed to update character: ' + error)
@@ -87,7 +87,7 @@ export default function MainScreen({route, navigation}) {
         else if (fieldName === 'intelligence') {
             global.charaRef
                 .update({
-                    intelligence: Number(value)
+                    intelligence: value
                 })
                 .then(console.log('Successfully updated character'), (error) =>
                     console.log('Failed to update character: ' + error)
@@ -96,7 +96,7 @@ export default function MainScreen({route, navigation}) {
         else if (fieldName === 'charisma') {
             global.charaRef
                 .update({
-                    charisma: Number(value)
+                    charisma: value
                 })
                 .then(console.log('Successfully updated character'), (error) =>
                     console.log('Failed to update character: ' + error)
@@ -105,7 +105,7 @@ export default function MainScreen({route, navigation}) {
         else if (fieldName === 'proficiency') {
             global.charaRef
                 .update({
-                    proficiency: Number(value)
+                    proficiency: value
                 })
                 .then(console.log('Successfully updated character'), (error) =>
                     console.log('Failed to update character: ' + error)
@@ -159,7 +159,7 @@ export default function MainScreen({route, navigation}) {
         else if (fieldName === 'level') {
             global.charaRef
                 .update({
-                    level: Number(value)
+                    level: value
                 })
                 .then(console.log('Successfully updated character'), (error) =>
                     console.log('Failed to update character: ' + error)
@@ -168,7 +168,7 @@ export default function MainScreen({route, navigation}) {
         else if (fieldName === 'current_hp') {
             global.charaRef
                 .update({
-                    current_hp: Number(value)
+                    current_hp: value
                 })
                 .then(console.log('Successfully updated character'), (error) =>
                     console.log('Failed to update character: ' + error)
@@ -177,7 +177,7 @@ export default function MainScreen({route, navigation}) {
         else if (fieldName === 'temp_hp') {
             global.charaRef
                 .update({
-                    temp_hp: Number(value)
+                    temp_hp: value
                 })
                 .then(console.log('Successfully updated character'), (error) =>
                     console.log('Failed to update character: ' + error)
@@ -186,7 +186,7 @@ export default function MainScreen({route, navigation}) {
         else if (fieldName === 'max_hp') {
             global.charaRef
                 .update({
-                    max_hp: Number(value)
+                    max_hp: value
                 })
                 .then(console.log('Successfully updated character'), (error) =>
                     console.log('Failed to update character: ' + error)
@@ -195,7 +195,7 @@ export default function MainScreen({route, navigation}) {
         else if (fieldName === 'armor_class') {
             global.charaRef
                 .update({
-                    armor_class: Number(value)
+                    armor_class: value
                 })
                 .then(console.log('Successfully updated character'), (error) =>
                     console.log('Failed to update character: ' + error)
@@ -204,7 +204,7 @@ export default function MainScreen({route, navigation}) {
         else if (fieldName === 'initiative') {
             global.charaRef
                 .update({
-                    initiative: Number(value)
+                    initiative: value
                 })
                 .then(console.log('Successfully updated character'), (error) =>
                     console.log('Failed to update character: ' + error)
@@ -213,7 +213,7 @@ export default function MainScreen({route, navigation}) {
         else if (fieldName === 'speed') {
             global.charaRef
                 .update({
-                    speed: Number(value)
+                    speed: value
                 })
                 .then(console.log('Successfully updated character'), (error) =>
                     console.log('Failed to update character: ' + error)
@@ -222,7 +222,7 @@ export default function MainScreen({route, navigation}) {
         else if (fieldName === 'passive_perception') {
             global.charaRef
                 .update({
-                    passive_perception: Number(value)
+                    passive_perception: value
                 })
                 .then(console.log('Successfully updated character'), (error) =>
                     console.log('Failed to update character: ' + error)
@@ -231,7 +231,7 @@ export default function MainScreen({route, navigation}) {
         else if (fieldName === 'passive_investigation') {
             global.charaRef
                 .update({
-                    passive_investigation: Number(value)
+                    passive_investigation: value
                 })
                 .then(console.log('Successfully updated character'), (error) =>
                     console.log('Failed to update character: ' + error)
@@ -240,7 +240,7 @@ export default function MainScreen({route, navigation}) {
         else if (fieldName === 'passive_insight') {
             global.charaRef
                 .update({
-                    passive_insight: Number(value)
+                    passive_insight: value
                 })
                 .then(console.log('Successfully updated character'), (error) =>
                     console.log('Failed to update character: ' + error)
@@ -303,7 +303,7 @@ export default function MainScreen({route, navigation}) {
         else if (fieldName === 'ST_strength') {
             global.charaRef
                 .update({
-                    ST_strength: Number(value)
+                    ST_strength: value
                 })
                 .then(console.log('Successfully updated character'), (error) =>
                     console.log('Failed to update character: ' + error)
@@ -312,7 +312,7 @@ export default function MainScreen({route, navigation}) {
         else if (fieldName === 'ST_dexterity') {
             global.charaRef
                 .update({
-                    ST_dexterity: Number(value)
+                    ST_dexterity: value
                 })
                 .then(console.log('Successfully updated character'), (error) =>
                     console.log('Failed to update character: ' + error)
@@ -321,7 +321,7 @@ export default function MainScreen({route, navigation}) {
         else if (fieldName === 'ST_constitution') {
             global.charaRef
                 .update({
-                    ST_constitution: Number(value)
+                    ST_constitution: value
                 })
                 .then(console.log('Successfully updated character'), (error) =>
                     console.log('Failed to update character: ' + error)
@@ -330,7 +330,7 @@ export default function MainScreen({route, navigation}) {
         else if (fieldName === 'ST_intelligence') {
             global.charaRef
                 .update({
-                    ST_intelligence: Number(value)
+                    ST_intelligence: value
                 })
                 .then(console.log('Successfully updated character'), (error) =>
                     console.log('Failed to update character: ' + error)
@@ -339,7 +339,7 @@ export default function MainScreen({route, navigation}) {
         else if (fieldName === 'ST_wisdom') {
             global.charaRef
                 .update({
-                    ST_wisdom: Number(value)
+                    ST_wisdom: value
                 })
                 .then(console.log('Successfully updated character'), (error) =>
                     console.log('Failed to update character: ' + error)
@@ -348,7 +348,7 @@ export default function MainScreen({route, navigation}) {
         else if (fieldName === 'ST_charisma') {
             global.charaRef
                 .update({
-                    ST_charisma: Number(value)
+                    ST_charisma: value
                 })
                 .then(console.log('Successfully updated character'), (error) =>
                     console.log('Failed to update character: ' + error)
@@ -357,7 +357,7 @@ export default function MainScreen({route, navigation}) {
         else if (fieldName === 'acrobatics') {
             global.charaRef
                 .update({
-                    acrobatics: Number(value)
+                    acrobatics: value
                 })
                 .then(console.log('Successfully updated character'), (error) =>
                     console.log('Failed to update character: ' + error)
@@ -366,7 +366,7 @@ export default function MainScreen({route, navigation}) {
         else if (fieldName === 'animal_handling') {
             global.charaRef
                 .update({
-                    animal_handling: Number(value)
+                    animal_handling: value
                 })
                 .then(console.log('Successfully updated character'), (error) =>
                     console.log('Failed to update character: ' + error)
@@ -375,7 +375,7 @@ export default function MainScreen({route, navigation}) {
         else if (fieldName === 'arcana') {
             global.charaRef
                 .update({
-                    arcana: Number(value)
+                    arcana: value
                 })
                 .then(console.log('Successfully updated character'), (error) =>
                     console.log('Failed to update character: ' + error)
@@ -384,7 +384,7 @@ export default function MainScreen({route, navigation}) {
         else if (fieldName === 'athletics') {
             global.charaRef
                 .update({
-                    athletics: Number(value)
+                    athletics: value
                 })
                 .then(console.log('Successfully updated character'), (error) =>
                     console.log('Failed to update character: ' + error)
@@ -393,7 +393,7 @@ export default function MainScreen({route, navigation}) {
         else if (fieldName === 'deception') {
             global.charaRef
                 .update({
-                    deception: Number(value)
+                    deception: value
                 })
                 .then(console.log('Successfully updated character'), (error) =>
                     console.log('Failed to update character: ' + error)
@@ -402,7 +402,7 @@ export default function MainScreen({route, navigation}) {
         else if (fieldName === 'history') {
             global.charaRef
                 .update({
-                    history: Number(value)
+                    history: value
                 })
                 .then(console.log('Successfully updated character'), (error) =>
                     console.log('Failed to update character: ' + error)
@@ -411,7 +411,7 @@ export default function MainScreen({route, navigation}) {
         else if (fieldName === 'insight') {
             global.charaRef
                 .update({
-                    insight: Number(value)
+                    insight: value
                 })
                 .then(console.log('Successfully updated character'), (error) =>
                     console.log('Failed to update character: ' + error)
@@ -420,7 +420,7 @@ export default function MainScreen({route, navigation}) {
         else if (fieldName === 'intimidation') {
             global.charaRef
                 .update({
-                    intimidation: Number(value)
+                    intimidation: value
                 })
                 .then(console.log('Successfully updated character'), (error) =>
                     console.log('Failed to update character: ' + error)
@@ -429,7 +429,7 @@ export default function MainScreen({route, navigation}) {
         else if (fieldName === 'investigation') {
             global.charaRef
                 .update({
-                    investigation: Number(value)
+                    investigation: value
                 })
                 .then(console.log('Successfully updated character'), (error) =>
                     console.log('Failed to update character: ' + error)
@@ -438,7 +438,7 @@ export default function MainScreen({route, navigation}) {
         else if (fieldName === 'medicine') {
             global.charaRef
                 .update({
-                    medicine: Number(value)
+                    medicine: value
                 })
                 .then(console.log('Successfully updated character'), (error) =>
                     console.log('Failed to update character: ' + error)
@@ -447,7 +447,7 @@ export default function MainScreen({route, navigation}) {
         else if (fieldName === 'nature') {
             global.charaRef
                 .update({
-                    nature: Number(value)
+                    nature: value
                 })
                 .then(console.log('Successfully updated character'), (error) =>
                     console.log('Failed to update character: ' + error)
@@ -456,7 +456,7 @@ export default function MainScreen({route, navigation}) {
         else if (fieldName === 'perception') {
             global.charaRef
                 .update({
-                    perception: Number(value)
+                    perception: value
                 })
                 .then(console.log('Successfully updated character'), (error) =>
                     console.log('Failed to update character: ' + error)
@@ -465,7 +465,7 @@ export default function MainScreen({route, navigation}) {
         else if (fieldName === 'performance') {
             global.charaRef
                 .update({
-                    performance: Number(value)
+                    performance: value
                 })
                 .then(console.log('Successfully updated character'), (error) =>
                     console.log('Failed to update character: ' + error)
@@ -474,7 +474,7 @@ export default function MainScreen({route, navigation}) {
         else if (fieldName === 'persuasion') {
             global.charaRef
                 .update({
-                    persuasion: Number(value)
+                    persuasion: value
                 })
                 .then(console.log('Successfully updated character'), (error) =>
                     console.log('Failed to update character: ' + error)
@@ -483,7 +483,7 @@ export default function MainScreen({route, navigation}) {
         else if (fieldName === 'religion') {
             global.charaRef
                 .update({
-                    religion: Number(value)
+                    religion: value
                 })
                 .then(console.log('Successfully updated character'), (error) =>
                     console.log('Failed to update character: ' + error)
@@ -492,7 +492,7 @@ export default function MainScreen({route, navigation}) {
         else if (fieldName === 'sleight_of_hand') {
             global.charaRef
                 .update({
-                    sleight_of_hand: Number(value)
+                    sleight_of_hand: value
                 })
                 .then(console.log('Successfully updated character'), (error) =>
                     console.log('Failed to update character: ' + error)
@@ -501,7 +501,7 @@ export default function MainScreen({route, navigation}) {
         else if (fieldName === 'stealth') {
             global.charaRef
                 .update({
-                    stealth: Number(value)
+                    stealth: value
                 })
                 .then(console.log('Successfully updated character'), (error) =>
                     console.log('Failed to update character: ' + error)
@@ -510,7 +510,7 @@ export default function MainScreen({route, navigation}) {
         else if (fieldName === 'survival') {
             global.charaRef
                 .update({
-                    survival: Number(value)
+                    survival: value
                 })
                 .then(console.log('Successfully updated character'), (error) =>
                     console.log('Failed to update character: ' + error)
@@ -620,13 +620,13 @@ export default function MainScreen({route, navigation}) {
                         <View>
                             <TextInput
                                 style={styles.abilityScoresStyle}
-                                keyboardType="number-pad"
+                                keyboardType="phone-pad"
                                 editable={global.isDM || character.assignedTo === user.toJSON().email}
                                 underlineColor="transparent"
-                                value={String(character.strength)}
+                                value={character.strength}
                                 onChangeText={(text) => {
-                                    route.params.onFSChange(route.params.index, 'strength', text, true);
-                                    updateCharacterLocal('strength', text, true);
+                                    route.params.onFSChange(route.params.index, 'strength', text);
+                                    updateCharacterLocal('strength', text);
                                     updateCharacter('strength', text);
                                 }}
                             />
@@ -639,13 +639,13 @@ export default function MainScreen({route, navigation}) {
                         <View>
                             <TextInput
                                 style={styles.abilityScoresStyle}
-                                keyboardType="number-pad"
+                                keyboardType="phone-pad"
                                 editable={global.isDM || character.assignedTo === user.toJSON().email}
                                 underlineColor="transparent"
-                                value={String(character.constitution)}
+                                value={character.constitution}
                                 onChangeText={(text) => {
-                                    route.params.onFSChange(route.params.index,'constitution', text, true);
-                                    updateCharacterLocal('constitution', text, true);
+                                    route.params.onFSChange(route.params.index,'constitution', text);
+                                    updateCharacterLocal('constitution', text);
                                     updateCharacter('constitution', text);
                                 }}
                             />
@@ -658,13 +658,13 @@ export default function MainScreen({route, navigation}) {
                         <View>
                             <TextInput
                                 style={styles.abilityScoresStyle}
-                                keyboardType="number-pad"
+                                keyboardType="phone-pad"
                                 editable={global.isDM || character.assignedTo === user.toJSON().email}
                                 underlineColor="transparent"
-                                value={String(character.wisdom)}
+                                value={character.wisdom}
                                 onChangeText={(text) => {
-                                    route.params.onFSChange(route.params.index, 'wisdom', text, true);
-                                    updateCharacterLocal('wisdom', text, true);
+                                    route.params.onFSChange(route.params.index, 'wisdom', text);
+                                    updateCharacterLocal('wisdom', text);
                                     updateCharacter('wisdom', text);
                                 }}
                             />
@@ -679,13 +679,13 @@ export default function MainScreen({route, navigation}) {
                         <View>
                             <TextInput
                                 style={styles.abilityScoresStyle}
-                                keyboardType="number-pad"
+                                keyboardType="phone-pad"
                                 editable={global.isDM || character.assignedTo === user.toJSON().email}
                                 underlineColor="transparent"
-                                value={String(character.dexterity)}
+                                value={character.dexterity}
                                 onChangeText={(text) => {
-                                    route.params.onFSChange(route.params.index,'dexterity', text, true);
-                                    updateCharacterLocal('dexterity', text, true);
+                                    route.params.onFSChange(route.params.index,'dexterity', text);
+                                    updateCharacterLocal('dexterity', text);
                                     updateCharacter('dexterity', text);
                                 }}
                             />
@@ -698,13 +698,13 @@ export default function MainScreen({route, navigation}) {
                         <View>
                             <TextInput
                                 style={styles.abilityScoresStyle}
-                                keyboardType="number-pad"
+                                keyboardType="phone-pad"
                                 editable={global.isDM || character.assignedTo === user.toJSON().email}
                                 underlineColor="transparent"
-                                value={String(character.intelligence)}
+                                value={character.intelligence}
                                 onChangeText={(text) => {
-                                    route.params.onFSChange(route.params.index,'intelligence', text, true);
-                                    updateCharacterLocal('intelligence', text, true);
+                                    route.params.onFSChange(route.params.index,'intelligence', text);
+                                    updateCharacterLocal('intelligence', text);
                                     updateCharacter('intelligence', text);
                                 }}
                             />
@@ -717,13 +717,13 @@ export default function MainScreen({route, navigation}) {
                         <View>
                             <TextInput
                                 style={styles.abilityScoresStyle}
-                                keyboardType="number-pad"
+                                keyboardType="phone-pad"
                                 editable={global.isDM || character.assignedTo === user.toJSON().email}
                                 underlineColor="transparent"
-                                value={String(character.charisma)}
+                                value={character.charisma}
                                 onChangeText={(text) => {
-                                    route.params.onFSChange(route.params.index,'charisma', text, true);
-                                    updateCharacterLocal('charisma', text, true);
+                                    route.params.onFSChange(route.params.index,'charisma', text);
+                                    updateCharacterLocal('charisma', text);
                                     updateCharacter('charisma', text);
                                 }}
                             />
@@ -738,13 +738,13 @@ export default function MainScreen({route, navigation}) {
                 <View>
                     <TextInput
                         style={styles.proficiencyStyle}
-                        keyboardType="number-pad"
+                        keyboardType="phone-pad"
                         editable={global.isDM || character.assignedTo === user.toJSON().email}
                         underlineColor="transparent"
-                        value={String(character.proficiency)}
+                        value={character.proficiency}
                         onChangeText={(text) => {
-                            route.params.onFSChange(route.params.index,'proficiency', text, true);
-                            updateCharacterLocal('proficiency', text, true);
+                            route.params.onFSChange(route.params.index,'proficiency', text);
+                            updateCharacterLocal('proficiency', text);
                             updateCharacter('proficiency', text);
                         }}
                     />
@@ -764,8 +764,8 @@ export default function MainScreen({route, navigation}) {
                         editable={global.isDM || character.assignedTo === user.toJSON().email}
                         placeholder={"Enter name..."}
                         onChangeText={(text) => {
-                            route.params.onFSChange(route.params.index,'name', text, false);
-                            updateCharacterLocal('name', text, false);
+                            route.params.onFSChange(route.params.index,'name', text);
+                            updateCharacterLocal('name', text);
                             updateCharacter('name', text);
                         }}
                     />
@@ -784,8 +784,8 @@ export default function MainScreen({route, navigation}) {
                         placeholder={"Enter race..."}
                         onChangeText={(text) => {
                             console.log(text);
-                            route.params.onFSChange(route.params.index,'char_race', text, false);
-                            updateCharacterLocal('char_race', text, false);
+                            route.params.onFSChange(route.params.index,'char_race', text);
+                            updateCharacterLocal('char_race', text);
                             updateCharacter('char_race', text);
                         }}
                     />
@@ -803,8 +803,8 @@ export default function MainScreen({route, navigation}) {
                         editable={global.isDM || character.assignedTo === user.toJSON().email}
                         placeholder={"Enter class..."}
                         onChangeText={(text) => {
-                            route.params.onFSChange(route.params.index,'char_class', text, false);
-                            updateCharacterLocal('char_class', text, false);
+                            route.params.onFSChange(route.params.index,'char_class', text);
+                            updateCharacterLocal('char_class', text);
                             updateCharacter('char_class', text);
                         }}
                     />
@@ -817,13 +817,13 @@ export default function MainScreen({route, navigation}) {
                 <View>
                     <TextInput
                         style={styles.levelCurrentHPHitDice}
-                        keyboardType="number-pad"
+                        keyboardType="phone-pad"
                         editable={global.isDM || character.assignedTo === user.toJSON().email}
                         underlineColor="transparent"
-                        value={String(character.level)}
+                        value={character.level}
                         onChangeText={(text) => {
-                            route.params.onFSChange(route.params.index,'level', text, true);
-                            updateCharacterLocal('level', text, true);
+                            route.params.onFSChange(route.params.index,'level', text);
+                            updateCharacterLocal('level', text);
                             updateCharacter('level', text);
                         }}
                     />
@@ -836,13 +836,13 @@ export default function MainScreen({route, navigation}) {
                 <View>
                     <TextInput
                         style={styles.levelCurrentHPHitDice}
-                        keyboardType="number-pad"
+                        keyboardType="phone-pad"
                         editable={global.isDM || character.assignedTo === user.toJSON().email}
                         underlineColor="transparent"
-                        value={String(character.current_hp)}
+                        value={character.current_hp}
                         onChangeText={(text) => {
-                            route.params.onFSChange(route.params.index,'current_hp', text, true);
-                            updateCharacterLocal('current_hp', text, true);
+                            route.params.onFSChange(route.params.index,'current_hp', text);
+                            updateCharacterLocal('current_hp', text);
                             updateCharacter('current_hp', text);
                         }}
                     />
@@ -859,8 +859,8 @@ export default function MainScreen({route, navigation}) {
                         underlineColor="transparent"
                         editable={global.isDM || character.assignedTo === user.toJSON().email}
                         onChangeText={(text) => {
-                            route.params.onFSChange(route.params.index,'hit_dice', text, false);
-                            updateCharacterLocal('hit_dice', text, false);
+                            route.params.onFSChange(route.params.index,'hit_dice', text);
+                            updateCharacterLocal('hit_dice', text);
                             updateCharacter('hit_dice', text);
                         }}
                     />
@@ -875,13 +875,13 @@ export default function MainScreen({route, navigation}) {
                 <View>
                     <TextInput
                         style={styles.levelCurrentHPHitDice}
-                        keyboardType="number-pad"
+                        keyboardType="phone-pad"
                         editable={global.isDM || character.assignedTo === user.toJSON().email}
                         underlineColor="transparent"
-                        value={String(character.armor_class)}
+                        value={character.armor_class}
                         onChangeText={(text) => {
-                            route.params.onFSChange(route.params.index,'armor_class', text, true);
-                            updateCharacterLocal('armor_class', text, true);
+                            route.params.onFSChange(route.params.index,'armor_class', text);
+                            updateCharacterLocal('armor_class', text);
                             updateCharacter('armor_class', text);
                         }}
                     />
@@ -894,13 +894,13 @@ export default function MainScreen({route, navigation}) {
                 <View>
                     <TextInput
                         style={styles.levelCurrentHPHitDice}
-                        keyboardType="number-pad"
+                        keyboardType="phone-pad"
                         editable={global.isDM || character.assignedTo === user.toJSON().email}
                         underlineColor="transparent"
-                        value={String(character.initiative)}
+                        value={character.initiative}
                         onChangeText={(text) => {
-                            route.params.onFSChange(route.params.index,'initiative', text, true);
-                            updateCharacterLocal('initiative', text, true);
+                            route.params.onFSChange(route.params.index,'initiative', text);
+                            updateCharacterLocal('initiative', text);
                             updateCharacter('initiative', text);
                         }}
                     />
@@ -913,13 +913,13 @@ export default function MainScreen({route, navigation}) {
                 <View>
                     <TextInput
                         style={styles.levelCurrentHPHitDice}
-                        keyboardType="number-pad"
+                        keyboardType="phone-pad"
                         editable={global.isDM || character.assignedTo === user.toJSON().email}
-                        value={String(character.speed)}
+                        value={character.speed}
                         underlineColor="transparent"
                         onChangeText={(text) => {
-                            route.params.onFSChange(route.params.index,'speed', text, true);
-                            updateCharacterLocal('speed', text, true);
+                            route.params.onFSChange(route.params.index,'speed', text);
+                            updateCharacterLocal('speed', text);
                             updateCharacter('speed', text);
                         }}
                     />
@@ -937,8 +937,8 @@ export default function MainScreen({route, navigation}) {
                         editable={global.isDM || character.assignedTo === user.toJSON().email}
                         placeholder={"Enter alignment..."}
                         onChangeText={(text) => {
-                            route.params.onFSChange(route.params.index,'alignment', text, false);
-                            updateCharacterLocal('alignment', text, false);
+                            route.params.onFSChange(route.params.index,'alignment', text);
+                            updateCharacterLocal('alignment', text);
                             updateCharacter('alignment', text);
                         }}
                     />
@@ -965,13 +965,13 @@ export default function MainScreen({route, navigation}) {
                             </Text>
                             <TextInput
                                 style={styles.passiveInputs}
-                                keyboardType="number-pad"
+                                keyboardType="phone-pad"
                                 editable={global.isDM || character.assignedTo === user.toJSON().email}
                                 underlineColor="transparent"
-                                value={String(character.passive_perception)}
+                                value={character.passive_perception}
                                 onChangeText={(text) => {
-                                    route.params.onFSChange(route.params.index,'passive_perception', text, true);
-                                    updateCharacterLocal('passive_perception', text, true);
+                                    route.params.onFSChange(route.params.index,'passive_perception', text);
+                                    updateCharacterLocal('passive_perception', text);
                                     updateCharacter('passive_perception', text);
                                 }}
                             />
@@ -984,13 +984,13 @@ export default function MainScreen({route, navigation}) {
                             </Text>
                             <TextInput
                                 style={styles.passiveInputs}
-                                keyboardType="number-pad"
+                                keyboardType="phone-pad"
                                 editable={global.isDM || character.assignedTo === user.toJSON().email}
                                 underlineColor="transparent"
-                                value={String(character.passive_investigation)}
+                                value={character.passive_investigation}
                                 onChangeText={(text) => {
-                                    route.params.onFSChange(route.params.index,'passive_investigation', text, true);
-                                    updateCharacterLocal('passive_investigation', text, true);
+                                    route.params.onFSChange(route.params.index,'passive_investigation', text);
+                                    updateCharacterLocal('passive_investigation', text);
                                     updateCharacter('passive_investigation', text);
                                 }}
                             />
@@ -1003,13 +1003,13 @@ export default function MainScreen({route, navigation}) {
                             </Text>
                             <TextInput
                                 style={styles.passiveInputs}
-                                keyboardType="number-pad"
+                                keyboardType="phone-pad"
                                 editable={global.isDM || character.assignedTo === user.toJSON().email}
                                 underlineColor="transparent"
-                                value={String(character.passive_insight)}
+                                value={character.passive_insight}
                                 onChangeText={(text) => {
-                                    route.params.onFSChange(route.params.index,'passive_insight', text, true);
-                                    updateCharacterLocal('passive_insight', text, true);
+                                    route.params.onFSChange(route.params.index,'passive_insight', text);
+                                    updateCharacterLocal('passive_insight', text);
                                     updateCharacter('passive_insight', text);
                                 }}
                             />
@@ -1020,13 +1020,13 @@ export default function MainScreen({route, navigation}) {
                     <View>
                         <TextInput
                             style={styles.maxHPInputs}
-                            keyboardType="number-pad"
+                            keyboardType="phone-pad"
                             editable={global.isDM || character.assignedTo === user.toJSON().email}
                             underlineColor="transparent"
-                            value={String(character.max_hp)}
+                            value={character.max_hp}
                             onChangeText={(text) => {
-                                route.params.onFSChange(route.params.index,'max_hp', text, true);
-                                updateCharacterLocal('max_hp', text, true);
+                                route.params.onFSChange(route.params.index,'max_hp', text);
+                                updateCharacterLocal('max_hp', text);
                                 updateCharacter('max_hp', text);
                             }}
                         />
@@ -1039,13 +1039,13 @@ export default function MainScreen({route, navigation}) {
                     <View>
                         <TextInput
                             style={styles.tempHPInputs}
-                            keyboardType="number-pad"
+                            keyboardType="phone-pad"
                             editable={global.isDM || character.assignedTo === user.toJSON().email}
                             underlineColor="transparent"
-                            value={String(character.temp_hp)}
+                            value={character.temp_hp}
                             onChangeText={(text) => {
-                                route.params.onFSChange(route.params.index,'temp_hp', text, true);
-                                updateCharacterLocal('temp_hp', text, true);
+                                route.params.onFSChange(route.params.index,'temp_hp', text);
+                                updateCharacterLocal('temp_hp', text);
                                 updateCharacter('temp_hp', text);
                             }}
                         />
@@ -1082,12 +1082,12 @@ export default function MainScreen({route, navigation}) {
                                         onPress = {() => {
                                             if (global.isDM || character.assignedTo === user.toJSON().email) {
                                                 if (character.DS_successCircle1  === "#00db79") {
-                                                    route.params.onFSChange(route.params.index,'DS_successCircle1', "#ffffff", false);
-                                                    updateCharacterLocal('DS_successCircle1', "#ffffff", false);
+                                                    route.params.onFSChange(route.params.index,'DS_successCircle1', "#ffffff");
+                                                    updateCharacterLocal('DS_successCircle1', "#ffffff");
                                                     updateCharacter('DS_successCircle1', "#ffffff");
                                                 } else {
-                                                    route.params.onFSChange(route.params.index,'DS_successCircle1', "#00db79", false);
-                                                    updateCharacterLocal('DS_successCircle1', "#00db79", false);
+                                                    route.params.onFSChange(route.params.index,'DS_successCircle1', "#00db79");
+                                                    updateCharacterLocal('DS_successCircle1', "#00db79");
                                                     updateCharacter('DS_successCircle1', "#00db79");
                                                 }
                                             }
@@ -1109,12 +1109,12 @@ export default function MainScreen({route, navigation}) {
                                         onPress = {() => {
                                             if (global.isDM || character.assignedTo === user.toJSON().email) {
                                                 if (character.DS_successCircle2 === "#00db79") {
-                                                    route.params.onFSChange(route.params.index, 'DS_successCircle2', "#ffffff", false);
-                                                    updateCharacterLocal('DS_successCircle2', "#ffffff", false);
+                                                    route.params.onFSChange(route.params.index, 'DS_successCircle2', "#ffffff");
+                                                    updateCharacterLocal('DS_successCircle2', "#ffffff");
                                                     updateCharacter('DS_successCircle2', "#ffffff")
                                                 } else {
-                                                    route.params.onFSChange(route.params.index, 'DS_successCircle2', "#00db79", false);
-                                                    updateCharacterLocal('DS_successCircle2', "#00db79", false);
+                                                    route.params.onFSChange(route.params.index, 'DS_successCircle2', "#00db79");
+                                                    updateCharacterLocal('DS_successCircle2', "#00db79");
                                                     updateCharacter('DS_successCircle2', "#00db79")
                                                 }
                                             }
@@ -1135,12 +1135,12 @@ export default function MainScreen({route, navigation}) {
                                     onPress = {() => {
                                         if (global.isDM || character.assignedTo === user.toJSON().email) {
                                             if (character.DS_successCircle3 === "#00db79") {
-                                                route.params.onFSChange(route.params.index, 'DS_successCircle3', "#ffffff", false);
-                                                updateCharacterLocal('DS_successCircle3', "#ffffff", false);
+                                                route.params.onFSChange(route.params.index, 'DS_successCircle3', "#ffffff");
+                                                updateCharacterLocal('DS_successCircle3', "#ffffff");
                                                 updateCharacter('DS_successCircle3', "#ffffff")
                                             } else {
-                                                route.params.onFSChange(route.params.index, 'DS_successCircle3', "#00db79", false);
-                                                updateCharacterLocal('DS_successCircle3', "#00db79", false);
+                                                route.params.onFSChange(route.params.index, 'DS_successCircle3', "#00db79");
+                                                updateCharacterLocal('DS_successCircle3', "#00db79");
                                                 updateCharacter('DS_successCircle3', "#00db79")
                                             }
                                         }
@@ -1167,12 +1167,12 @@ export default function MainScreen({route, navigation}) {
                                         onPress = {() => {
                                             if (global.isDM || character.assignedTo === user.toJSON().email) {
                                                 if (character.DS_failureCircle1 === "#f51b1b") {
-                                                    route.params.onFSChange(route.params.index, 'DS_failureCircle1', "#ffffff", false);
-                                                    updateCharacterLocal('DS_failureCircle1', "#ffffff", false);
+                                                    route.params.onFSChange(route.params.index, 'DS_failureCircle1', "#ffffff");
+                                                    updateCharacterLocal('DS_failureCircle1', "#ffffff");
                                                     updateCharacter('DS_failureCircle1', "#ffffff");
                                                 } else {
-                                                    route.params.onFSChange(route.params.index, 'DS_failureCircle1', "#f51b1b", false);
-                                                    updateCharacterLocal('DS_failureCircle1', "#f51b1b", false);
+                                                    route.params.onFSChange(route.params.index, 'DS_failureCircle1', "#f51b1b");
+                                                    updateCharacterLocal('DS_failureCircle1', "#f51b1b");
                                                     updateCharacter('DS_failureCircle1', "#f51b1b");
                                                 }
                                             }
@@ -1194,12 +1194,12 @@ export default function MainScreen({route, navigation}) {
                                         onPress = {() => {
                                             if (global.isDM || character.assignedTo === user.toJSON().email) {
                                                 if (character.DS_failureCircle2 === "#f51b1b") {
-                                                    route.params.onFSChange(route.params.index, 'DS_failureCircle2', "#ffffff", false);
-                                                    updateCharacterLocal('DS_failureCircle2', "#ffffff", false);
+                                                    route.params.onFSChange(route.params.index, 'DS_failureCircle2', "#ffffff");
+                                                    updateCharacterLocal('DS_failureCircle2', "#ffffff");
                                                     updateCharacter('DS_failureCircle2', "#ffffff");
                                                 } else {
-                                                    route.params.onFSChange(route.params.index, 'DS_failureCircle2', "#f51b1b", false);
-                                                    updateCharacterLocal('DS_failureCircle2', "#f51b1b", false);
+                                                    route.params.onFSChange(route.params.index, 'DS_failureCircle2', "#f51b1b");
+                                                    updateCharacterLocal('DS_failureCircle2', "#f51b1b");
                                                     updateCharacter('DS_failureCircle2', "#f51b1b");
                                                 }
                                             }
@@ -1220,12 +1220,12 @@ export default function MainScreen({route, navigation}) {
                                     onPress = {() => {
                                         if (global.isDM || character.assignedTo === user.toJSON().email) {
                                             if (character.DS_failureCircle3 === "#f51b1b") {
-                                                route.params.onFSChange(route.params.index, 'DS_failureCircle3', "#ffffff", false);
-                                                updateCharacterLocal('DS_failureCircle3', "#ffffff", false);
+                                                route.params.onFSChange(route.params.index, 'DS_failureCircle3', "#ffffff");
+                                                updateCharacterLocal('DS_failureCircle3', "#ffffff");
                                                 updateCharacter('DS_failureCircle3', "#ffffff");
                                             } else {
-                                                route.params.onFSChange(route.params.index, 'DS_failureCircle3', "#f51b1b", false);
-                                                updateCharacterLocal('DS_failureCircle3', "#f51b1b", false);
+                                                route.params.onFSChange(route.params.index, 'DS_failureCircle3', "#f51b1b");
+                                                updateCharacterLocal('DS_failureCircle3', "#f51b1b");
                                                 updateCharacter('DS_failureCircle3', "#f51b1b");
                                             }
                                         }
@@ -1251,12 +1251,13 @@ export default function MainScreen({route, navigation}) {
                         </View>
                         <TextInput
                             style = {styles.STValue}
-                            value = {String(character.ST_strength)}
+                            keyboardType="phone-pad"
+                            value = {character.ST_strength}
                             editable={global.isDM || character.assignedTo === user.toJSON().email}
                             underlineColor="transparent"
                             onChangeText={(text) => {
-                                route.params.onFSChange(route.params.index,'ST_strength', text, true);
-                                updateCharacterLocal('ST_strength', text, true);
+                                route.params.onFSChange(route.params.index,'ST_strength', text);
+                                updateCharacterLocal('ST_strength', text);
                                 updateCharacter('ST_strength', text);
                             }}
                         />
@@ -1269,12 +1270,13 @@ export default function MainScreen({route, navigation}) {
                         </View>
                         <TextInput
                             style = {styles.STValue}
-                            value = {String(character.ST_dexterity)}
+                            keyboardType="phone-pad"
+                            value = {character.ST_dexterity}
                             editable={global.isDM || character.assignedTo === user.toJSON().email}
                             underlineColor="transparent"
                             onChangeText={(text) => {
-                                route.params.onFSChange(route.params.index,'ST_dexterity', text, true);
-                                updateCharacterLocal('ST_dexterity', text, true);
+                                route.params.onFSChange(route.params.index,'ST_dexterity', text);
+                                updateCharacterLocal('ST_dexterity', text);
                                 updateCharacter('ST_dexterity', text);
                             }}
                         />
@@ -1287,12 +1289,13 @@ export default function MainScreen({route, navigation}) {
                         </View>
                         <TextInput
                             style = {styles.STValue}
-                            value = {String(character.ST_constitution)}
+                            keyboardType="phone-pad"
+                            value = {character.ST_constitution}
                             editable={global.isDM || character.assignedTo === user.toJSON().email}
                             underlineColor="transparent"
                             onChangeText={(text) => {
-                                route.params.onFSChange(route.params.index,'ST_constitution', text, true);
-                                updateCharacterLocal('ST_constitution', text, true);
+                                route.params.onFSChange(route.params.index,'ST_constitution', text);
+                                updateCharacterLocal('ST_constitution', text);
                                 updateCharacter('ST_constitution', text);
                             }}
                         />
@@ -1305,12 +1308,13 @@ export default function MainScreen({route, navigation}) {
                         </View>
                         <TextInput
                             style = {styles.STValue}
-                            value = {String(character.ST_intelligence)}
+                            value = {character.ST_intelligence}
+                            keyboardType="phone-pad"
                             editable={global.isDM || character.assignedTo === user.toJSON().email}
                             underlineColor="transparent"
                             onChangeText={(text) => {
-                                route.params.onFSChange(route.params.index,'ST_intelligence', text, true);
-                                updateCharacterLocal('ST_intelligence', text, true);
+                                route.params.onFSChange(route.params.index,'ST_intelligence', text);
+                                updateCharacterLocal('ST_intelligence', text);
                                 updateCharacter('ST_intelligence', text);
                             }}
                         />
@@ -1323,12 +1327,13 @@ export default function MainScreen({route, navigation}) {
                         </View>
                         <TextInput
                             style = {styles.STValue}
-                            value = {String(character.ST_wisdom)}
+                            keyboardType="phone-pad"
+                            value = {character.ST_wisdom}
                             editable={global.isDM || character.assignedTo === user.toJSON().email}
                             underlineColor="transparent"
                             onChangeText={(text) => {
-                                route.params.onFSChange(route.params.index,'ST_wisdom', text, true);
-                                updateCharacterLocal('ST_wisdom', text, true);
+                                route.params.onFSChange(route.params.index,'ST_wisdom', text);
+                                updateCharacterLocal('ST_wisdom', text);
                                 updateCharacter('ST_wisdom', text);
                             }}
                         />
@@ -1341,12 +1346,13 @@ export default function MainScreen({route, navigation}) {
                         </View>
                         <TextInput
                             style = {styles.STValue}
-                            value = {String(character.ST_charisma)}
+                            keyboardType="phone-pad"
+                            value = {character.ST_charisma}
                             editable={global.isDM || character.assignedTo === user.toJSON().email}
                             underlineColor="transparent"
                             onChangeText={(text) => {
-                                route.params.onFSChange(route.params.index,'ST_charisma', text, true);
-                                updateCharacterLocal('ST_charisma', text, true);
+                                route.params.onFSChange(route.params.index,'ST_charisma', text);
+                                updateCharacterLocal('ST_charisma', text);
                                 updateCharacter('ST_charisma', text);
                             }}
                         />
@@ -1391,12 +1397,13 @@ export default function MainScreen({route, navigation}) {
                             </View>
                             <TextInput
                                 style = {styles.skillsValue}
-                                value = {String(character.acrobatics)}
+                                keyboardType="phone-pad"
+                                value = {character.acrobatics}
                                 editable={global.isDM || character.assignedTo === user.toJSON().email}
                                 underlineColor="transparent"
                                 onChangeText={(text) => {
-                                    route.params.onFSChange(route.params.index,'acrobatics', text, true);
-                                    updateCharacterLocal('acrobatics', text, true);
+                                    route.params.onFSChange(route.params.index,'acrobatics', text);
+                                    updateCharacterLocal('acrobatics', text);
                                     updateCharacter('acrobatics', text);
                                 }}
                             />
@@ -1409,12 +1416,13 @@ export default function MainScreen({route, navigation}) {
                             </View>
                             <TextInput
                                 style = {styles.skillsValue}
-                                value = {String(character.animal_handling)}
+                                keyboardType="phone-pad"
+                                value = {character.animal_handling}
                                 editable={global.isDM || character.assignedTo === user.toJSON().email}
                                 underlineColor="transparent"
                                 onChangeText={(text) => {
-                                    route.params.onFSChange(route.params.index,'animal_handling', text, true);
-                                    updateCharacterLocal('animal_handling', text, true);
+                                    route.params.onFSChange(route.params.index,'animal_handling', text);
+                                    updateCharacterLocal('animal_handling', text);
                                     updateCharacter('animal_handling', text);
                                 }}
                             />
@@ -1427,12 +1435,13 @@ export default function MainScreen({route, navigation}) {
                             </View>
                             <TextInput
                                 style = {styles.skillsValue}
-                                value = {String(character.arcana)}
+                                keyboardType="phone-pad"
+                                value = {character.arcana}
                                 editable={global.isDM || character.assignedTo === user.toJSON().email}
                                 underlineColor="transparent"
                                 onChangeText={(text) => {
-                                    route.params.onFSChange(route.params.index,'arcana', text, true);
-                                    updateCharacterLocal('arcana', text, true);
+                                    route.params.onFSChange(route.params.index,'arcana', text);
+                                    updateCharacterLocal('arcana', text);
                                     updateCharacter('arcana', text);
                                 }}
                             />
@@ -1445,12 +1454,13 @@ export default function MainScreen({route, navigation}) {
                             </View>
                             <TextInput
                                 style = {styles.skillsValue}
-                                value = {String(character.athletics)}
+                                keyboardType="phone-pad"
+                                value = {character.athletics}
                                 editable={global.isDM || character.assignedTo === user.toJSON().email}
                                 underlineColor="transparent"
                                 onChangeText={(text) => {
-                                    route.params.onFSChange(route.params.index,'athletics', text, true);
-                                    updateCharacterLocal('athletics', text, true);
+                                    route.params.onFSChange(route.params.index,'athletics', text);
+                                    updateCharacterLocal('athletics', text);
                                     updateCharacter('athletics', text);
                                 }}
                             />
@@ -1463,12 +1473,13 @@ export default function MainScreen({route, navigation}) {
                             </View>
                             <TextInput
                                 style = {styles.skillsValue}
-                                value = {String(character.deception)}
+                                keyboardType="phone-pad"
+                                value = {character.deception}
                                 editable={global.isDM || character.assignedTo === user.toJSON().email}
                                 underlineColor="transparent"
                                 onChangeText={(text) => {
-                                    route.params.onFSChange(route.params.index,'deception', text, true);
-                                    updateCharacterLocal('deception', text, true);
+                                    route.params.onFSChange(route.params.index,'deception', text);
+                                    updateCharacterLocal('deception', text);
                                     updateCharacter('deception', text);
                                 }}
                             />
@@ -1481,12 +1492,13 @@ export default function MainScreen({route, navigation}) {
                             </View>
                             <TextInput
                                 style = {styles.skillsValue}
-                                value = {String(character.history)}
+                                keyboardType="phone-pad"
+                                value = {character.history}
                                 editable={global.isDM || character.assignedTo === user.toJSON().email}
                                 underlineColor="transparent"
                                 onChangeText={(text) => {
-                                    route.params.onFSChange(route.params.index,'history', text, true);
-                                    updateCharacterLocal('history', text, true);
+                                    route.params.onFSChange(route.params.index,'history', text);
+                                    updateCharacterLocal('history', text);
                                     updateCharacter('history', text);
                                 }}
                             />
@@ -1499,12 +1511,13 @@ export default function MainScreen({route, navigation}) {
                             </View>
                             <TextInput
                                 style = {styles.skillsValue}
-                                value = {String(character.insight)}
+                                keyboardType="phone-pad"
+                                value = {character.insight}
                                 editable={global.isDM || character.assignedTo === user.toJSON().email}
                                 underlineColor="transparent"
                                 onChangeText={(text) => {
-                                    route.params.onFSChange(route.params.index,'insight', text, true);
-                                    updateCharacterLocal('insight', text, true);
+                                    route.params.onFSChange(route.params.index,'insight', text);
+                                    updateCharacterLocal('insight', text);
                                     updateCharacter('insight', text);
                                 }}
                             />
@@ -1517,12 +1530,13 @@ export default function MainScreen({route, navigation}) {
                             </View>
                             <TextInput
                                 style = {styles.skillsValue}
-                                value = {String(character.intimidation)}
+                                keyboardType="phone-pad"
+                                value = {character.intimidation}
                                 editable={global.isDM || character.assignedTo === user.toJSON().email}
                                 underlineColor="transparent"
                                 onChangeText={(text) => {
-                                    route.params.onFSChange(route.params.index,'intimidation', text, true);
-                                    updateCharacterLocal('intimidation', text, true);
+                                    route.params.onFSChange(route.params.index,'intimidation', text);
+                                    updateCharacterLocal('intimidation', text);
                                     updateCharacter('intimidation', text);
                                 }}
                             />
@@ -1535,12 +1549,13 @@ export default function MainScreen({route, navigation}) {
                             </View>
                             <TextInput
                                 style = {styles.skillsValue}
-                                value = {String(character.investigation)}
+                                keyboardType="phone-pad"
+                                value = {character.investigation}
                                 editable={global.isDM || character.assignedTo === user.toJSON().email}
                                 underlineColor="transparent"
                                 onChangeText={(text) => {
-                                    route.params.onFSChange(route.params.index,'investigation', text, true);
-                                    updateCharacterLocal('investigation', text, true);
+                                    route.params.onFSChange(route.params.index,'investigation', text);
+                                    updateCharacterLocal('investigation', text);
                                     updateCharacter('investigation', text);
                                 }}
                             />
@@ -1555,12 +1570,13 @@ export default function MainScreen({route, navigation}) {
                             </View>
                             <TextInput
                                 style = {styles.skillsValue}
-                                value = {String(character.medicine)}
+                                keyboardType="phone-pad"
+                                value = {character.medicine}
                                 editable={global.isDM || character.assignedTo === user.toJSON().email}
                                 underlineColor="transparent"
                                 onChangeText={(text) => {
-                                    route.params.onFSChange(route.params.index,'medicine', text, true);
-                                    updateCharacterLocal('medicine', text, true);
+                                    route.params.onFSChange(route.params.index,'medicine', text);
+                                    updateCharacterLocal('medicine', text);
                                     updateCharacter('medicine', text);
                                 }}
                             />
@@ -1573,12 +1589,13 @@ export default function MainScreen({route, navigation}) {
                             </View>
                             <TextInput
                                 style = {styles.skillsValue}
-                                value = {String(character.nature)}
+                                keyboardType="phone-pad"
+                                value = {character.nature}
                                 editable={global.isDM || character.assignedTo === user.toJSON().email}
                                 underlineColor="transparent"
                                 onChangeText={(text) => {
-                                    route.params.onFSChange(route.params.index,'nature', text, true);
-                                    updateCharacterLocal('nature', text, true);
+                                    route.params.onFSChange(route.params.index,'nature', text);
+                                    updateCharacterLocal('nature', text);
                                     updateCharacter('nature', text);
                                 }}
                             />
@@ -1591,12 +1608,13 @@ export default function MainScreen({route, navigation}) {
                             </View>
                             <TextInput
                                 style = {styles.skillsValue}
-                                value = {String(character.perception)}
+                                keyboardType="phone-pad"
+                                value = {character.perception}
                                 editable={global.isDM || character.assignedTo === user.toJSON().email}
                                 underlineColor="transparent"
                                 onChangeText={(text) => {
-                                    route.params.onFSChange(route.params.index,'perception', text, true);
-                                    updateCharacterLocal('perception', text, true);
+                                    route.params.onFSChange(route.params.index,'perception', text);
+                                    updateCharacterLocal('perception', text);
                                     updateCharacter('perception', text);
                                 }}
                             />
@@ -1609,12 +1627,13 @@ export default function MainScreen({route, navigation}) {
                             </View>
                             <TextInput
                                 style = {styles.skillsValue}
-                                value = {String(character.performance)}
+                                keyboardType="phone-pad"
+                                value = {character.performance}
                                 editable={global.isDM || character.assignedTo === user.toJSON().email}
                                 underlineColor="transparent"
                                 onChangeText={(text) => {
-                                    route.params.onFSChange(route.params.index,'performance', text, true);
-                                    updateCharacterLocal('performance', text, true);
+                                    route.params.onFSChange(route.params.index,'performance', text);
+                                    updateCharacterLocal('performance', text);
                                     updateCharacter('performance', text);
                                 }}
                             />
@@ -1627,12 +1646,13 @@ export default function MainScreen({route, navigation}) {
                             </View>
                             <TextInput
                                 style = {styles.skillsValue}
-                                value = {String(character.persuasion)}
+                                keyboardType="phone-pad"
+                                value = {character.persuasion}
                                 editable={global.isDM || character.assignedTo === user.toJSON().email}
                                 underlineColor="transparent"
                                 onChangeText={(text) => {
-                                    route.params.onFSChange(route.params.index,'persuasion', text, true);
-                                    updateCharacterLocal('persuasion', text, true);
+                                    route.params.onFSChange(route.params.index,'persuasion', text);
+                                    updateCharacterLocal('persuasion', text);
                                     updateCharacter('persuasion', text);
                                 }}
                             />
@@ -1645,12 +1665,13 @@ export default function MainScreen({route, navigation}) {
                             </View>
                             <TextInput
                                 style = {styles.skillsValue}
-                                value = {String(character.religion)}
+                                keyboardType="phone-pad"
+                                value = {character.religion}
                                 editable={global.isDM || character.assignedTo === user.toJSON().email}
                                 underlineColor="transparent"
                                 onChangeText={(text) => {
-                                    route.params.onFSChange(route.params.index,'religion', text, true);
-                                    updateCharacterLocal('religion', text, true);
+                                    route.params.onFSChange(route.params.index,'religion', text);
+                                    updateCharacterLocal('religion', text);
                                     updateCharacter('religion', text);
                                 }}
                             />
@@ -1663,12 +1684,13 @@ export default function MainScreen({route, navigation}) {
                             </View>
                             <TextInput
                                 style = {styles.skillsValue}
+                                keyboardType="phone-pad"
                                 underlineColor="transparent"
-                                value = {String(character.sleight_of_hand)}
+                                value = {character.sleight_of_hand}
                                 editable={global.isDM || character.assignedTo === user.toJSON().email}
                                 onChangeText={(text) => {
-                                    route.params.onFSChange(route.params.index,'sleight_of_hand', text, true);
-                                    updateCharacterLocal('sleight_of_hand', text, true);
+                                    route.params.onFSChange(route.params.index,'sleight_of_hand', text);
+                                    updateCharacterLocal('sleight_of_hand', text);
                                     updateCharacter('sleight_of_hand', text);
                                 }}
                             />
@@ -1682,11 +1704,12 @@ export default function MainScreen({route, navigation}) {
                             <TextInput
                                 style = {styles.skillsValue}
                                 underlineColor="transparent"
-                                value = {String(character.stealth)}
+                                keyboardType="phone-pad"
+                                value = {character.stealth}
                                 editable={global.isDM || character.assignedTo === user.toJSON().email}
                                 onChangeText={(text) => {
-                                    route.params.onFSChange(route.params.index,'stealth', text, true);
-                                    updateCharacterLocal('stealth', text, true);
+                                    route.params.onFSChange(route.params.index,'stealth', text);
+                                    updateCharacterLocal('stealth', text);
                                     updateCharacter('stealth', text);
                                 }}
                             />
@@ -1700,11 +1723,12 @@ export default function MainScreen({route, navigation}) {
                             <TextInput
                                 style = {styles.skillsValue}
                                 underlineColor="transparent"
-                                value = {String(character.survival)}
+                                keyboardType="phone-pad"
+                                value = {character.survival}
                                 editable={global.isDM || character.assignedTo === user.toJSON().email}
                                 onChangeText={(text) => {
-                                    route.params.onFSChange(route.params.index,'survival', text, true);
-                                    updateCharacterLocal('survival', text, true);
+                                    route.params.onFSChange(route.params.index,'survival', text);
+                                    updateCharacterLocal('survival', text);
                                     updateCharacter('survival', text);
                                 }}
                             />
@@ -1738,8 +1762,8 @@ export default function MainScreen({route, navigation}) {
                     />
                 )}
                 onChangeText={(text) => {
-                    route.params.onFSChange(route.params.index,'proficiencies_and_languages', text, false);
-                    updateCharacterLocal('proficiencies_and_languages', text, false);
+                    route.params.onFSChange(route.params.index,'proficiencies_and_languages', text);
+                    updateCharacterLocal('proficiencies_and_languages', text);
                     updateCharacter('proficiencies_and_languages', text);
                 }}
             />

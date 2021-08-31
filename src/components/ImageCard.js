@@ -8,7 +8,7 @@ import 'firebase/firestore';
 global.screenWidth = Dimensions.get("window").width;
 global.screenHeight = Dimensions.get("window").height;
 
-export default function ImageCard({image, onSelect, shareImage, groupRef, editName, resetSelect, metadata}) {
+export default function ImageCard({image, onSelect, shareImage, groupRef, editName, resetSelect}) {
     const {user} = useContext(AuthUserContext);
 
     function deleteImage() {
@@ -59,6 +59,39 @@ export default function ImageCard({image, onSelect, shareImage, groupRef, editNa
                 }
             })
         })
+        if (image.numShared === 1) {
+            firebase.storage().ref("/" + image.imageNameStatic).delete();
+            groupRef.collection('notes').onSnapshot((snapshot) => {
+                snapshot.docs.map(async (doc) => {
+                    let content = await doc.get('content')
+                    //console.log('<img src ="' + image.uri + '">');
+                    let newContent = content.replace(/<img src="' + image.uri + '">/g,'The image ' + image.imageName + ' has been deleted');
+                    groupRef.collection('notes').doc(doc.id).update({
+                        content: newContent
+                    })
+                })
+            })
+        }
+        else {
+            let sharedWith = [];
+            for (let i = 0; i < image.sharedWith.length; i++) {
+                if (image.sharedWith[i] !== user.toJSON().email) {
+                    sharedWith.push(image.sharedWith[i]);
+                }
+            }
+            for (let i = 0; i < sharedWith.length; i++) {
+                groupRef.collection('members').doc(sharedWith[i]).collection('images').onSnapshot((snapshot) => {
+                    snapshot.docs.map((doc2) => {
+                        if (doc2.get('uuid') === image.uuid) {
+                            groupRef.collection('members').doc(user.toJSON().email).collection('images').doc(doc2.id).update({
+                                numShared: firebase.firestore.FieldValue.increment(-1),
+                                sharedWith: firebase.firestore.FieldValue.arrayRemove(user.toJSON().email)
+                            });
+                        }
+                    })
+                })
+            }
+        }
             groupRef.collection('members').doc(user.toJSON().email).collection('images').onSnapshot((snapshot) => {
                 snapshot.docs.map((doc2) => {
                     if (doc2.get('uuid') === image.uuid) {
@@ -66,30 +99,7 @@ export default function ImageCard({image, onSelect, shareImage, groupRef, editNa
                     }
                 })
             })
-            groupRef.collection('imageCanBeShared').doc(image._id).onSnapshot((doc3) => {
-                if (doc3.get('numShared') === 1) {
-                    groupRef.collection('imageCanBeShared').doc(doc3.id).delete().then(() => {
-                        firebase.storage().ref("/" + image.imageNameStatic).delete();
-                    })
-                    groupRef.collection('notes').onSnapshot((snapshot) => {
-                        snapshot.docs.map(async (doc) => {
-                            let content = await doc.get('content')
-                            //console.log('<img src ="' + image.uri + '">');
-                            let newContent = content.replace(/<img src="' + image.uri + '">/g,'The image ' + image.imageName + ' has been deleted');
-                            groupRef.collection('notes').doc(doc.id).update({
-                                content: newContent
-                            })
-                        })
-                    })
-                }
-                else {
-                    groupRef.collection('imageCanBeShared').doc(image._id).update({
-                        numShared: firebase.firestore.FieldValue.increment(-1),
-                        sharedWith: firebase.firestore.FieldValue.arrayRemove(user.toJSON().email)
-                    })
-                }
-                resetSelect(image)
-            })
+        resetSelect(image)
     }
 
     return (

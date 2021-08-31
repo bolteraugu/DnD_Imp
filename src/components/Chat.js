@@ -17,7 +17,7 @@ import {
     Dialog,
     Menu,
     Provider,
-    TextInput,
+    TextInput, Text,
 } from 'react-native-paper';
 import {GiftedChat, Bubble, Send, Composer, MessageImage, Message} from 'react-native-gifted-chat';
 import firebase from 'firebase';
@@ -54,6 +54,9 @@ export default function Chat({groupRef, navigation, showImage, itemsT, isDM, use
     const hideSearchDialog = () => setSearchVisible(false);
     const [searchVisible, setSearchVisible] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
+    const [deleteVisible, setDeleteVisible] = useState(false); //Whether the data is loading
+    const showDeleteDialog = () => setDeleteVisible(true);
+    const hideDeleteDialog = () => setDeleteVisible(false);
 
     useEffect(() => {
         groupRef.get().then(
@@ -487,37 +490,7 @@ export default function Chat({groupRef, navigation, showImage, itemsT, isDM, use
                             style={styles.dmButton}
                             mode={"contained"}
                             onPress={() => {
-                                let messagesTemp = [];
-                                let selectedMsgsIDs = [];
-                                for (let i = 0; i < global.selectedMsgs.length; i++) {
-                                    selectedMsgsIDs.push(global.selectedMsgs[i]._id);
-                                }
-                                    for (let j = 0; j < messages.length; j++) {
-                                        if (!selectedMsgsIDs.includes(messages[j]._id)) {
-                                            messagesTemp.push(messages[j])
-                                            setMessages(messagesTemp);
-                                        }
-                                        else {
-                                            groupRef.collection('messages').doc(messages[j]._id).get().then((snapshot) => {
-                                                if (snapshot.get('image') === '') {
-                                                    groupRef.collection('messages').doc(snapshot.id).update({
-                                                        deletedOrMissing: true,
-                                                        text: "This message has been deleted",
-                                                    })
-                                                }
-                                                else {
-                                                    groupRef.collection('messages').doc(snapshot.id).update({
-                                                        deletedOrMissing: true,
-                                                        text: "This image has been deleted",
-                                                        image: ''
-                                                    })
-                                                }
-
-                                            })
-                                        }
-                                    }
-                                global.selectedMsgs = [];
-                                setMessages(messagesTemp);
+                                showDeleteDialog();
                             }}
                         >
                             Delete selected messages
@@ -724,6 +697,76 @@ export default function Chat({groupRef, navigation, showImage, itemsT, isDM, use
                             </Dialog.Actions>
                             <View/>
                         </Dialog>
+                            <Dialog
+                                visible={deleteVisible}
+                                onDismiss={hideDeleteDialog}
+                                style={styles.assignWindow}
+                            >
+                                <Dialog.Title
+                                    style={styles.assignTitle}
+                                >
+                                    Are you sure you want to delete these chat messages?
+                                </Dialog.Title>
+                                <Dialog.Content>
+                                    <Text
+                                        style={styles.assignTitle}
+                                    >
+                                        NOTE: If you delete these chat messages you will not be able to recover them.
+                                    </Text>
+                                </Dialog.Content>
+                                <Dialog.Actions>
+                                    <View style={styles.assignButtonContainer}>
+                                        <Button
+                                            mode="contained"
+                                            style={styles.assignButton}
+                                            onPress={() => {
+                                                let messagesTemp = [];
+                                                let selectedMsgsIDs = [];
+                                                for (let i = 0; i < global.selectedMsgs.length; i++) {
+                                                    selectedMsgsIDs.push(global.selectedMsgs[i]._id);
+                                                }
+                                                for (let j = 0; j < messages.length; j++) {
+                                                    if (!selectedMsgsIDs.includes(messages[j]._id)) {
+                                                        messagesTemp.push(messages[j])
+                                                        setMessages(messagesTemp);
+                                                    }
+                                                    else {
+                                                        groupRef.collection('messages').doc(messages[j]._id).get().then((snapshot) => {
+                                                            if (snapshot.get('image') === '') {
+                                                                groupRef.collection('messages').doc(snapshot.id).update({
+                                                                    deletedOrMissing: true,
+                                                                    text: "This message has been deleted",
+                                                                })
+                                                            }
+                                                            else {
+                                                                groupRef.collection('messages').doc(snapshot.id).update({
+                                                                    deletedOrMissing: true,
+                                                                    text: "This image has been deleted",
+                                                                    image: ''
+                                                                })
+                                                            }
+
+                                                        })
+                                                    }
+                                                }
+                                                global.selectedMsgs = [];
+                                                setMessages(messagesTemp);
+                                                hideDeleteDialog();
+                                            }}
+                                        >
+                                            Yes
+                                        </Button>
+                                        <View style={styles.assignGap}/>
+                                        <Button
+                                            mode="contained"
+                                            style={styles.assignButton}
+                                            onPress={hideDeleteDialog}
+                                        >
+                                            No
+                                        </Button>
+                                    </View>
+                                </Dialog.Actions>
+                            </Dialog>
                     </Portal>
                 </View>
                 <SearchBar/>
@@ -750,6 +793,26 @@ export default function Chat({groupRef, navigation, showImage, itemsT, isDM, use
 }
 
 const styles = StyleSheet.create({
+    assignGap: {
+        width: screenWidth * 0.04
+    },
+    assignWindow: {
+        width: screenWidth * 0.525,
+        alignSelf: 'center',
+        marginTop: screenHeight * -0.1663829787234
+    },
+    assignTitle: {
+        alignSelf: 'center'
+    },
+    assignButtonContainer: {
+        justifyContent: 'center',
+        marginBottom: screenHeight * 0.020363829787234,
+        width: "100%",
+        flexDirection: 'row',
+    },
+    assignButton: {
+        width: screenWidth * 0.1
+    },
     addWindow: {
         marginTop: screenHeight * -0.323829787234,
         width: "70%",

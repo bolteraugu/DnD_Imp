@@ -119,7 +119,7 @@ export default function InventoryScreen({route, navigation}) {
         if (fieldName === 'CP') {
             global.charaRef
                 .update({
-                    CP: Number(value)
+                    CP: value
                 })
                 .then(console.log('Successfully updated character'), (error) =>
                     console.log('Failed to update character: ' + error)
@@ -127,7 +127,7 @@ export default function InventoryScreen({route, navigation}) {
         } else if (fieldName === 'SP') {
             global.charaRef
                 .update({
-                    SP: Number(value)
+                    SP: value
                 })
                 .then(console.log('Successfully updated character'), (error) =>
                     console.log('Failed to update character: ' + error)
@@ -135,7 +135,7 @@ export default function InventoryScreen({route, navigation}) {
         } else if (fieldName === 'EP') {
             global.charaRef
                 .update({
-                    EP: Number(value)
+                    EP: value
                 })
                 .then(console.log('Successfully updated character'), (error) =>
                     console.log('Failed to update character: ' + error)
@@ -143,7 +143,7 @@ export default function InventoryScreen({route, navigation}) {
         } else if (fieldName === 'GP') {
             global.charaRef
                 .update({
-                    GP: Number(value)
+                    GP: value
                 })
                 .then(console.log('Successfully updated character'), (error) =>
                     console.log('Failed to update character: ' + error)
@@ -151,7 +151,7 @@ export default function InventoryScreen({route, navigation}) {
         } else if (fieldName === 'PP') {
             global.charaRef
                 .update({
-                    PP: Number(value)
+                    PP: value
                 })
                 .then(console.log('Successfully updated character'), (error) =>
                     console.log('Failed to update character: ' + error)
@@ -184,12 +184,12 @@ export default function InventoryScreen({route, navigation}) {
                                     <TextInput
                                         style = {styles.currencyTypeInput}
                                         underlineColor="transparent"
-                                        keyboardType="number-pad"
+                                        keyboardType="phone-pad"
                                         editable={global.isDM || character.assignedTo === user.toJSON().email}
-                                        value = {String(character.CP)}
+                                        value = {character.CP}
                                         onChangeText={(text) => {
-                                            pushChange(global.index, 'CP', text, true);
-                                            updateCharacterLocal('CP', text, true);
+                                            pushChange(global.index, 'CP', text);
+                                            updateCharacterLocal('CP', text);
                                             updateCharacter('CP', text);
                                         }}
                                     />
@@ -203,12 +203,12 @@ export default function InventoryScreen({route, navigation}) {
                                     <TextInput
                                         style = {styles.currencyTypeInput}
                                         underlineColor="transparent"
-                                        keyboardType="number-pad"
+                                        keyboardType="phone-pad"
                                         editable={global.isDM || character.assignedTo === user.toJSON().email}
-                                        value = {String(character.SP)}
+                                        value = {character.SP}
                                         onChangeText={(text) => {
-                                            pushChange(global.index, 'SP', text, true);
-                                            updateCharacterLocal('SP', text, true);
+                                            pushChange(global.index, 'SP', text);
+                                            updateCharacterLocal('SP', text);
                                             updateCharacter('SP', text);
                                         }}
                                     />
@@ -222,12 +222,12 @@ export default function InventoryScreen({route, navigation}) {
                                     <TextInput
                                         style = {styles.currencyTypeInput}
                                         underlineColor="transparent"
-                                        keyboardType="number-pad"
+                                        keyboardType="phone-pad"
                                         editable={global.isDM || character.assignedTo === user.toJSON().email}
-                                        value = {String(character.EP)}
+                                        value = {character.EP}
                                         onChangeText={(text) => {
-                                            pushChange(global.index, 'EP', text, true);
-                                            updateCharacterLocal('EP', text, true);
+                                            pushChange(global.index, 'EP', text);
+                                            updateCharacterLocal('EP', text);
                                             updateCharacter('EP', text);
                                         }}
                                     />
@@ -241,12 +241,12 @@ export default function InventoryScreen({route, navigation}) {
                                     <TextInput
                                         style = {styles.currencyTypeInput}
                                         underlineColor="transparent"
-                                        keyboardType="number-pad"
+                                        keyboardType="phone-pad"
                                         editable={global.isDM || character.assignedTo === user.toJSON().email}
-                                        value = {String(character.GP)}
+                                        value = {character.GP}
                                         onChangeText={(text) => {
-                                            pushChange(global.index, 'GP', text, true);
-                                            updateCharacterLocal('GP', text, true);
+                                            pushChange(global.index, 'GP', text);
+                                            updateCharacterLocal('GP', text);
                                             updateCharacter('GP', text);
                                         }}
                                     />
@@ -260,12 +260,12 @@ export default function InventoryScreen({route, navigation}) {
                                     <TextInput
                                         style = {styles.currencyTypeInput}
                                         underlineColor="transparent"
-                                        keyboardType="number-pad"
+                                        keyboardType="phone-pad"
                                         editable={global.isDM || character.assignedTo === user.toJSON().email}
-                                        value = {String(character.PP)}
+                                        value = {character.PP}
                                         onChangeText={(text) => {
-                                            pushChange(global.index, 'PP', text, true);
-                                            updateCharacterLocal('PP', text, true);
+                                            pushChange(global.index, 'PP', text);
+                                            updateCharacterLocal('PP', text);
                                             updateCharacter('PP', text);
                                         }}
                                     />

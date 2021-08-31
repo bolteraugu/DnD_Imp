@@ -1,5 +1,5 @@
 import {Dimensions, StyleSheet, Text, TextInput as NativeTextInput, View} from "react-native";
-import {TextInput, Button} from "react-native-paper";
+import {TextInput, Button, Checkbox} from "react-native-paper";
 import React, {useState} from "react";
 import {Picker} from "@react-native-picker/picker";
 
@@ -76,7 +76,7 @@ export default function AddWeaponScreen({navigation}) {
                         style={styles.inputContainer}
                         placeholder={"Enter armor class..."}
                         onChangeText={(text) => {
-                            setArmorClass(text)
+                            setWeight(text)
                         }}
                     />
                 </View>
@@ -116,7 +116,6 @@ export default function AddWeaponScreen({navigation}) {
             >
                 Add
             </Button>
-            <View style = {styles.gap}/>
         </View>
     );
 }
@@ -142,9 +141,6 @@ const styles = StyleSheet.create({
         backgroundColor: "#e0e0de",
         fontFamily: 'sans-serif',
         flex: 1,
-    },
-    gap: {
-        height: screenHeight * 0.3191489361702128
     },
     headingContainer: {
         width: screenWidth * 0.1275318829707427,

@@ -1,19 +1,36 @@
 import React, {useContext, useEffect, useRef, useState} from 'react';
-import {Image, StyleSheet, View, Dimensions, TouchableOpacity} from 'react-native';
+import {Image, StyleSheet, View, Dimensions, TouchableOpacity, Platform} from 'react-native';
 import {IconButton, Surface, TextInput, Text, Dialog, Portal, Button, Provider} from 'react-native-paper';
 import 'firebase/firestore';
 import firebase from 'firebase';
 import 'firebase/auth';
 import {AuthUserContext} from "../navigation/AuthUserProvider";
+import DropDown from "react-native-paper-dropdown";
 // import ModalDropdown from "react-native-modal-dropdown";
 // import {AuthUserContext} from "../navigation/AuthUserProvider";
 
 global.screenWidth = Dimensions.get("window").width;
 global.screenHeight = Dimensions.get("window").height;
 
-export default function CharacterCard({character, index, onChange, groupRef, navigation, isDM, showImage, userPermissions}) {
+export default function CharacterCard({character, index, onChange, groupRef, navigation, isDM, showImage, userPermissions, showAssign, showConfirmationDialog}) {
 
     const {user} = useContext(AuthUserContext);
+    const [items, setItems] = useState([]);
+    const [hidden, setHidden] = useState(false);
+
+    useEffect(() => {
+        groupRef.onSnapshot((snapshot) => {
+            const itemsTemp = [];
+            snapshot.get('members').forEach((mem) => {
+                if (mem !== user.toJSON().email && mem !== character.assignedTo) {
+                    itemsTemp.push({
+                        value: mem, label: mem
+                    });
+                }
+                setItems(itemsTemp);
+            })
+        })
+    }, [])
 
     function updateCharacter() {
         groupRef
@@ -35,288 +52,429 @@ export default function CharacterCard({character, index, onChange, groupRef, nav
             );
     }
 
-    return (
-        <Surface style={styles.surface}>
-            <View style={styles.cardContainer}>
-                <View>
-                    <View style={styles.cardRow}>
-                        <TextInput
-                            label="Name"
-                            editable={isDM || character.assignedTo === user.toJSON().email}
-                            style={styles.stringContainer}
-                            value={character.name}
-                            placeholder={"Enter name..."}
-                            onChangeText={(text) => {
-                                onChange(index, 'name', text, false);
-                                updateCharacter();
-                            }
-                            }
-                        />
-                        <TextInput
-                            label="Race"
-                            editable={isDM || character.assignedTo === user.toJSON().email}
-                            style={styles.stringContainer}
-                            value={character.char_race}
-                            placeholder={"Enter race..."}
-                            onChangeText={
-                                (text) =>  {
-                                    onChange(index, 'char_race', text, false);
+    if (!hidden) {
+        return (
+            <Surface style={styles.surface}>
+                <View style={styles.cardContainer}>
+                    <View>
+                        {isDM && character.assignedTo != null && character.assignedTo.length !== 0 ?
+                            <Text
+                                style = {{fontSize: 17, marginTop: screenHeight * 0.01, marginBottom: screenHeight * 0.01, marginLeft: screenWidth * 0.005, marginRight: screenWidth * 0.005}}
+                            >
+                                Assigned To: {character.assignedTo}
+                            </Text>
+                            : isDM && character.assignedTo != null && character.assignedTo.length === 0 ?
+                                <Text
+                                    style = {{fontSize: 17, marginTop: screenHeight * 0.01, marginBottom: screenHeight * 0.01, marginLeft: screenWidth * 0.005, marginRight: screenWidth * 0.005}}
+                                >
+                                    Unassigned
+                                </Text>
+                                :
+                                null
+
+
+                        }
+                        <View style={styles.cardRow}>
+                            <TextInput
+                                label="Name"
+                                editable={isDM || (character.assignedTo != null && character.assignedTo === user.toJSON().email)}
+                                style={styles.stringContainer}
+                                value={character.name}
+                                placeholder={"Enter name..."}
+                                onChangeText={(text) => {
+                                    onChange(index, 'name', text);
                                     updateCharacter();
                                 }
-                            }
-                        />
-                        <TextInput
-                            label="Class"
-                            editable={isDM || character.assignedTo === user.toJSON().email}
-                            style={styles.stringContainer}
-                            value={character.char_class}
-                            placeholder={"Enter class..."}
-                            onChangeText={(text) => {
-                                onChange(index, 'char_class', text, false);
-                                updateCharacter();
-                            }
-                            }
-                        />
-                        <TextInput
-                            label="Level"
-                            editable={isDM || character.assignedTo === user.toJSON().email}
-                            keyboardType="number-pad"
-                            style={styles.levelContainer}
-                            value={String(character.level)}
-                            onChangeText={(text) => {
-                                onChange(index, 'level', text, true);
-                                updateCharacter();
-                            }
-                            }
-                        />
-                    </View>
-                    <TouchableOpacity
-                        onPress={() => {
-                            showImage(character.imageName, character.actualImageName)
-                        }}
-                        style = {styles.charImageContainer}
-                    >
-                        <Image
-                            source={{uri: character.imageName}}
-                            style = {styles.charImage}
-                        />
-                    </TouchableOpacity>
+                                }
+                            />
+                            <TextInput
+                                label="Race"
+                                editable={isDM || (character.assignedTo != null && character.assignedTo === user.toJSON().email)}
+                                style={styles.stringContainer}
+                                value={character.char_race}
+                                placeholder={"Enter race..."}
+                                onChangeText={
+                                    (text) =>  {
+                                        onChange(index, 'char_race', text);
+                                        updateCharacter();
+                                    }
+                                }
+                            />
+                            <TextInput
+                                label="Class"
+                                editable={isDM || (character.assignedTo != null && character.assignedTo === user.toJSON().email)}
+                                style={styles.stringContainer}
+                                value={character.char_class}
+                                placeholder={"Enter class..."}
+                                onChangeText={(text) => {
+                                    onChange(index, 'char_class', text);
+                                    updateCharacter();
+                                }
+                                }
+                            />
+                            <TextInput
+                                label="Level"
+                                editable={isDM || (character.assignedTo != null && character.assignedTo === user.toJSON().email)}
+                                keyboardType="phone-pad"
+                                style={styles.levelContainer}
+                                value={character.level}
+                                onChangeText={(text) => {
+                                    onChange(index, 'level', text);
+                                    updateCharacter();
+                                }
+                                }
+                            />
+                        </View>
+                        <TouchableOpacity
+                            onPress={() => {
+                                showImage(character.imageName, character.actualImageName)
+                            }}
+                            style = {isDM ? styles.charImageContainerDM : styles.charImageContainer}
+                        >
+                            <Image
+                                source={{uri: character.imageName}}
+                                style = {styles.charImage}
+                            />
+                        </TouchableOpacity>
 
-                    <View style={styles.cardRow}>
-                        <TextInput
-                            label="STR"
-                            editable={isDM || character.assignedTo === user.toJSON().email}
-                            keyboardType="number-pad"
-                            style={styles.abilityScoresContainer}
-                            value={String(character.strength)}
-                            onChangeText={(text) => {
-                                onChange(index, 'strength', text, true);
-                                updateCharacter();
-                            }
-                            }
-                        />
-                        <TextInput
-                            label="CON"
-                            editable={isDM || character.assignedTo === user.toJSON().email}
-                            keyboardType="number-pad"
-                            style={styles.abilityScoresContainer}
-                            value={String(character.constitution)}
-                            onChangeText={(text) => {
-                                onChange(index, 'constitution', text, true);
-                                updateCharacter();
-                            }
-                            }
-                        />
-                        <TextInput
-                            label="DEX"
-                            editable={isDM || character.assignedTo === user.toJSON().email}
-                            keyboardType="number-pad"
-                            style={styles.abilityScoresContainer}
-                            value={String(character.dexterity)}
-                            onChangeText={(text) => {
-                                onChange(index, 'dexterity', text, true);
-                                updateCharacter();
-                            }
-                            }
-                        />
-                        <TextInput
-                            label="INT"
-                            editable={isDM || character.assignedTo === user.toJSON().email}
-                            keyboardType="number-pad"
-                            style={styles.abilityScoresContainer}
-                            value={String(character.intelligence)}
-                            onChangeText={(text) => {
-                                onChange(index, 'intelligence', text, true);
-                                updateCharacter();
-                            }
-                            }
-                        />
-                        <TextInput
-                            label="WIS"
-                            editable={isDM || character.assignedTo === user.toJSON().email}
-                            keyboardType="number-pad"
-                            style={styles.abilityScoresContainer}
-                            value={String(character.wisdom)}
-                            onChangeText={(text) => {
-                                onChange(index, 'wisdom', text, true);
-                                updateCharacter();
-                            }
-                            }
-                        />
-                        <TextInput
-                            label="CHA"
-                            editable={isDM || character.assignedTo === user.toJSON().email}
-                            keyboardType="number-pad"
-                            style={styles.abilityScoresContainer}
-                            value={String(character.charisma)}
-                            onChangeText={(text) => {
-                                onChange(index, 'charisma', text, true);
-                                updateCharacter();
-                            }
-                            }
-                        />
-                        <TextInput
-                            label="PROF"
-                            editable={isDM || character.assignedTo === user.toJSON().email}
-                            keyboardType="number-pad"
-                            style={styles.abilityScoresContainer}
-                            value={String(character.proficiency)}
-                            onChangeText={(text) => {
-                                onChange(index, 'proficiency', text, true);
-                                updateCharacter();
-                            }
-                            }
-                        />
-                        <TextInput
-                            label="INIT"
-                            editable={isDM || character.assignedTo === user.toJSON().email}
-                            keyboardType="number-pad"
-                            style={styles.abilityScoresContainer}
-                            value={String(character.initiative)}
-                            onChangeText={(text) => {
-                                onChange(index, 'initiative', text, true);
-                                updateCharacter();
-                            }
-                            }
-                        />
-                    </View>
-                </View>
-                <View>
-                    <View style={styles.cardRow}>
-                        <TextInput
-                            label="Alignment"
-                            editable={isDM || character.assignedTo === user.toJSON().email}
-                            style={styles.stringContainer}
-                            placeholder={"Enter alignment..."}
-                            value={character.alignment}
-                            onChangeText={(text) => {
-                                onChange(index, 'alignment', text, false);
-                                updateCharacter();
-                            }
-                            }
-                        />
-                        <TextInput
-                            label="Max HP"
-                            editable={isDM || character.assignedTo === user.toJSON().email}
-                            keyboardType="number-pad"
-                            style={styles.intContainer}
-                            value={String(character.max_hp)}
-                            onChangeText={(text) => {
-                                onChange(index, 'max_hp', text, true);
-                                updateCharacter();
-                            }
-                            }
-                        />
-                        <TextInput
-                            label="Current HP"
-                            editable={isDM || character.assignedTo === user.toJSON().email}
-                            keyboardType="number-pad"
-                            style={styles.intContainer}
-                            value={String(character.current_hp)}
-                            onChangeText={(text) => {
-                                onChange(index, 'current_hp', text, true);
-                                updateCharacter();
-                            }
-                            }
-                        />
-                        <TextInput
-                            label="Temp HP"
-                            editable={isDM || character.assignedTo === user.toJSON().email}
-                            keyboardType="number-pad"
-                            style={styles.intContainer}
-                            value={String(character.temp_hp)}
-                            onChangeText={(text) => {
-                                onChange(index, 'temp_hp', text, true);
-                                updateCharacter();
-                            }
-                            }
-                        />
-                        <TextInput
-                            label="AC"
-                            editable={isDM || character.assignedTo === user.toJSON().email}
-                            keyboardType="number-pad"
-                            style={styles.bottomrowIntContainer}
-                            value={String(character.armor_class)}
-                            onChangeText={(text) => {
-                                onChange(index, 'armor_class', text, true);
-                                updateCharacter();
-                            }}
-                        />
-                        <TextInput
-                            label="SPD"
-                            editable={isDM || character.assignedTo === user.toJSON().email}
-                            keyboardType="number-pad"
-                            style={styles.bottomrowIntContainer}
-                            value={String(character.speed)}
-                            onChangeText={(text) => {
-                                onChange(index, 'speed', text, true);
-                                updateCharacter();
-                            }}
-                        />
-                        <View style={styles.iconRow}>
-                            {isDM || (character.assignedTo === user.toJSON().email && userPermissions != null && userPermissions.deleteOwnCharacters ) ?
-                                <IconButton
-                                    icon="delete"
-                                    size={28}
-                                    color="#000"
-                                    style={{width: "50%", marginLeft: screenWidth * 0.01}}
-                                    onPress={deleteCharacter} //delete this character
-                                /> : null
-                            }
-                            <IconButton
-                                icon="arrow-expand-all"
-                                size={28}
-                                color="#000"
-                                style={isDM || (character.assignedTo === user.toJSON().email && userPermissions != null && userPermissions.deleteOwnCharacters) ? styles.expandIconDM : styles.expandIcon}
-                                onPress={async () => {
-                                    navigation.navigate('CharacterSheet', {
-                                        screen: 'Main',
-                                        params: {
-                                            charRef: groupRef.collection('characters').doc(character._id),
-                                            character: character,
-                                            index: index,
-                                            groupRef: groupRef,
-                                            onFSChange: onChange,
-                                            isDM: isDM
-                                        },
-                                    })
-                                }}
+                        <View style={styles.cardRow}>
+                            <TextInput
+                                label="STR"
+                                editable={isDM || (character.assignedTo != null && character.assignedTo === user.toJSON().email)}
+                                keyboardType="phone-pad"
+                                style={styles.abilityScoresContainer}
+                                value={character.strength}
+                                onChangeText={(text) => {
+                                    onChange(index, 'strength', text);
+                                    updateCharacter();
+                                }
+                                }
+                            />
+                            <TextInput
+                                label="CON"
+                                editable={isDM || (character.assignedTo != null && character.assignedTo === user.toJSON().email)}
+                                keyboardType="phone-pad"
+                                style={styles.abilityScoresContainer}
+                                value={character.constitution}
+                                onChangeText={(text) => {
+                                    onChange(index, 'constitution', text);
+                                    updateCharacter();
+                                }
+                                }
+                            />
+                            <TextInput
+                                label="DEX"
+                                editable={isDM || (character.assignedTo != null && character.assignedTo === user.toJSON().email)}
+                                keyboardType="phone-pad"
+                                style={styles.abilityScoresContainer}
+                                value={character.dexterity}
+                                onChangeText={(text) => {
+                                    onChange(index, 'dexterity', text);
+                                    updateCharacter();
+                                }
+                                }
+                            />
+                            <TextInput
+                                label="INT"
+                                editable={isDM || (character.assignedTo != null && character.assignedTo === user.toJSON().email)}
+                                keyboardType="phone-pad"
+                                style={styles.abilityScoresContainer}
+                                value={character.intelligence}
+                                onChangeText={(text) => {
+                                    onChange(index, 'intelligence', text);
+                                    updateCharacter();
+                                }
+                                }
+                            />
+                            <TextInput
+                                label="WIS"
+                                editable={isDM || (character.assignedTo != null && character.assignedTo === user.toJSON().email)}
+                                keyboardType="phone-pad"
+                                style={styles.abilityScoresContainer}
+                                value={character.wisdom}
+                                onChangeText={(text) => {
+                                    onChange(index, 'wisdom', text);
+                                    updateCharacter();
+                                }
+                                }
+                            />
+                            <TextInput
+                                label="CHA"
+                                editable={isDM || (character.assignedTo != null && character.assignedTo === user.toJSON().email)}
+                                keyboardType="phone-pad"
+                                style={styles.abilityScoresContainer}
+                                value={character.charisma}
+                                onChangeText={(text) => {
+                                    onChange(index, 'charisma', text);
+                                    updateCharacter();
+                                }
+                                }
+                            />
+                            <TextInput
+                                label="PROF"
+                                editable={isDM || (character.assignedTo != null && character.assignedTo === user.toJSON().email)}
+                                keyboardType="phone-pad"
+                                style={styles.abilityScoresContainer}
+                                value={character.proficiency}
+                                onChangeText={(text) => {
+                                    onChange(index, 'proficiency', text);
+                                    updateCharacter();
+                                }
+                                }
+                            />
+                            <TextInput
+                                label="INIT"
+                                editable={isDM || (character.assignedTo != null && character.assignedTo === user.toJSON().email)}
+                                keyboardType="phone-pad"
+                                style={styles.abilityScoresContainer}
+                                value={character.initiative}
+                                onChangeText={(text) => {
+                                    onChange(index, 'initiative', text);
+                                    updateCharacter();
+                                }
+                                }
                             />
                         </View>
                     </View>
+                    <View>
+                        <View style={styles.cardRow}>
+                            <TextInput
+                                label="Alignment"
+                                editable={isDM || (character.assignedTo != null && character.assignedTo === user.toJSON().email)}
+                                style={styles.stringContainer}
+                                placeholder={"Enter alignment..."}
+                                value={character.alignment}
+                                onChangeText={(text) => {
+                                    onChange(index, 'alignment', text);
+                                    updateCharacter();
+                                }
+                                }
+                            />
+                            <TextInput
+                                label="Max HP"
+                                editable={isDM || (character.assignedTo != null && character.assignedTo === user.toJSON().email)}
+                                keyboardType="phone-pad"
+                                style={styles.intContainer}
+                                value={character.max_hp}
+                                onChangeText={(text) => {
+                                    onChange(index, 'max_hp', text);
+                                    updateCharacter();
+                                }
+                                }
+                            />
+                            <TextInput
+                                label="Current HP"
+                                editable={isDM || (character.assignedTo != null && character.assignedTo === user.toJSON().email)}
+                                keyboardType="phone-pad"
+                                style={styles.intContainer}
+                                value={character.current_hp}
+                                onChangeText={(text) => {
+                                    onChange(index, 'current_hp', text);
+                                    updateCharacter();
+                                }
+                                }
+                            />
+                            <TextInput
+                                label="Temp HP"
+                                editable={isDM || (character.assignedTo != null && character.assignedTo === user.toJSON().email)}
+                                keyboardType="phone-pad"
+                                style={styles.intContainer}
+                                value={character.temp_hp}
+                                onChangeText={(text) => {
+                                    onChange(index, 'temp_hp', text);
+                                    updateCharacter();
+                                }
+                                }
+                            />
+                            <TextInput
+                                label="AC"
+                                editable={isDM || (character.assignedTo != null && character.assignedTo === user.toJSON().email)}
+                                keyboardType="phone-pad"
+                                style={styles.bottomrowIntContainer}
+                                value={character.armor_class}
+                                onChangeText={(text) => {
+                                    onChange(index, 'armor_class', text);
+                                    updateCharacter();
+                                }}
+                            />
+                            <TextInput
+                                label="SPD"
+                                editable={isDM || (character.assignedTo != null && character.assignedTo === user.toJSON().email)}
+                                keyboardType="phone-pad"
+                                style={styles.bottomrowIntContainer}
+                                value={String(character.speed)}
+                                onChangeText={(text) => {
+                                    onChange(index, 'speed', text);
+                                    updateCharacter();
+                                }}
+                            />
+                            {isDM ?
+                                <View style = {{flexDirection: 'column'}}>
+                                    <View style={styles.firstIconRow}>
+                                        {items.length !== 0 ?
+                                            <IconButton
+                                                icon="account-plus"
+                                                size={28}
+                                                color="#000"
+                                                style={character.assignedTo != null && character.assignedTo.length !== 0 ? styles.addIconDM : styles.addIcon}
+                                                onPress={() => {
+                                                    showAssign(character, index);
+                                                }}
+                                            /> : null
+                                        }
+                                        {character.assignedTo != null && character.assignedTo.length !== 0 ?
+                                            <IconButton
+                                                icon="account-remove"
+                                                size={28}
+                                                color="#000"
+                                                style={styles.removeIcon}
+                                                onPress={async () => {
+                                                    onChange(index, 'assignedTo', "");
+                                                    updateCharacter();
+                                                }}
+                                            />
+                                            :
+                                            null
+                                        }
+                                    </View>
+                                    <View style={styles.iconRow}>
+                                        {isDM || ((character.assignedTo != null && character.assignedTo === user.toJSON().email) && userPermissions != null && userPermissions.deleteOwnCharacters ) ?
+                                            <IconButton
+                                                icon="delete"
+                                                size={28}
+                                                color="#000"
+                                                style={{width: "40%", marginLeft: screenWidth * 0.0026}}
+                                                onPress={() => {
+                                                    showConfirmationDialog(character);
+                                                }} //delete this character
+                                            /> : null
+                                        }
+                                        <IconButton
+                                            icon="arrow-expand-all"
+                                            size={28}
+                                            color="#000"
+                                            style={isDM || ((character.assignedTo != null && character.assignedTo === user.toJSON().email) && userPermissions != null && userPermissions.deleteOwnCharacters) ? styles.expandIconDM : styles.expandIcon}
+                                            onPress={() => {
+                                                navigation.navigate('CharacterSheet', {
+                                                    screen: 'Main',
+                                                    params: {
+                                                        charRef: groupRef.collection('characters').doc(character._id),
+                                                        character: character,
+                                                        index: index,
+                                                        groupRef: groupRef,
+                                                        onFSChange: onChange,
+                                                        isDM: isDM
+                                                    },
+                                                })
+                                            }}
+                                        />
+                                        <IconButton
+                                            icon="eye-off"
+                                            size={28}
+                                            color="#000"
+                                            style={isDM || ((character.assignedTo != null && character.assignedTo === user.toJSON().email) && userPermissions != null && userPermissions.deleteOwnCharacters) ? styles.minusIconDM : styles.minusIcon}
+                                            onPress={() => {
+                                                setHidden(true);
+                                            }}
+                                        />
+                                    </View>
+                                </View>
+                                :
+                                <View style={styles.iconRow}>
+                                    {isDM || ((character.assignedTo != null && character.assignedTo === user.toJSON().email) && userPermissions != null && userPermissions.deleteOwnCharacters ) ?
+                                        <IconButton
+                                            icon="delete"
+                                            size={28}
+                                            color="#000"
+                                            style={{width: "40%", marginLeft: screenWidth * 0.0026}}
+                                            onPress={() => {
+                                                showConfirmationDialog(character);
+                                            }} //delete this character
+                                        /> : null
+                                    }
+                                    <IconButton
+                                        icon="arrow-expand-all"
+                                        size={28}
+                                        color="#000"
+                                        style={isDM || ((character.assignedTo != null && character.assignedTo === user.toJSON().email) && userPermissions != null && userPermissions.deleteOwnCharacters) ? styles.expandIconDM : styles.expandIcon}
+                                        onPress={() => {
+                                            navigation.navigate('CharacterSheet', {
+                                                screen: 'Main',
+                                                params: {
+                                                    charRef: groupRef.collection('characters').doc(character._id),
+                                                    character: character,
+                                                    index: index,
+                                                    groupRef: groupRef,
+                                                    onFSChange: onChange,
+                                                    isDM: isDM
+                                                },
+                                            })
+                                        }}
+                                    />
+                                    <IconButton
+                                        icon="eye-off"
+                                        size={28}
+                                        color="#000"
+                                        style={isDM || ((character.assignedTo != null && character.assignedTo === user.toJSON().email) && userPermissions != null && userPermissions.deleteOwnCharacters) ? styles.minusIconDM : styles.minusIcon}
+                                        onPress={() => {
+                                            setHidden(true);
+                                        }}
+                                    />
+                                </View>
+                            }
+                        </View>
+                    </View>
                 </View>
-            </View>
-        </Surface>
-    );
+            </Surface>
+        );
+    }
+    else {
+        return (
+            <Button
+                onPress={() => {
+                    setHidden(false)
+                }}
+                style={styles.hiddenButton}
+                mode={"contained"}
+            >
+                Show Character with Name "{character.name}"
+            </Button>
+        )
+    }
 }
 
 const styles = StyleSheet.create({
+    hiddenButton: {
+        width: "98.93%",
+        marginLeft: screenWidth * 0.0037509377344336,
+        marginRight: screenWidth * 0.0037509377344336,
+        marginBottom: screenHeight * 0.0066489361702128
+    },
     expandIconDM: {
-        width: "50%",
+        width: "40%",
         marginLeft: screenWidth * -0.0065
     },
     expandIcon: {
-        width: "100%"
+        width: "50%"
+    },
+    addIconDM: {
+        width: "50%",
+        marginLeft: screenWidth * 0.0065
+    },
+    removeIcon: {
+        width: "50%",
+        marginLeft: screenWidth * -0.0065
+    },
+    addIcon: {
+        width: "100%",
+        marginLeft: screenWidth * 0.0065
+    },
+    minusIcon: {
+        width: "50%"
+    },
+    minusIconDM: {
+        width: "40%",
+        marginLeft: screenWidth * -0.0065
     },
     charImage: {
         width: "100%",
@@ -328,7 +486,14 @@ const styles = StyleSheet.create({
         height: global.screenWidth * 0.0750187546886722,
         position: 'absolute',
         left: global.screenWidth * 0.56639,
-        top: global.screenHeight * 0.0132978723404255,
+        top: global.screenHeight * 0.0132978723404255
+    },
+    charImageContainerDM: {
+        width: global.screenWidth * 0.0750187546886722,
+        height: global.screenWidth * 0.0750187546886722,
+        position: 'absolute',
+        left: global.screenWidth * 0.56639,
+        top: global.screenHeight * 0.0572978723404255
     },
     levelContainer: {
         width: global.screenWidth * 0.082521,
@@ -412,10 +577,15 @@ const styles = StyleSheet.create({
     cardRow: {
         flexDirection: 'row',
     },
+    firstIconRow: {
+        flexDirection: 'row',
+        width: global.screenWidth * 0.084,
+        marginTop: global.screenHeight * -0.036170212765957,
+    },
     iconRow: {
         flexDirection: 'row',
         width: global.screenWidth * 0.084,
-        marginTop: global.screenHeight * 0.0186170212765957,
+        marginTop: global.screenHeight * -0.018170212765957,
     },
     intContainer: {
         marginBottom: screenHeight * 0.0026595744680851,

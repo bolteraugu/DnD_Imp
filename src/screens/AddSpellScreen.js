@@ -1,12 +1,15 @@
 import {Dimensions, StyleSheet, Text, TextInput as NativeTextInput, View, Platform} from "react-native";
-import {TextInput, Button} from "react-native-paper";
-import React, {useState} from "react";
+import {TextInput, Button, Checkbox} from "react-native-paper";
+import React, {useEffect, useState} from "react";
 import {Picker} from "@react-native-picker/picker";
+import firebase from 'firebase';
+import 'firebase/firestore';
+import DropDown from "react-native-paper-dropdown";
 
 global.screenWidth = Dimensions.get("window").width;
 global.screenHeight = Dimensions.get("window").height;
 
-export default function AddSpellScreen({navigation}) {
+export default function AddSpellScreen({navigation, route}) {
     const [name, setName] = useState("");
     const [level, setLevel] = useState("Cantrip");
     const [castingTime, setCastingTime] = useState("");
@@ -14,6 +17,7 @@ export default function AddSpellScreen({navigation}) {
     const [components, setComponents] = useState("");
     const [duration, setDuration] = useState("");
     const [description, setDescription] = useState("");
+
     if (Platform.OS === "ios") {
         return (
             <View style = {styles.totalContainer}>
@@ -195,6 +199,7 @@ export default function AddSpellScreen({navigation}) {
         );
     }
     else {
+        let index = 0;
         return (
             <View style = {styles.totalContainer}>
                 <View style={styles.column}>
@@ -243,14 +248,6 @@ export default function AddSpellScreen({navigation}) {
                                 <Picker.Item label = "9" value = "9" key="10" />
                             </Picker>
                         </View>
-                        {/*<TextInput*/}
-                        {/*    style={styles.inputContainer}*/}
-                        {/*    keyboardType="number-pad"*/}
-                        {/*    placeholder={"Enter level..."}*/}
-                        {/*    onChangeText={(text) => {*/}
-                        {/*        setLevel(Number(text))*/}
-                        {/*    }}*/}
-                        {/*/>*/}
                     </View>
                     <View style = {styles.row}>
                         <View style = {styles.headingContainer}>
@@ -338,7 +335,7 @@ export default function AddSpellScreen({navigation}) {
                                                 paddingLeft: screenWidth * 0.0090022505626407,
                                                 paddingRight: screenWidth * 0.018754688672168,
                                                 paddingBottom: screenHeight * 0.0106382978723404,
-                                                height: screenHeight * 0.1329787234042553,
+                                                height: screenHeight * 0.1029787234042553,
                                             }
                                             : null,
                                     ]}
@@ -364,7 +361,7 @@ export default function AddSpellScreen({navigation}) {
                             components: components,
                             duration: duration,
                             description: description
-                        });
+                        })
                         navigation.navigate('CharacterSheet', {
                             screen: 'Spells'
                         })
@@ -401,13 +398,32 @@ const styles = StyleSheet.create({
         flex: 1,
         color: "#787878",
     },
+    pickSomeones: {
+        width: screenWidth * 0.2845843960990248,
+        height: screenHeight * 0.0598404255319149,
+        color: "#787878",
+    },
+    pickSomeonesContainer: {
+        marginTop: screenHeight * 0.016595744680851,
+        marginLeft: screenWidth * 0.15003750937734,
+        marginRight: screenWidth * 0.0015003750937734,
+        width: screenWidth * 0.2847711927981995,
+        height: screenHeight * 0.0598404255319149,
+        marginBottom: screenHeight * 0.033244680851064,
+        borderBottomWidth: 1,
+        borderTopRightRadius: 4,
+        borderTopLeftRadius: 4,
+        borderColor: "#adadad",
+        backgroundColor: "#c9d8ff",
+        fontFamily: 'sans-serif',
+    },
     typeContainer: {
         marginTop: screenHeight * 0.0026595744680851,
         marginLeft: screenWidth * 0.0015003750937734,
         marginRight: screenWidth * 0.0015003750937734,
         width: screenWidth * 0.0847711927981995,
         height: screenHeight * 0.0598404255319149,
-        marginBottom: screenHeight * 0.033244680851064,
+        marginBottom: screenHeight * 0.013244680851064,
         borderBottomWidth: 1,
         borderTopRightRadius: 4,
         borderTopLeftRadius: 4,
@@ -440,7 +456,7 @@ const styles = StyleSheet.create({
     },
     totalContainer: {
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
     },
     inputContainer: {
         marginTop: screenHeight * 0.0026595744680851,
@@ -449,7 +465,7 @@ const styles = StyleSheet.create({
         width: screenWidth * 0.3375843960990248,
         backgroundColor: "#e0e0de",
         fontFamily: 'sans-serif',
-        marginBottom: screenHeight * 0.033244680851064,
+        marginBottom: screenHeight * 0.013244680851064,
         height: screenHeight * 0.0598404255319149,
     },
     descriptionContainer: {
@@ -459,7 +475,7 @@ const styles = StyleSheet.create({
         width: screenWidth * 0.3375843960990248,
         backgroundColor: "#e0e0de",
         fontFamily: 'sans-serif',
-        marginBottom: screenHeight * 0.033244680851064,
+        marginBottom: screenHeight * 0.013244680851064,
         height: screenHeight * 0.0598404255319149,
     },
     column: {

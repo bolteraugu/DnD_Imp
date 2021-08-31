@@ -133,8 +133,8 @@ export default function BiographyScreen({navigation}) {
                                     />
                                 )}
                                 onChangeText={(text) => {
-                                    pushChange(global.index, 'personality_traits', text, false);
-                                    updateCharacterLocal('personality_traits', text, false);
+                                    pushChange(global.index, 'personality_traits', text);
+                                    updateCharacterLocal('personality_traits', text);
                                     updateCharacter('personality_traits', text);
                                 }}
                             />
@@ -171,8 +171,8 @@ export default function BiographyScreen({navigation}) {
                                     />
                                 )}
                                 onChangeText={(text) => {
-                                    pushChange(global.index, 'ideals', text, false);
-                                    updateCharacterLocal('ideals', text, false);
+                                    pushChange(global.index, 'ideals', text);
+                                    updateCharacterLocal('ideals', text);
                                     updateCharacter('ideals', text);
                                 }}
                             />
@@ -211,8 +211,8 @@ export default function BiographyScreen({navigation}) {
                                     />
                                 )}
                                 onChangeText={(text) => {
-                                    pushChange(global.index, 'bonds', text, false);
-                                    updateCharacterLocal('bonds', text, false);
+                                    pushChange(global.index, 'bonds', text);
+                                    updateCharacterLocal('bonds', text);
                                     updateCharacter('bonds', text);
                                 }}
                             />
@@ -249,8 +249,8 @@ export default function BiographyScreen({navigation}) {
                                     />
                                 )}
                                 onChangeText={(text) => {
-                                    pushChange(global.index, 'flaws', text, false);
-                                    updateCharacterLocal('flaws', text, false);
+                                    pushChange(global.index, 'flaws', text);
+                                    updateCharacterLocal('flaws', text);
                                     updateCharacter('flaws', text);
                                 }}
                             />
@@ -290,8 +290,8 @@ export default function BiographyScreen({navigation}) {
                                 />
                             )}
                             onChangeText={(text) => {
-                                pushChange(global.index, 'features_and_traits', text, false);
-                                updateCharacterLocal('features_and_traits', text, false);
+                                pushChange(global.index, 'features_and_traits', text);
+                                updateCharacterLocal('features_and_traits', text);
                                 updateCharacter('features_and_traits', text);
                             }}
                         />
@@ -332,8 +332,8 @@ export default function BiographyScreen({navigation}) {
                                 />
                             )}
                             onChangeText={(text) => {
-                                pushChange(global.index, 'appearance', text, false);
-                                updateCharacterLocal('appearance', text, false);
+                                pushChange(global.index, 'appearance', text);
+                                updateCharacterLocal('appearance', text);
                                 updateCharacter('appearance', text);
                             }}
                         />
@@ -372,8 +372,8 @@ export default function BiographyScreen({navigation}) {
                                 />
                             )}
                             onChangeText={(text) => {
-                                pushChange(global.index, 'backstory', text, false);
-                                updateCharacterLocal('backstory', text, false);
+                                pushChange(global.index, 'backstory', text);
+                                updateCharacterLocal('backstory', text);
                                 updateCharacter('backstory', text);
                             }}
                         />
