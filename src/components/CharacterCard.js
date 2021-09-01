@@ -19,17 +19,23 @@ export default function CharacterCard({character, index, onChange, groupRef, nav
     const [hidden, setHidden] = useState(false);
 
     useEffect(() => {
+        let isMounted = false;
         groupRef.onSnapshot((snapshot) => {
-            const itemsTemp = [];
-            snapshot.get('members').forEach((mem) => {
-                if (mem !== user.toJSON().email && mem !== character.assignedTo) {
-                    itemsTemp.push({
-                        value: mem, label: mem
-                    });
+            if (isMounted) {
+                const itemsTemp = [];
+                if (snapshot.get('members') != null) {
+                    snapshot.get('members').forEach((mem) => {
+                        if (mem !== user.toJSON().email && mem !== character.assignedTo) {
+                            itemsTemp.push({
+                                value: mem, label: mem
+                            });
+                        }
+                        setItems(itemsTemp);
+                    })
                 }
-                setItems(itemsTemp);
-            })
+            }
         })
+        return () => { isMounted = false }
     }, [])
 
     function updateCharacter() {

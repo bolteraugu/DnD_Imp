@@ -86,94 +86,98 @@ export default function DMScreen({route, navigation}) {
   }
 
   useEffect(() => {
+      let isMounted = true;
       groupRef.onSnapshot((snapshot) => {
-          const itemsTemp = [];
-          const itemsWebTemp = [];
-          const assignItemsWebTemp = [];
-          let count = 0;
-          setUserPermissions(snapshot.data());
-          snapshot.get('members').forEach((mem) => {
-              if (mem !== user.toJSON().email) {
-                  itemsTemp.push({
-                      value: mem, label: mem
-                  });
-                  itemsWebTemp.push(mem);
-                  assignItemsWebTemp.push(mem);
-                  setItems(itemsTemp);
-                  setAssignItems(itemsTemp);
-                  setAssignItemsWeb(assignItemsWebTemp);
-                  setItemsWeb(itemsWebTemp);
-                  if (Platform.OS === 'web' && count === 0) {
-                      count++;
-                  }
-              }
-          })
-          groupRef.collection('members').doc(user.toJSON().email).onSnapshot((ss) => {
-              setIsDM(ss.get('isDM'));
-              setChatImage(ss.get('chatImage'));
-              setChatImageName(ss.get('actualImageName'));
-              setChatImageUUID(ss.get('imageUUID'));
-              if (ss.get('isDM')) {
-                  const characterListener = groupRef.collection('characters').onSnapshot(
-                      (querySnapshot) => {
-                          const characters = querySnapshot.docs.map((doc) => {
-                              const data = {
-                                  _id: doc.id,
-                                  ...doc.data(),
-                              };
-                              return data;
+          if (isMounted) {
+              const itemsTemp = [];
+              const itemsWebTemp = [];
+              const assignItemsWebTemp = [];
+              let count = 0;
+              setUserPermissions(snapshot.data());
+              if (snapshot.get('members') != null) {
+                  snapshot.get('members').forEach((mem) => {
+                      if (mem !== user.toJSON().email) {
+                          itemsTemp.push({
+                              value: mem, label: mem
                           });
-                          setCharacters(characters);
-
-                          if (loading) {
-                              setLoading(false);
+                          itemsWebTemp.push(mem);
+                          assignItemsWebTemp.push(mem);
+                          setItems(itemsTemp);
+                          setAssignItems(itemsTemp);
+                          setAssignItemsWeb(assignItemsWebTemp);
+                          setItemsWeb(itemsWebTemp);
+                          if (Platform.OS === 'web' && count === 0) {
+                              count++;
                           }
-                      },
-                      (error) => {
-                          alert(error);
                       }
-                  );
-                  return characterListener;
-              }
-              else {
-                  const characterListener = groupRef.collection('characters').onSnapshot(
-                      (querySnapshot) => {
-                          let index = 0;
-                          const characters = querySnapshot.docs.map((doc) => {
-                              if (doc.get('assignedTo') === user.toJSON().email || userPermissions.viewAllCharacters) {
-                                  const data = {
-                                      _id: doc.id,
-                                      index: index++,
-                                      ...doc.data(),
-                                  };
-                                  return data;
-                              }
-                          });
-                          let charactersTemp = [];
-                          for (let i = 0; i < characters.length; i++) {
-                              if (characters[i] !== undefined && characters[i].assignedTo === user.toJSON().email) {
-                                  charactersTemp.push(characters[i])
-                              }
-                          }
-                          for (let i = 0; i < characters.length; i++) {
-                              if (characters[i] !== undefined && !charactersTemp.includes(characters[i])) {
-                                  charactersTemp.push(characters[i])
-                              }
-                          }
-                          setCharacters(charactersTemp);
+                  })
+                  groupRef.collection('members').doc(user.toJSON().email).onSnapshot((ss) => {
+                      setIsDM(ss.get('isDM'));
+                      setChatImage(ss.get('chatImage'));
+                      setChatImageName(ss.get('actualImageName'));
+                      setChatImageUUID(ss.get('imageUUID'));
+                      if (ss.get('isDM')) {
+                          groupRef.collection('characters').onSnapshot(
+                              (querySnapshot) => {
+                                  const characters = querySnapshot.docs.map((doc) => {
+                                      const data = {
+                                          _id: doc.id,
+                                          ...doc.data(),
+                                      };
+                                      return data;
+                                  });
+                                  setCharacters(characters);
 
-                          if (loading) {
-                              setLoading(false);
-                          }
-                      },
-                      (error) => {
-                          alert(error);
+                                  if (loading) {
+                                      setLoading(false);
+                                  }
+                              },
+                              (error) => {
+                                  alert(error);
+                              }
+                          );
                       }
-                  );
-                  return characterListener;
+                      else {
+                          const characterListener = groupRef.collection('characters').onSnapshot(
+                              (querySnapshot) => {
+                                  let index = 0;
+                                  const characters = querySnapshot.docs.map((doc) => {
+                                      if (doc.get('assignedTo') === user.toJSON().email || userPermissions.viewAllCharacters) {
+                                          const data = {
+                                              _id: doc.id,
+                                              index: index++,
+                                              ...doc.data(),
+                                          };
+                                          return data;
+                                      }
+                                  });
+                                  let charactersTemp = [];
+                                  for (let i = 0; i < characters.length; i++) {
+                                      if (characters[i] !== undefined && characters[i].assignedTo === user.toJSON().email) {
+                                          charactersTemp.push(characters[i])
+                                      }
+                                  }
+                                  for (let i = 0; i < characters.length; i++) {
+                                      if (characters[i] !== undefined && !charactersTemp.includes(characters[i])) {
+                                          charactersTemp.push(characters[i])
+                                      }
+                                  }
+                                  setCharacters(charactersTemp);
+
+                                  if (loading) {
+                                      setLoading(false);
+                                  }
+                              },
+                              (error) => {
+                                  alert(error);
+                              }
+                          );
+                      }
+                  })
               }
-      })
-    }, )
+      }
+    })
+      return () => { isMounted = false }
   }, []);
 
   if (loading) {
@@ -224,7 +228,7 @@ export default function DMScreen({route, navigation}) {
                       assignedTo: user.toJSON().email
                   }).then(() => {
                       char.update({
-                          canAssign: (assignItems.length > 0)
+                          canAssign: (assignItems.length > 1)
                       });
                   });
               }).then(() => {

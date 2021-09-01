@@ -15,7 +15,6 @@ global.screenHeight = Dimensions.get("window").height;
 
 export const AuthUserProvider = ({children}) => {
   const [user, setUser] = useState(null);
-  const [storedAccountType, setStoredAccountType] = useState('');
 
   return (
     <AuthUserContext.Provider
@@ -66,7 +65,6 @@ export const AuthUserProvider = ({children}) => {
                   .doc(user.user.toJSON().email)
                   .set({
                     text: `User ${user.user.toJSON().email} was created.`,
-                    accountType: 'Standard',
                     createdOn: new Date().toString(),
                   });
               });
@@ -87,17 +85,6 @@ export const AuthUserProvider = ({children}) => {
           try {
             await firebase.auth().sendPasswordResetEmail(email);
 
-            firebase
-              .firestore()
-              .collection('user-logs')
-              .doc('user-creation')
-              .collection('logs')
-              .doc(email)
-              .get()
-              .then((snapshot) => {
-                setStoredAccountType(snapshot.get('accountType'));
-              });
-
             await firebase
               .firestore()
               .collection('user-logs')
@@ -106,7 +93,6 @@ export const AuthUserProvider = ({children}) => {
               .doc(email)
               .set({
                 text: `User ${email} requested a reset password email to be sent to their email address.`,
-                accountType: storedAccountType,
                 requestedOn: new Date().toString(),
               });
             Alert.alert(

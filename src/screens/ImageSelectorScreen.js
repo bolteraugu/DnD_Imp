@@ -44,56 +44,59 @@ export default function ImageSelectorScreen({navigation, route}) {
     let membersTemp = [];
 
     useEffect(() => {
-        const unsubscribe = navigation.addListener('focus', e => {
-            setLoading(true)
-            route.params.groupRef.get().then((snapshot) => {
-                setMembers(snapshot.get('members'))
-            })
-            route.params.groupRef.collection('messages').onSnapshot((snapshot) => {
-                const avatars = snapshot.docs.map((doc) => {
-                    const data = {
-                        _id: doc.id,
-                        ...doc.data(),
-                    };
-                    return data;
+        let isMounted = true;
+        if (isMounted) {
+            navigation.addListener('focus', e => {
+                setLoading(true)
+                route.params.groupRef.get().then((snapshot) => {
+                    setMembers(snapshot.get('members'))
                 })
-                setAvatars(avatars)
-            })
-            route.params.groupRef.collection('members').doc(user.toJSON().email).collection('images').onSnapshot((querySnapshot) => {
-                let images = []
-                querySnapshot.docs.map((doc) => {
-                    if (route.params.comingFrom === 'MainScreen') {
-                        if (route.params.character.imageName !== "https://firebasestorage.googleapis.com/v0/b/improving-dungeon-minion-5e.appspot.com/o/default_character.png?alt=media&token=84c93a85-ce56-45a7-9b01-0df6") {
-                            if (doc.get('uuid') === route.params.character.imageUUID) {
-                                setSelectedImage(route.params.character.imageName);
-                                setSelectedImageName(route.params.character.actualImageName);
-                                setSelectedImageUUID(route.params.character.imageUUID);
+                route.params.groupRef.collection('messages').onSnapshot((snapshot) => {
+                    const avatars = snapshot.docs.map((doc) => {
+                        const data = {
+                            _id: doc.id,
+                            ...doc.data(),
+                        };
+                        return data;
+                    })
+                    setAvatars(avatars)
+                })
+                route.params.groupRef.collection('members').doc(user.toJSON().email).collection('images').onSnapshot((querySnapshot) => {
+                    let images = []
+                    querySnapshot.docs.map((doc) => {
+                        if (route.params.comingFrom === 'MainScreen') {
+                            if (route.params.character.imageName !== "https://firebasestorage.googleapis.com/v0/b/improving-dungeon-minion-5e.appspot.com/o/default_character.png?alt=media&token=84c93a85-ce56-45a7-9b01-0df6") {
+                                if (doc.get('uuid') === route.params.character.imageUUID) {
+                                    setSelectedImage(route.params.character.imageName);
+                                    setSelectedImageName(route.params.character.actualImageName);
+                                    setSelectedImageUUID(route.params.character.imageUUID);
+                                }
+                            }
+                        } else if (route.params.comingFrom === 'DMScreen') {
+                            if (route.params.chatImage !== "https://firebasestorage.googleapis.com/v0/b/improving-dungeon-minion-5e.appspot.com/o/default_character.png?alt=media&token=84c93a85-ce56-45a7-9b01-0df6") {
+                                if (doc.get('uri') === route.params.chatImage) {
+                                    setSelectedImage(route.params.chatImage);
+                                    setSelectedImageName(route.params.actualImageName);
+                                    setSelectedImageUUID(route.params.imageUUID);
+                                }
+                            } else {
+                                setSelectedImage("")
                             }
                         }
-                    } else if (route.params.comingFrom === 'DMScreen') {
-                        if (route.params.chatImage !== "https://firebasestorage.googleapis.com/v0/b/improving-dungeon-minion-5e.appspot.com/o/default_character.png?alt=media&token=84c93a85-ce56-45a7-9b01-0df6") {
-                            if (doc.get('uri') === route.params.chatImage) {
-                                setSelectedImage(route.params.chatImage);
-                                setSelectedImageName(route.params.actualImageName);
-                                setSelectedImageUUID(route.params.imageUUID);
-                            }
-                        } else {
-                            setSelectedImage("")
-                        }
-                    }
-                    const data = {
-                        _id: doc.id,
-                        ...doc.data(),
-                    };
-                    images.push(data)
+                        const data = {
+                            _id: doc.id,
+                            ...doc.data(),
+                        };
+                        images.push(data)
+                    });
+                    setImages(images)
                 });
-                setImages(images)
-            });
-            if (loading) {
-                setLoading(false);
-            }
-        })
-        return unsubscribe;
+                if (loading) {
+                    setLoading(false);
+                }
+            })
+        }
+        return () => { isMounted = false }
     })
 
     function deleteImage(image) {
@@ -118,7 +121,7 @@ export default function ImageSelectorScreen({navigation, route}) {
                 });
                 route.params.groupRef.collection('messages').onSnapshot((snapshot) => {
                     snapshot.docs.map((doc) => {
-                        if (doc.get('user').email === user.toJSON().email) {
+                        if (!doc.get('system') && doc.get('user').email === user.toJSON().email) {
                             route.params.groupRef.collection('messages').doc(doc.id).update({
                                 user: {
                                     uid: user.toJSON().uid,
@@ -134,7 +137,7 @@ export default function ImageSelectorScreen({navigation, route}) {
 
         route.params.groupRef.collection('messages').onSnapshot((snapshot) => {
             snapshot.docs.map((doc) => {
-                if (doc.get('image') === image.uri) {
+                if (!doc.get('system') && doc.get('image') === image.uri) {
                     route.params.groupRef.collection('messages').doc(doc.id).update({
                         image: "",
                         imageName: "",
@@ -288,7 +291,7 @@ export default function ImageSelectorScreen({navigation, route}) {
             navigation.goBack();
         } else if (route.params.comingFrom === 'DMScreen') {
             for (let i = 0; i < avatars.length; i++) {
-                if (avatars[i].user.email === user.toJSON().email) {
+                if (!avatars[i].system && avatars[i].user.email === user.toJSON().email) {
                     route.params.groupRef.collection('messages').doc(avatars[i]._id).update({
                         user: {
                             avatar: selectedImage,
@@ -321,7 +324,9 @@ export default function ImageSelectorScreen({navigation, route}) {
                         upload one.</Text>
                     <Button
                         mode="contained"
-                        onPress={openImagePickerAsync}
+                        onPress={async () => {
+                            await openImagePickerAsync();
+                        }}
                         style={styles.uploadImageButton}
                     >
                         Upload an image
@@ -359,19 +364,18 @@ export default function ImageSelectorScreen({navigation, route}) {
                                             setImageToS(imageToShare)
                                             membersTemp = []
                                             setItems("");
-                                            if (imageToShare.image.numShared !== members.length) {
-                                                for (let j = 0; j < members.length; j++) {
-                                                    if (!imageToShare.image.sharedWith.includes(members[j]) && !membersTemp.includes(members[j])) {
-                                                        console.log(members[j]);
-                                                        membersTemp.push({
-                                                            value: members[j], label: members[j]
-                                                        })
-                                                        setItems(membersTemp)
-                                                    }
-                                                    showDialog()
+                                            for (let j = 0; j < members.length; j++) {
+                                                if (!imageToShare.image.sharedWith.includes(members[j])) {
+                                                    membersTemp.push({
+                                                        value: members[j], label: members[j]
+                                                    })
+                                                    setItems(membersTemp)
                                                 }
-                                            } else {
+                                            }
+                                            if (membersTemp.length === 0) {
                                                 showNoShareDialog();
+                                            } else {
+                                                showDialog();
                                             }
                                         }
                                         }
@@ -573,7 +577,7 @@ export default function ImageSelectorScreen({navigation, route}) {
                                     }
                                     route.params.groupRef.collection('messages').onSnapshot((snapshot) => {
                                         snapshot.docs.forEach((doc) => {
-                                            if (doc.get('user').email === user.toJSON().email && doc.get('image') === imageToEdit.image.uri) {
+                                            if (!doc.get('system') && doc.get('user').email === user.toJSON().email && doc.get('image') === imageToEdit.image.uri) {
                                                 route.params.groupRef.collection('messages').doc(doc.id).update({
                                                     imageName: name
                                                 })

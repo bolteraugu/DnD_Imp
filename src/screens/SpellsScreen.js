@@ -27,32 +27,35 @@ export default function SpellsScreen({route, navigation}) {
     const {user} = useContext(AuthUserContext);
 
     useEffect(() => {
-        const unsubscribe = navigation.addListener('focus', e => {
-            setLoading(true)
-            global.charaRef.onSnapshot( (snapshot) => {
-                setCharacter(snapshot.data())
-            });
-            global.charaRef.collection("spells").onSnapshot(
-                (querySnapshot) => {
-                    const spells = querySnapshot.docs.map((doc) => {
-                        const data = {
-                            _id: doc.id,
-                            ...doc.data(),
-                        };
-                        return data;
-                    });
-                    setSpells(spells);
+        let isMounted = true;
+        if (isMounted) {
+            navigation.addListener('focus', e => {
+                setLoading(true)
+                global.charaRef.onSnapshot( (snapshot) => {
+                    setCharacter(snapshot.data())
+                });
+                global.charaRef.collection("spells").onSnapshot(
+                    (querySnapshot) => {
+                        const spells = querySnapshot.docs.map((doc) => {
+                            const data = {
+                                _id: doc.id,
+                                ...doc.data(),
+                            };
+                            return data;
+                        });
+                        setSpells(spells);
 
-                    if (loading) {
-                        setLoading(false);
+                        if (loading) {
+                            setLoading(false);
+                        }
+                    },
+                    (error) => {
+                        alert(error);
                     }
-                },
-                (error) => {
-                    alert(error);
-                }
-            );
-        });
-        return unsubscribe
+                );
+            });
+        }
+        return () => { isMounted = false }
     }, [navigation]);
 
     if (loading) {

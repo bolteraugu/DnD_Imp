@@ -19,7 +19,7 @@ import {
     Provider,
     TextInput, Text,
 } from 'react-native-paper';
-import {GiftedChat, Bubble, Send, Composer, MessageImage, Message} from 'react-native-gifted-chat';
+import {GiftedChat, Bubble, Send, Composer, MessageImage, Message, SystemMessage} from 'react-native-gifted-chat';
 import firebase from 'firebase';
 import 'firebase/firestore';
 import Lightbox from 'react-native-lightbox'
@@ -97,7 +97,6 @@ export default function Chat({groupRef, navigation, showImage, itemsT, isDM, use
                         const data = {
                             _id: doc.id,
                             createdAt: new Date().getTime(),
-                            text: '',
                             ...firebaseData,
                         };
 
@@ -130,7 +129,6 @@ export default function Chat({groupRef, navigation, showImage, itemsT, isDM, use
         for (let i = 0; i < messagesCopy.length; i++) {
             if (!messagesCopy[i].deletedOrMissing && messagesCopy[i].text.includes(searchTerm)) {
                 newMessages.push(messagesCopy[i])
-                console.log(messagesCopy[i])
             }
         }
         setMessages(newMessages);
@@ -154,6 +152,7 @@ export default function Chat({groupRef, navigation, showImage, itemsT, isDM, use
                     email: currentUser.email,
                     avatar: chatImage
                 },
+                system: false,
                 recipients: recipientsValues,
             })
             .then(console.log('Message sent: ' + text), (error) => {
@@ -171,7 +170,7 @@ export default function Chat({groupRef, navigation, showImage, itemsT, isDM, use
                 image: image,
                 imageName: imageName,
                 deletedOrMissing: false,
-
+                system: false,
                 createdAt: new Date().getTime(),
                 user: {
                     _id: currentUser.uid,
@@ -191,6 +190,15 @@ export default function Chat({groupRef, navigation, showImage, itemsT, isDM, use
                     {...props}
                     position={props.currentMessage.user.email === currentUser.email ? 'right' : 'left'}
                 />
+        );
+    }
+
+    function renderSystemMessage(props) {
+        return (
+            <SystemMessage
+                {...props}
+                textStyle={{color: "black", fontWeight: "bold"}}
+            />
         );
     }
 
@@ -574,6 +582,7 @@ export default function Chat({groupRef, navigation, showImage, itemsT, isDM, use
                             size={28}
                             color="#000"
                             onPress={() => {
+                                setInputVal("");
                                 showDialog();
                             }}
                         />
@@ -585,7 +594,7 @@ export default function Chat({groupRef, navigation, showImage, itemsT, isDM, use
                             <Dialog.Title>Add a User to the Group</Dialog.Title>
                             <Dialog.Content>
                                 <TextInput
-                                    onChangeText={(text) => setInputVal(text)}
+                                    onChangeText={(text) => setInputVal(text.toLowerCase())}
                                     label="User's Email"
                                 />
                             </Dialog.Content>
@@ -607,6 +616,14 @@ export default function Chat({groupRef, navigation, showImage, itemsT, isDM, use
                                                     chatImage: "https://firebasestorage.googleapis.com/v0/b/improving-dungeon-minion-5e.appspot.com/o/default_character.png?alt=media&token=84c93a85-ce56-45a7-9b01-0df6",
                                                     actualImageName: "default_character.png",
                                                     imageUUID: ""
+                                                })
+                                            }).then(() => {
+                                                groupRef.collection('characters').where('canAssign', "==", false).onSnapshot((docs) => {
+                                                    docs.forEach((doc) => {
+                                                        groupRef.collection('characters').doc(doc.id).update({
+                                                            canAssign: true
+                                                        })
+                                                    })
                                                 })
                                             })
                                                 .then(() => {
@@ -732,7 +749,7 @@ export default function Chat({groupRef, navigation, showImage, itemsT, isDM, use
                                                     }
                                                     else {
                                                         groupRef.collection('messages').doc(messages[j]._id).get().then((snapshot) => {
-                                                            if (snapshot.get('image') === '') {
+                                                            if (snapshot.get('system') || snapshot.get('image') === '') {
                                                                 groupRef.collection('messages').doc(snapshot.id).update({
                                                                     deletedOrMissing: true,
                                                                     text: "This message has been deleted",
@@ -783,6 +800,7 @@ export default function Chat({groupRef, navigation, showImage, itemsT, isDM, use
                     renderMessage={renderMessage}
                     renderLoading={renderLoading}
                     renderComposer = {renderComposer}
+                    renderSystemMessage = {renderSystemMessage}
                 />
                 {Platform.OS === "android" ? <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={screenHeight * 0.11} /> : null}
                 <ButtonContainer/>
