@@ -562,7 +562,7 @@ export default function Chat({groupRef, navigation, showImage, itemsT, isDM, use
                             showDropDown={() => setShowDropDown(true)}
                             onDismiss={() => setShowDropDown(false)}
                             multiSelect
-                            dropDownStyle={styles.shareDropdown}
+                            dropDownStyle={Platform.OS === 'ios' ? styles.shareDropdownIOS : styles.shareDropdown}
                             setValue={setRecipients}
                             value={recipients}
                         /> : null
@@ -784,7 +784,7 @@ export default function Chat({groupRef, navigation, showImage, itemsT, isDM, use
                     renderLoading={renderLoading}
                     renderComposer = {renderComposer}
                 />
-                {Platform.OS === "android" && <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={screenHeight * 0.11} />}
+                {Platform.OS === "android" ? <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={screenHeight * 0.11} /> : null}
                 <ButtonContainer/>
 
             </View>
@@ -793,6 +793,9 @@ export default function Chat({groupRef, navigation, showImage, itemsT, isDM, use
 }
 
 const styles = StyleSheet.create({
+    shareDropdownIOS: {
+        marginTop: screenHeight * -0.00463829787234,
+    },
     assignGap: {
         width: screenWidth * 0.04
     },

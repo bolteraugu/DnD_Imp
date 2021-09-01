@@ -1,7 +1,7 @@
 import {Dimensions, StyleSheet, Text, TextInput as NativeTextInput, View} from "react-native";
 import {TextInput, Button, Checkbox} from "react-native-paper";
 import React, {useState} from "react";
-import {Picker} from "@react-native-picker/picker";
+import {KeyboardAwareScrollView} from "react-native-keyboard-aware-scroll-view";
 
 global.screenWidth = Dimensions.get("window").width;
 global.screenHeight = Dimensions.get("window").height;
@@ -14,6 +14,7 @@ export default function AddWeaponScreen({navigation}) {
     const [properties, setProperties] = useState("");
 
     return (
+        <KeyboardAwareScrollView>
         <View style = {styles.totalContainer}>
             <View style={styles.column}>
                 <View style = {styles.row}>
@@ -117,6 +118,7 @@ export default function AddWeaponScreen({navigation}) {
                 Add
             </Button>
         </View>
+        </KeyboardAwareScrollView>
     );
 }
 

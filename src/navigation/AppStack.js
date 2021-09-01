@@ -91,8 +91,7 @@ export default function AppStack({navigation}) {
                     }}
                     screenOptions={{
                         headerStyle: {
-                            backgroundColor: colors.primary,
-                            height: screenHeight * 0.0930851063829787
+                            backgroundColor: colors.primary
                         }
                     }}
       />
@@ -104,26 +103,16 @@ export default function AppStack({navigation}) {
                       options={{
                           title: "Notes",
                       }}/>
-        <Tab.Screen name="EditNote" component={EditNotesScreen}
+        <Stack.Screen name="EditNote" component={EditNotesScreen}
                     options={({route}) => ({
                         title: "Edit " + route.params.note.title,
                     })}
         />
-        <Tab.Screen name="ViewNote" component={ViewNotesScreen}
+        <Stack.Screen name="ViewNote" component={ViewNotesScreen}
                     options={({route}) => ({
                         title: "View " + route.params.note.title,
                     })}
         />
-        {/*<Stack.Screen name="AddNote" component={AddNotesScreenUnused}*/}
-        {/*              options={{*/}
-        {/*                  title: "Add Note",*/}
-        {/*              }}/>*/}
-        {/*<Stack.Screen name="NoteOverview" component={NoteNav}*/}
-        {/*              options={{*/}
-        {/*                  title: "Notes Overview",*/}
-        {/*              }}*/}
-        {/*/>*/}
-
         <Stack.Screen name="AddWeapon" component={AddWeaponScreen}
                       options={{
                           title: "Add Weapon",

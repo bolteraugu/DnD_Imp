@@ -8,11 +8,10 @@ import Spinner from '../components/Spinner';
 import firebase from 'firebase';
 import 'firebase/firestore';
 import {AuthUserContext} from "../navigation/AuthUserProvider";
-import { KeyboardAvoidingView } from 'react-native';
-import {useFocusEffect} from "@react-navigation/native";
 import DropDown from "react-native-paper-dropdown";
 import {Picker} from "@react-native-picker/picker";
 import "../screens/NotesScreen"
+import {KeyboardAwareScrollView} from "react-native-keyboard-aware-scroll-view";
 
 global.screenWidth = Dimensions.get("window").width;
 global.screenHeight = Dimensions.get("window").height;
@@ -30,17 +29,11 @@ export default function DMScreen({route, navigation}) {
     const [userPermissions, setUserPermissions] = useState(group);
   const [items, setItems] = useState(null);
   const [itemsWeb, setItemsWeb] = useState(null)
-    const [members, setMembers] = useState(null);
-  // const showRaceDialog = () => setRaceVisible(true);
-  // const hideRaceDialog = () => setRaceVisible(false);
-  // const [raceVisible, setRaceVisible] = useState(false);
     const showImageDialog = () => setImageVisible(true);
     const hideImageDialog = () => setImageVisible(false);
     const [imageVisible, setImageVisible] = useState(false);
     const [imageToShow, setImageToShow] = useState("");
     const [nameToShow, setNameToShow] = useState("");
-  const [newRaceName, setNewRaceName] = useState('');
-  const [createRaceIndex, setCreateRaceIndex] = useState('');
   const [showDropDown, setShowDropDown] = useState(false);
   const {user} = useContext(AuthUserContext);
   const [isDM, setIsDM] = useState(false);
@@ -52,8 +45,10 @@ export default function DMScreen({route, navigation}) {
     const showAssignDialog = () => setAssignVisible(true);
     const hideAssignDialog = () => setAssignVisible(false);
     const [assignItems, setAssignItems] = useState([]);
+    const [assignItemsWeb, setAssignItemsWeb] = useState([]);
     const [showAssignDropDown, setShowAssignDropDown] = useState(false);
     const [recipients, setRecipients] = useState("");
+    const [recipientsWeb, setRecipientsWeb] = useState("");
     const [assignCharacter, setAssignCharacter] = useState("");
     const [charIndex, setCharIndex] = useState("");
     const [deleteVisible, setDeleteVisible] = useState(false); //Whether the data is loading
@@ -63,8 +58,12 @@ export default function DMScreen({route, navigation}) {
     const [deleteAllVisible, setDeleteAllVisible] = useState(false); //Whether the data is loading
     const showDeleteAllDialog = () => setDeleteAllVisible(true);
     const hideDeleteAllDialog = () => setDeleteAllVisible(false);
+    let assignIndex = 0;
 
   global.showSettingsDialog = () => {
+      if (Platform.OS === 'web') {
+          setNewDM(itemsWeb[0]);
+      }
       showDialog();
   };
 
@@ -76,10 +75,21 @@ export default function DMScreen({route, navigation}) {
       })
   };
 
+  function updateCharacterFirebase(character) {
+      groupRef
+          .collection('characters')
+          .doc(character._id)
+          .update(character)
+          .then(console.log('Successfully updated character'), (error) =>
+              console.log('Failed to update character: ' + error)
+          );
+  }
+
   useEffect(() => {
       groupRef.onSnapshot((snapshot) => {
           const itemsTemp = [];
           const itemsWebTemp = [];
+          const assignItemsWebTemp = [];
           let count = 0;
           setUserPermissions(snapshot.data());
           snapshot.get('members').forEach((mem) => {
@@ -88,13 +98,14 @@ export default function DMScreen({route, navigation}) {
                       value: mem, label: mem
                   });
                   itemsWebTemp.push(mem);
+                  assignItemsWebTemp.push(mem);
                   setItems(itemsTemp);
                   setAssignItems(itemsTemp);
-                  setItemsWeb(itemsWebTemp)
+                  setAssignItemsWeb(assignItemsWebTemp);
+                  setItemsWeb(itemsWebTemp);
                   if (Platform.OS === 'web' && count === 0) {
-                      setNewDM(mem);
+                      count++;
                   }
-                  count++;
               }
           })
           groupRef.collection('members').doc(user.toJSON().email).onSnapshot((ss) => {
@@ -163,56 +174,6 @@ export default function DMScreen({route, navigation}) {
               }
       })
     }, )
-
-
-    //DM View - old code (works if firestore structure characters are separated by being put in different collections rather than using assignedTo field
-    // groupRef.get().then((snapshot) => {
-    //   setMembers(snapshot.get('members'))
-    // })
-    // let chars = [];
-    // groupRef.collection('members').onSnapshot((snapshot) => {
-    //     snapshot.forEach((doc) => {
-    //       groupRef.collection('members').doc(doc.id).collection('characters').onSnapshot((doc) => {
-    //         const charactersTemp = doc.docs.map((doc) => {
-    //           const data = {
-    //             _id: doc.id,
-    //             ...doc.data(),
-    //           };
-    //           chars.push(data)
-    //           return data;
-    //         });
-    //         setCharacters(chars)
-    //       })
-    //     })
-    //       if (loading) {
-    //         setLoading(false);
-    //       }
-    //     },
-    //     (error) => {
-    //       alert(error);
-    //     }
-    // );
-
-    // DM View - oldest code
-    // const characterListener = groupRef.collection('characters').onSnapshot(
-    //   (querySnapshot) => {
-    //     const characters = querySnapshot.docs.map((doc) => {
-    //       const data = {
-    //         _id: doc.id,
-    //         ...doc.data(),
-    //       };
-    //       return data;
-    //     });
-    //     setCharacters(characters);
-    //
-    //     if (loading) {
-    //       setLoading(false);
-    //     }
-    //   },
-    //   (error) => {
-    //     alert(error);
-    //   }
-    // );
   }, []);
 
   if (loading) {
@@ -220,38 +181,55 @@ export default function DMScreen({route, navigation}) {
   }
 
   function deleteCharacter(character) {
+      setLoading(true);
         groupRef
             .collection('characters')
             .doc(character._id)
             .delete()
             .then(console.log('Successfully deleted character'), (error) =>
                 console.log('Failed to delete character: ' + error)
-            );
+            ).then(() => {
+                setLoading(false);
+        });
   }
 
   function addCharacter() {
       if (isDM) {
+          setLoading(true);
           groupRef
               .collection('characters')
               .add(CharacterTemplate)
               .then((char) => {
                   char.update({
                       assignedTo: ""
-                  })
-              })
+                  }).then(() => {
+                      char.update({
+                          canAssign: (assignItems.length > 0)
+                      });
+                  });
+              }).then(() => {
+              setLoading(false);
+          })
               .then(console.log('Successfully added character'), (error) =>
                   alert(error)
-              );
+              )
       }
       else {
+          setLoading(true);
           groupRef
               .collection('characters')
               .add(CharacterTemplate)
               .then((char) => {
                   char.update({
                       assignedTo: user.toJSON().email
-                  })
-              })
+                  }).then(() => {
+                      char.update({
+                          canAssign: (assignItems.length > 0)
+                      });
+                  });
+              }).then(() => {
+              setLoading(false);
+          })
               .then(console.log('Successfully added character'), (error) =>
                   alert(error)
               );
@@ -567,7 +545,7 @@ export default function DMScreen({route, navigation}) {
                                                     setShowDropDown(true);
                                                 }}
                                                 onDismiss={() => setShowDropDown(false)}
-                                                dropDownStyle={styles.shareDropdown}
+                                                dropDownStyle={Platform.OS === 'ios' ? styles.shareDropdownIOS : styles.shareDropdown}
                                                 setValue={setNewDM}
                                                 value={newDM}
                                             />
@@ -620,11 +598,9 @@ export default function DMScreen({route, navigation}) {
       let index = 0;
     return (
         <Provider>
-          <KeyboardAvoidingView
-              behavior = {'height'}>
+            <KeyboardAwareScrollView>
             <View style={styles.wrapper}>
               <View style={styles.charactersContainer}>
-                <ScrollView>
                   <FlatList
                       data={characters}
                       removeClippedSubviews={true}
@@ -638,9 +614,17 @@ export default function DMScreen({route, navigation}) {
                                   setDeleteChar(character);
                                   showDeleteDialog();
                               }}
+                              updateCanAssign={(character, index) => {
+                                  let canAssign = assignItemsWeb.length > 0;
+                                  updateCharacter(index, 'canAssign', canAssign);
+                                  updateCharacterFirebase(character);
+                              }}
                               showAssign={(character, index) => {
                                   setAssignCharacter(character);
                                   setCharIndex(index);
+                                  if (Platform.OS === 'web') {
+                                      setRecipientsWeb(assignItemsWeb.filter(val => val !== character.assignedTo)[0])
+                                  }
                                   showAssignDialog();
                               }}
                               userPermissions={userPermissions}
@@ -666,264 +650,6 @@ export default function DMScreen({route, navigation}) {
                         </View>
                       }
                   />
-                    <Portal>
-                        <Dialog
-                            visible={assignVisible}
-                            onDismiss={hideAssignDialog}
-                            style={styles.assignWindow}
-                        >
-                            <Dialog.Title
-                                style={styles.assignTitle}>
-                                Assign a user to this character
-                            </Dialog.Title>
-                            <Dialog.Content>
-                                <DropDown
-                                    label={"Please select users..."}
-                                    list={assignItems.filter(val => val !== assignCharacter.assignedTo)}
-                                    visible={showAssignDropDown}
-                                    showDropDown={() => setShowAssignDropDown(true)}
-                                    onDismiss={() => setShowAssignDropDown(false)}
-                                    dropDownStyle={styles.shareDropdown}
-                                    setValue={setRecipients}
-                                    value={recipients}
-                                />
-                            </Dialog.Content>
-                            <Dialog.Actions>
-                                <View style={styles.assignButtonContainer}>
-                                    <Button
-                                        mode="contained"
-                                        style={styles.assignButton}
-                                        disabled={recipients.length === 0}
-                                        onPress={() => {
-                                            updateCharacter(charIndex, 'assignedTo', recipients);
-                                            groupRef
-                                                .collection('characters')
-                                                .doc(assignCharacter._id)
-                                                .update(assignCharacter)
-                                                .then(console.log('Successfully updated character'), (error) =>
-                                                    console.log('Failed to update character: ' + error)
-                                                );
-                                            setRecipients("");
-                                            hideAssignDialog();
-                                        }}
-                                    >
-                                        Share
-                                    </Button>
-                                    <View style={styles.assignGap}/>
-                                    <Button
-                                        mode="contained"
-                                        style={styles.assignButton}
-                                        onPress={hideAssignDialog}
-                                    >
-                                        Cancel
-                                    </Button>
-                                </View>
-                            </Dialog.Actions>
-                        </Dialog>
-                    </Portal>
-                    <Portal>
-                        <Dialog
-                            visible={deleteVisible}
-                            onDismiss={hideDeleteDialog}
-                            style={styles.assignWindow}
-                        >
-                            <Dialog.Title
-                                style={styles.assignTitle}
-                            >
-                                Are you sure you want to delete this character?
-                            </Dialog.Title>
-                            <Dialog.Content>
-                                <Text
-                                    style={styles.assignTitle}
-                                >
-                                    NOTE: If you delete this character you will not be able to recover it. It will also be deleted for any user who has access to it.
-                                </Text>
-                            </Dialog.Content>
-                            <Dialog.Actions>
-                                <View style={styles.assignButtonContainer}>
-                                    <Button
-                                        mode="contained"
-                                        style={styles.assignButton}
-                                        onPress={() => {
-                                            deleteCharacter(deleteChar);
-                                            hideDeleteDialog();
-                                        }}
-                                    >
-                                        Yes
-                                    </Button>
-                                    <View style={styles.assignGap}/>
-                                    <Button
-                                        mode="contained"
-                                        style={styles.assignButton}
-                                        onPress={hideDeleteDialog}
-                                    >
-                                        No
-                                    </Button>
-                                </View>
-                            </Dialog.Actions>
-                        </Dialog>
-                    </Portal>
-                  <Portal>
-                    <Dialog
-                        visible={visible}
-                        onDismiss={() => {
-                            setInChangeDM(false);
-                            setChangePermissions(false);
-                            hideDialog();
-                        }}
-                        style={isDM ? (inChangeDM ? styles.popUpChangeDMEditWindow : (changePermissions ? styles.permissionsWindow : styles.popUpDMEditWindow)) : styles.popUpEditWindow}
-                    >
-                        <View
-                            style = {styles.horzRow}
-                        >
-                              <Dialog.Title style={styles.popUpTitle}>
-                                  {inChangeDM ? "Change this group's Dungeon Master (DM)" : userPermissions ? "Change player characters' permissions" : "Settings"}
-                              </Dialog.Title>
-
-                            <IconButton
-                                icon="close" //Getting the back icon image
-                                size={36} //Setting the size
-                                color="#a60000" //And the color
-                                style = {styles.exitButton}
-                                onPress={() => {
-                                    setInChangeDM(false);
-                                    setChangePermissions(false);
-                                    hideDialog()
-                                }}
-                            />
-                        </View>
-                      <Dialog.Actions>
-                          <View style = {isDM ? styles.centerViewDM : styles.centerView}>
-                              {inChangeDM && items != null ?
-                                  <View style = {styles.dropdown}>
-                                      <Text
-                                          style = {styles.changeDMWarning}
-                                      >
-                                          Please note that a group can only have one DM. Therefore changing the DM to another group member means you will become a player
-                                          character and will have the default player permissions.
-                                      </Text>
-                                      {Platform.OS === 'web' ?
-                                          <Picker
-                                              selectedValue={newDM}
-                                              onValueChange={(itemValue, itemIndex) => {
-                                                  setNewDM(itemValue)
-                                              }}
-                                              style={styles.totalDropdownStyle}
-                                          >
-                                              {
-                                                  itemsWeb.map((mem) => {
-                                                      return (
-                                                          <Picker.Item label={mem} value={mem}/>
-                                                    );
-                                                  })
-                                              }
-                                          </Picker>
-                                          :
-                                          <View style = {{marginTop: screenHeight * 0.015}}>
-                                                  <DropDown
-                                                      label={"Please select user..."}
-                                                      list={items}
-                                                      visible={showDropDown}
-                                                      showDropDown={() => {
-                                                          setShowDropDown(true);
-                                                      }}
-                                                      onDismiss={() => setShowDropDown(false)}
-                                                      dropDownStyle={styles.shareDropdown}
-                                                      setValue={setNewDM}
-                                                      value={newDM}
-                                                  />
-                                          </View>
-                                      }
-                                  </View>
-                                  :
-                                  null
-                              }
-                              <ButtonContainer/>
-                          </View>
-                      </Dialog.Actions>
-                    </Dialog>
-                  </Portal>
-                    <Portal>
-                        <Dialog
-                            visible={deleteAllVisible}
-                            onDismiss={hideDeleteAllDialog}
-                            style={styles.assignWindow}
-                        >
-                            <Dialog.Title
-                                style={styles.assignTitle}
-                            >
-                                Are you sure you want to delete all chat messages?
-                            </Dialog.Title>
-                            <Dialog.Content>
-                                <Text
-                                    style={styles.assignTitle}
-                                >
-                                    NOTE: If you delete all chat messages you will not be able to recover them.
-                                </Text>
-                            </Dialog.Content>
-                            <Dialog.Actions>
-                                <View style={styles.assignButtonContainer}>
-                                    <Button
-                                        mode="contained"
-                                        style={styles.assignButton}
-                                        onPress={() => {
-                                            groupRef.collection('messages').get().then((snapshot) => {
-                                                snapshot.docs.forEach(doc => {
-                                                    doc.ref.delete();
-                                                })
-                                            }).then(() => {
-                                                hideDeleteAllDialog();
-                                                hideDialog();
-                                            })
-                                        }}
-                                    >
-                                        Yes
-                                    </Button>
-                                    <View style={styles.assignGap}/>
-                                    <Button
-                                        mode="contained"
-                                        style={styles.assignButton}
-                                        onPress={hideDeleteAllDialog}
-                                    >
-                                        No
-                                    </Button>
-                                </View>
-                            </Dialog.Actions>
-                        </Dialog>
-                    </Portal>
-                    <Portal>
-                        <Dialog
-                            visible={imageVisible}
-                            onDismiss={hideImageDialog}
-                            style = {styles.fullSizeWindow}
-                        >
-                            <View style = {styles.headingRow}>
-                                <View style = {styles.centerFSImageTitle}>
-                                    <Title
-                                        style = {styles.helpTitle}
-                                    >
-                                        {nameToShow !== "" ? nameToShow : ""}
-                                    </Title>
-                                </View>
-                                <IconButton
-                                    icon="close" //Getting the back icon image
-                                    size={38} //Setting the size
-                                    color="#a60000" //And the color
-                                    style = {styles.exitButtonWeb}
-                                    onPress={() => {
-                                        hideImageDialog()
-                                    }} //When clicked on make it go back to the previous route
-                                />
-                            </View>
-                            <Image
-                                source={imageToShow !== "" ? {uri: imageToShow} : {uri: ""}}
-                                style={styles.fullSizeImage}
-                            />
-                            <View/>
-                        </Dialog>
-
-                    </Portal>
-                </ScrollView>
               </View>
               <Chat
                   navigation={navigation}
@@ -938,62 +664,308 @@ export default function DMScreen({route, navigation}) {
                   }}
               />
             </View>
-          </KeyboardAvoidingView>
+        </KeyboardAwareScrollView>
+            <Portal>
+                <Dialog
+                    visible={assignVisible}
+                    onDismiss={hideAssignDialog}
+                    style={styles.assignWindow}
+                >
+                    <Dialog.Title
+                        style={styles.assignTitle}>
+                        Assign a user to this character
+                    </Dialog.Title>
+                    <Dialog.Content>
+                        {Platform.OS === 'web' ?
+                                <Picker
+                                    selectedValue={recipientsWeb}
+                                    onValueChange={(itemValue, itemIndex) => {
+                                        setRecipientsWeb(itemValue)
+                                    }}
+                                    style={styles.iosDropdownStyle}
+                                >
+                                    {
+                                        assignItemsWeb.map((mem) => {
+                                            if (mem !== assignCharacter.assignedTo) {
+                                                return (
+                                                    <Picker.Item label={mem} value={mem} key={assignIndex++}/>
+                                                );
+                                            }
+                                        })
+                                    }
+                                </Picker>
+                            :
+
+                            <DropDown
+                                label={"Please select a user..."}
+                                list={assignItemsWeb.filter(val => val !== assignCharacter.assignedTo)}
+                                visible={showAssignDropDown}
+                                showDropDown={() => setShowAssignDropDown(true)}
+                                onDismiss={() => setShowAssignDropDown(false)}
+                                dropDownStyle={styles.shareDropdown}
+                                setValue={setRecipients}
+                                value={recipients}
+                            />
+                        }
+                    </Dialog.Content>
+                    <Dialog.Actions>
+                        <View style={styles.assignButtonContainer}>
+                            <Button
+                                mode="contained"
+                                style={styles.assignButton}
+                                disabled={Platform.OS === 'web'
+                                    ? recipientsWeb.length === 0
+                                    : recipients.length === 0
+                                }
+                                onPress={() => {
+                                    if (Platform.OS === 'web') {
+                                        let canAssign = assignItemsWeb.filter(val => val !== recipientsWeb).length > 0
+                                        updateCharacter(charIndex, 'canAssign', canAssign);
+                                        updateCharacter(charIndex, 'assignedTo', recipientsWeb);
+                                        groupRef
+                                            .collection('characters')
+                                            .doc(assignCharacter._id)
+                                            .update(assignCharacter)
+                                            .then(console.log('Successfully updated character'), (error) =>
+                                                console.log('Failed to update character: ' + error)
+                                            );
+                                        setRecipientsWeb("");
+                                        hideAssignDialog();
+                                    }
+                                    else {
+                                        let canAssign = assignItemsWeb.filter(val => val !== recipients).length > 0
+                                        updateCharacter(charIndex, 'canAssign', canAssign);
+                                        updateCharacter(charIndex, 'assignedTo', recipients);
+                                        groupRef
+                                            .collection('characters')
+                                            .doc(assignCharacter._id)
+                                            .update(assignCharacter)
+                                            .then(console.log('Successfully updated character'), (error) =>
+                                                console.log('Failed to update character: ' + error)
+                                            );
+                                        setRecipients("");
+                                        hideAssignDialog();
+                                    }
+                                }}
+                            >
+                                Assign
+                            </Button>
+                            <View style={styles.assignGap}/>
+                            <Button
+                                mode="contained"
+                                style={styles.assignButton}
+                                onPress={hideAssignDialog}
+                            >
+                                Cancel
+                            </Button>
+                        </View>
+                    </Dialog.Actions>
+                </Dialog>
+            </Portal>
+            <Portal>
+                <Dialog
+                    visible={deleteVisible}
+                    onDismiss={hideDeleteDialog}
+                    style={styles.assignWindow}
+                >
+                    <Dialog.Title
+                        style={styles.assignTitle}
+                    >
+                        Are you sure you want to delete this character?
+                    </Dialog.Title>
+                    <Dialog.Content>
+                        <Text
+                            style={styles.assignTitle}
+                        >
+                            NOTE: If you delete this character you will not be able to recover it. It will also be deleted for any user who has access to it.
+                        </Text>
+                    </Dialog.Content>
+                    <Dialog.Actions>
+                        <View style={styles.assignButtonContainer}>
+                            <Button
+                                mode="contained"
+                                style={styles.assignButton}
+                                onPress={() => {
+                                    hideDeleteDialog();
+                                    deleteCharacter(deleteChar);
+                                }}
+                            >
+                                Yes
+                            </Button>
+                            <View style={styles.assignGap}/>
+                            <Button
+                                mode="contained"
+                                style={styles.assignButton}
+                                onPress={hideDeleteDialog}
+                            >
+                                No
+                            </Button>
+                        </View>
+                    </Dialog.Actions>
+                </Dialog>
+            </Portal>
+            <Portal>
+                <Dialog
+                    visible={visible}
+                    onDismiss={() => {
+                        setInChangeDM(false);
+                        setChangePermissions(false);
+                        hideDialog();
+                    }}
+                    style={isDM ? (inChangeDM ? styles.popUpChangeDMEditWindow : (changePermissions ? styles.permissionsWindow : styles.popUpDMEditWindow)) : styles.popUpEditWindow}
+                >
+                    <View
+                        style = {styles.horzRow}
+                    >
+                        <Dialog.Title style={styles.popUpTitle}>
+                            {inChangeDM ? "Change this group's Dungeon Master (DM)" : userPermissions ? "Change player characters' permissions" : "Settings"}
+                        </Dialog.Title>
+
+                        <IconButton
+                            icon="close" //Getting the back icon image
+                            size={36} //Setting the size
+                            color="#a60000" //And the color
+                            style = {styles.exitButton}
+                            onPress={() => {
+                                setInChangeDM(false);
+                                setChangePermissions(false);
+                                hideDialog()
+                            }}
+                        />
+                    </View>
+                    <Dialog.Actions>
+                        <View style = {isDM ? styles.centerViewDM : styles.centerView}>
+                            {inChangeDM && items != null ?
+                                <View style = {styles.dropdown}>
+                                    <Text
+                                        style = {styles.changeDMWarning}
+                                    >
+                                        Please note that a group can only have one DM. Therefore changing the DM to another group member means you will become a player
+                                        character and will have the default player permissions.
+                                    </Text>
+                                    {Platform.OS === 'web' ?
+                                        <Picker
+                                            selectedValue={newDM}
+                                            onValueChange={(itemValue, itemIndex) => {
+                                                setNewDM(itemValue)
+                                            }}
+                                            style={styles.totalDropdownStyle}
+                                        >
+                                            {
+                                                itemsWeb.map((mem) => {
+                                                    return (
+                                                        <Picker.Item label={mem} value={mem}/>
+                                                    );
+                                                })
+                                            }
+                                        </Picker>
+                                        :
+                                        <View style = {{marginTop: screenHeight * 0.015}}>
+                                            <DropDown
+                                                label={"Please select user..."}
+                                                list={items}
+                                                visible={showDropDown}
+                                                showDropDown={() => {
+                                                    setShowDropDown(true);
+                                                }}
+                                                onDismiss={() => setShowDropDown(false)}
+                                                dropDownStyle={styles.shareDropdown}
+                                                setValue={setNewDM}
+                                                value={newDM}
+                                            />
+                                        </View>
+                                    }
+                                </View>
+                                :
+                                null
+                            }
+                            <ButtonContainer/>
+                        </View>
+                    </Dialog.Actions>
+                </Dialog>
+            </Portal>
+            <Portal>
+                <Dialog
+                    visible={deleteAllVisible}
+                    onDismiss={hideDeleteAllDialog}
+                    style={styles.assignWindow}
+                >
+                    <Dialog.Title
+                        style={styles.assignTitle}
+                    >
+                        Are you sure you want to delete all chat messages?
+                    </Dialog.Title>
+                    <Dialog.Content>
+                        <Text
+                            style={styles.assignTitle}
+                        >
+                            NOTE: If you delete all chat messages you will not be able to recover them.
+                        </Text>
+                    </Dialog.Content>
+                    <Dialog.Actions>
+                        <View style={styles.assignButtonContainer}>
+                            <Button
+                                mode="contained"
+                                style={styles.assignButton}
+                                onPress={() => {
+                                    groupRef.collection('messages').get().then((snapshot) => {
+                                        snapshot.docs.forEach(doc => {
+                                            doc.ref.delete();
+                                        })
+                                    }).then(() => {
+                                        hideDeleteAllDialog();
+                                        hideDialog();
+                                    })
+                                }}
+                            >
+                                Yes
+                            </Button>
+                            <View style={styles.assignGap}/>
+                            <Button
+                                mode="contained"
+                                style={styles.assignButton}
+                                onPress={hideDeleteAllDialog}
+                            >
+                                No
+                            </Button>
+                        </View>
+                    </Dialog.Actions>
+                </Dialog>
+            </Portal>
+            <Portal>
+                <Dialog
+                    visible={imageVisible}
+                    onDismiss={hideImageDialog}
+                    style = {styles.fullSizeWindow}
+                >
+                    <View style = {styles.headingRow}>
+                        <View style = {styles.centerFSImageTitle}>
+                            <Title
+                                style = {styles.helpTitle}
+                            >
+                                {nameToShow !== "" ? nameToShow : ""}
+                            </Title>
+                        </View>
+                        <IconButton
+                            icon="close" //Getting the back icon image
+                            size={38} //Setting the size
+                            color="#a60000" //And the color
+                            style = {styles.exitButtonWeb}
+                            onPress={() => {
+                                hideImageDialog()
+                            }} //When clicked on make it go back to the previous route
+                        />
+                    </View>
+                    <Image
+                        source={imageToShow !== "" ? {uri: imageToShow} : {uri: ""}}
+                        style={styles.fullSizeImage}
+                    />
+                    <View/>
+                </Dialog>
+            </Portal>
         </Provider>
     );
   }
-  //       <Provider>
-  //         <Portal>
-  //           <Dialog
-  //               visible={raceVisible}
-  //               onDismiss={hideRaceDialog}
-  //               style={styles.popUpCreateRaceWindow}
-  //           >
-  //             <Dialog.Title style={styles.popUpTitle}>
-  //               Create new race
-  //             </Dialog.Title>
-  //             <Dialog.Content style={styles.popUpContent}>
-  //               <TextInput
-  //                   placeholder="New race name"
-  //                   clearButtonMode="while-editing"
-  //                   onChangeText={(text) => setNewRaceName(text)}
-  //               />
-  //             </Dialog.Content>
-  //             <Dialog.Actions>
-  //               <Button
-  //                   mode="contained"
-  //                   style={styles.popUpRaceButtons}
-  //                   disabled={newRaceName.length === 0}
-  //                   onPress={() => {
-  //                     firebase
-  //                         .firestore()
-  //                         .collection('members')
-  //                         .doc(user.toJSON().email)
-  //                         .update({
-  //                           races: firebase.firestore.FieldValue.arrayUnion(newRaceName),
-  //                           numCreatedRaces: firebase.firestore.FieldValue.increment(1)
-  //                         })
-  //                         .then(() => {
-  //                           updateCharacter(createRaceIndex, 'char_race', newRaceName, false);
-  //                           hideRaceDialog();
-  //                         });
-  //                     // });
-  //                   }}
-  //               >
-  //                 Create
-  //               </Button>
-  //               <View style={styles.space} />
-  //               <Button
-  //                   mode="contained"
-  //                   style={styles.popUpRaceButtons}
-  //                   onPress={hideRaceDialog}
-  //               >
-  //                 Cancel
-  //               </Button>
-  //             </Dialog.Actions>
-  //           </Dialog>
-  //         </Portal>
-  //       </Provider>
 }
 
 DMScreen.navigationOptions = {
@@ -1001,6 +973,17 @@ DMScreen.navigationOptions = {
 };
 
 const styles = StyleSheet.create({
+    iosDropdownStyle: {
+        width: screenWidth * 0.3345843960990248,
+        height: screenHeight * 0.0598404255319149,
+        marginLeft: screenWidth * 0.08,
+        marginBottom: screenHeight * 0.033,
+        flex: 1,
+        color: "#787878"
+    },
+    shareDropdownIOS: {
+        marginTop: screenHeight * -0.00463829787234,
+    },
     assignGap: {
         width: screenWidth * 0.04
     },
@@ -1159,9 +1142,6 @@ const styles = StyleSheet.create({
         marginTop: screenHeight * -0.07,
         height: "42.3%"
     },
-  gap: {
-    height: screenHeight * 0.398936170212766
-  },
   space: {
     width: screenWidth * 0.0225056264066017,
     height: screenHeight * 0.0398936170212766,

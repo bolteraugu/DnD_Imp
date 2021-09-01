@@ -14,6 +14,7 @@ import {Button, Text, TextInput} from "react-native-paper";
 import Spinner from "../components/Spinner";
 import Spell from "../components/Spell";
 import {AuthUserContext} from "../navigation/AuthUserProvider";
+import {KeyboardAwareScrollView} from "react-native-keyboard-aware-scroll-view";
 
 global.screenWidth = Dimensions.get("window").width;
 global.screenHeight = Dimensions.get("window").height;
@@ -42,15 +43,14 @@ export default function SpellsScreen({route, navigation}) {
                     });
                     setSpells(spells);
 
-
+                    if (loading) {
+                        setLoading(false);
+                    }
                 },
                 (error) => {
                     alert(error);
                 }
             );
-            if (loading) {
-                setLoading(false);
-            }
         });
         return unsubscribe
     }, [navigation]);
@@ -184,10 +184,10 @@ export default function SpellsScreen({route, navigation}) {
 
     let index = 0;
     return (
+        <KeyboardAwareScrollView
+            extraHeight={screenHeight * 0.1412}
+        >
         <View>
-            <KeyboardAvoidingView
-                behavior = {'height'}>
-                <ScrollView>
                     <View style = {styles.totalContainer}>
                         <View style = {styles.topRow}>
                             <View style = {styles.spellsInfoContainer}>
@@ -454,6 +454,7 @@ export default function SpellsScreen({route, navigation}) {
                             <FlatList
                                 data={spells}
                                 style = {styles.list}
+                                character={character}
                                 removeClippedSubviews={false}
                                 keyExtractor={(item) => item._id}
                                 renderItem={({ item }) => (
@@ -480,9 +481,8 @@ export default function SpellsScreen({route, navigation}) {
                         </View>
                         <View style = {styles.gap}/>
                     </View>
-                </ScrollView>
-            </KeyboardAvoidingView>
         </View>
+        </KeyboardAwareScrollView>
     );
 }
 

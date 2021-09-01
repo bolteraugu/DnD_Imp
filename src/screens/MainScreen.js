@@ -10,6 +10,7 @@ import {TextInput, Text, Button, Portal, Dialog, Title, IconButton, Provider} fr
 import colors from '../utils/colors';
 import Spinner from "../components/Spinner";
 import {AuthUserContext} from "../navigation/AuthUserProvider";
+import {KeyboardAwareScrollView} from "react-native-keyboard-aware-scroll-view";
 
 export default function MainScreen({route, navigation}) {
     const [character, setCharacter] = useState(route.params.character);
@@ -583,6 +584,7 @@ export default function MainScreen({route, navigation}) {
 
     return (
         <Provider>
+            <KeyboardAwareScrollView>
         <View style = {{height: screenHeight * 0.85}}>
             {/*<tabNavigator/>*/}
             <View style = {styles.imageAndAbilitiesContainer}>
@@ -1773,6 +1775,7 @@ export default function MainScreen({route, navigation}) {
                 Proficiencies and languages
             </Text>
         </View>
+            </KeyboardAwareScrollView>
             <Portal>
                 <Dialog
                     visible={imageVisible}

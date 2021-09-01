@@ -7,6 +7,7 @@ import ImageCard from "../components/ImageCard";
 import DropDown from "react-native-paper-dropdown";
 import firebase from "firebase";
 import colors from "../utils/colors";
+import {KeyboardAwareScrollView} from "react-native-keyboard-aware-scroll-view";
 
 global.screenWidth = Dimensions.get("window").width;
 global.screenHeight = Dimensions.get("window").height;
@@ -455,7 +456,7 @@ export default function ImageSelectorScreen({navigation, route}) {
                             showDropDown={() => setShowDropDown(true)}
                             onDismiss={() => setShowDropDown(false)}
                             multiSelect
-                            dropDownStyle={styles.shareDropdown}
+                            dropDownStyle={Platform.OS === 'ios' ? styles.shareDropdownIOS : styles.shareDropdown}
                             setValue={setRecipients}
                             value={recipients}
                         />
@@ -510,11 +511,12 @@ export default function ImageSelectorScreen({navigation, route}) {
                     </Dialog.Actions>
                 </Dialog>
             </Portal>
+            <KeyboardAwareScrollView>
             <Portal>
                 <Dialog
                     visible={editNameVisible}
                     onDismiss={hideEditNameDialog}
-                    style={styles.shareWindow}
+                    style={Platform.OS === 'ios' ? styles.editWindowIOS : styles.editWindow}
                 >
                     <Dialog.Title
                         style={styles.shareTitle}>Edit image's name</Dialog.Title>
@@ -598,6 +600,7 @@ export default function ImageSelectorScreen({navigation, route}) {
                     </Dialog.Actions>
                 </Dialog>
             </Portal>
+            </KeyboardAwareScrollView>
             <Portal>
                 <Dialog
                     visible={deleteVisible}
@@ -645,6 +648,9 @@ export default function ImageSelectorScreen({navigation, route}) {
 }
 
 const styles = StyleSheet.create({
+    shareDropdownIOS: {
+        marginTop: screenHeight * -0.00463829787234,
+    },
     assignGap: {
         width: screenWidth * 0.04
     },
@@ -711,6 +717,16 @@ const styles = StyleSheet.create({
         width: "50%",
         alignSelf: 'center',
         marginTop: screenHeight * -0.20363829787234
+    },
+    editWindow: {
+        width: "50%",
+        alignSelf: 'center',
+        marginTop: screenHeight * -0.04363829787234
+    },
+    editWindowIOS: {
+        width: "50%",
+        alignSelf: 'center',
+        marginTop: screenHeight * -0.44363829787234
     },
     shareTitle: {
         alignSelf: 'center'

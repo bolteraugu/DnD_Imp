@@ -1,12 +1,12 @@
 import React, {useState, useContext, useEffect} from 'react';
-import {StyleSheet, FlatList, View, Dimensions} from 'react-native';
+import {StyleSheet, FlatList, View, Dimensions, Platform} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 import {AuthUserContext} from '../navigation/AuthUserProvider';
 import {
   Title,
   Button,
   Portal,
-  Provider as PaperProvider,
+  Provider,
   Dialog,
   Text,
   IconButton,
@@ -16,6 +16,7 @@ import firebase from 'firebase/app';
 import 'firebase/firestore';
 import Spinner from '../components/Spinner';
 import Colors from '../utils/colors';
+import {KeyboardAwareScrollView} from "react-native-keyboard-aware-scroll-view";
 
 global.screenWidth = Dimensions.get("window").width;
 global.screenHeight = Dimensions.get("window").height;
@@ -36,6 +37,7 @@ export default function MenuScreen({navigation}) {
   const showEditDialog = () => setEditVisible(true);
   const hideEditDialog = () => setEditVisible(false);
   const [newGroupName, setNewGroupName] = useState('');
+  const [nameToEdit, setNameToEdit] = useState('');
   const [groupName, setGroupName] = useState('');
   const [storedAccountType, setStoredAccountType] = useState('');
   /**
@@ -133,10 +135,10 @@ export default function MenuScreen({navigation}) {
   }
 
   return (
-    <PaperProvider>
+    <Provider>
+        <KeyboardAwareScrollView>
       <View style={styles.wrapper}>
         <Title style={styles.title}>My Groups</Title>
-        <ScrollView>
           <FlatList
             data={groups}
             keyExtractor={(item) => item._id}
@@ -157,6 +159,8 @@ export default function MenuScreen({navigation}) {
                     size={30}
                     color="#000000"
                     onPress={() => {
+                        setNameToEdit(item.name);
+                        setNewGroupName(item.name);
                       showEditDialog();
                     }}
                   />
@@ -186,13 +190,14 @@ export default function MenuScreen({navigation}) {
                   <Dialog
                     visible={editVisible}
                     onDismiss={hideEditDialog}
-                    style={styles.popUpEditWindow}
+                    style={Platform.OS === 'ios' ? styles.popUpEditWindowIOS : styles.popUpEditWindowAndroid}
                   >
                     <Dialog.Title style={styles.popUpTitle}>
                       Edit group name
                     </Dialog.Title>
                     <Dialog.Content style={styles.popUpContent}>
                       <TextInput
+                          defaultValue={nameToEdit}
                         placeholder="New group name"
                         clearButtonMode="while-editing"
                         onChangeText={(text) => setNewGroupName(text)}
@@ -384,67 +389,67 @@ export default function MenuScreen({navigation}) {
           >
             Delete your account
           </Button>
-          <Portal>
-            <Dialog
-              visible={deleteVisible}
-              onDismiss={hideDeleteDialog}
-              style={styles.popUpWindow}
-            >
-              <Dialog.Title style={styles.popUpTitle}>
-                Are you sure you want to delete your account?
-              </Dialog.Title>
-              <Dialog.Actions>
-                <Button
-                  mode="contained"
-                  style={styles.popUpButtons}
-                  onPress={() => {
-                    try {
-                      user.delete();
-
-                      firebase
-                        .firestore()
-                        .collection('user-logs')
-                        .doc('user_deletion')
-                        .collection('logs')
-                        .doc(user.toJSON().email)
-                        .get()
-                        .then((snapshot) => {
-                          setStoredAccountType(snapshot.get('accountType'));
-                        });
-
-                      firebase
-                        .firestore()
-                        .collection('user-logs')
-                        .doc('user_deletion')
-                        .collection('logs')
-                        .doc(user.toJSON().email)
-                        .set({
-                          text: `User ${user.toJSON().email} was deleted.`,
-                          accountType: storedAccountType,
-                          deletedOn: new Date().toString(),
-                        });
-                    } catch (e) {
-                      console.log(e);
-                      alert(e);
-                    }
-                  }}
-                >
-                  Yes
-                </Button>
-                <View style={styles.space} />
-                <Button
-                  mode="contained"
-                  style={styles.popUpButtons}
-                  onPress={hideDeleteDialog}
-                >
-                  No
-                </Button>
-              </Dialog.Actions>
-            </Dialog>
-          </Portal>
-        </ScrollView>
       </View>
-    </PaperProvider>
+            <Portal>
+                <Dialog
+                    visible={deleteVisible}
+                    onDismiss={hideDeleteDialog}
+                    style={styles.popUpWindow}
+                >
+                    <Dialog.Title style={styles.popUpTitle}>
+                        Are you sure you want to delete your account?
+                    </Dialog.Title>
+                    <Dialog.Actions>
+                        <Button
+                            mode="contained"
+                            style={styles.popUpButtons}
+                            onPress={() => {
+                                try {
+                                    user.delete();
+
+                                    firebase
+                                        .firestore()
+                                        .collection('user-logs')
+                                        .doc('user_deletion')
+                                        .collection('logs')
+                                        .doc(user.toJSON().email)
+                                        .get()
+                                        .then((snapshot) => {
+                                            setStoredAccountType(snapshot.get('accountType'));
+                                        });
+
+                                    firebase
+                                        .firestore()
+                                        .collection('user-logs')
+                                        .doc('user_deletion')
+                                        .collection('logs')
+                                        .doc(user.toJSON().email)
+                                        .set({
+                                            text: `User ${user.toJSON().email} was deleted.`,
+                                            accountType: storedAccountType,
+                                            deletedOn: new Date().toString(),
+                                        });
+                                } catch (e) {
+                                    console.log(e);
+                                    alert(e);
+                                }
+                            }}
+                        >
+                            Yes
+                        </Button>
+                        <View style={styles.space} />
+                        <Button
+                            mode="contained"
+                            style={styles.popUpButtons}
+                            onPress={hideDeleteDialog}
+                        >
+                            No
+                        </Button>
+                    </Dialog.Actions>
+                </Dialog>
+            </Portal>
+        </KeyboardAwareScrollView>
+    </Provider>
   );
 }
 
@@ -454,20 +459,21 @@ MenuScreen.navigationOptions = {
 
 const styles = StyleSheet.create({
   createGroupInput: {
-    width: '66.4%',
+    width: '60.4%',
     marginLeft: screenWidth * -0.0042010502625656
   },
 
   createGroupButton: {
     paddingTop: screenHeight * 0.0132978723404255,
     paddingRight: screenWidth * 0.0052513128282071,
-    width: '34.6%',
+    width: screenWidth * 0.16,
   },
 
   createGroupContainer: {
     flexDirection: 'row',
     marginLeft: screenWidth * 0.0075018754688672,
     marginTop: screenHeight * 0.0066489361702128,
+      marginBottom: screenHeight * 0.0486489361702128,
   },
 
   groupContainer: {
@@ -484,7 +490,7 @@ const styles = StyleSheet.create({
 
   editIcon: {
     position: 'absolute',
-    right: screenWidth * 0.0075018754688672,
+    right: screenWidth * 0.0145018754688672,
   },
 
   popUpContent: {
@@ -493,7 +499,7 @@ const styles = StyleSheet.create({
   },
 
   deleteAccount: {
-    marginTop: screenHeight * 0.5319148936170213,
+    bottom: screenHeight * 0.03,
   },
 
   popUpWindow: {
@@ -502,12 +508,20 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
 
-  popUpEditWindow: {
-    width: '40%',
+  popUpEditWindowIOS: {
+    width: '50%',
     height: screenHeight * 0.2992021276595745,
     alignItems: 'center',
     alignSelf: 'center',
+      marginTop: screenHeight * -0.44363829787234
   },
+    popUpEditWindowAndroid: {
+        width: '50%',
+        height: screenHeight * 0.2992021276595745,
+        alignItems: 'center',
+        alignSelf: 'center',
+        marginTop: 0
+    },
 
   warningMessage: {
     marginBottom: screenHeight * 0.0265957446808511,
@@ -534,13 +548,12 @@ const styles = StyleSheet.create({
   },
 
   row: {
-    flex: 1,
     flexDirection: 'row',
-    width: '100%',
+    width: screenWidth * 0.432
   },
 
   buttonItem: {
-    width: '34.2%',
+      width: screenWidth * 0.16,
     height: '91%',
     justifyContent: 'center',
     paddingTop: screenHeight * 0.0132978723404255,
@@ -568,7 +581,7 @@ const styles = StyleSheet.create({
   },
   wrapper: {
     alignSelf: 'center',
-    paddingTop: screenHeight * 0.1329787234042553,
-    width: screenWidth * 0.3750937734433608,
+    marginTop: screenHeight * 0.0829787234042553,
+    width: screenWidth * 0.4550937734433608,
   },
 });

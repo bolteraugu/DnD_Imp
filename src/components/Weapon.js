@@ -7,7 +7,7 @@ import {AuthUserContext} from "../navigation/AuthUserProvider";
 global.screenWidth = Dimensions.get("window").width;
 global.screenHeight = Dimensions.get("window").height;
 
-export default function Weapon({weapon, onChange, index, isDM}) {
+export default function Weapon({weapon, onChange, index, isDM, character}) {
 
     const {user} = useContext(AuthUserContext);
 

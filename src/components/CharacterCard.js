@@ -12,7 +12,7 @@ import DropDown from "react-native-paper-dropdown";
 global.screenWidth = Dimensions.get("window").width;
 global.screenHeight = Dimensions.get("window").height;
 
-export default function CharacterCard({character, index, onChange, groupRef, navigation, isDM, showImage, userPermissions, showAssign, showConfirmationDialog}) {
+export default function CharacterCard({character, index, onChange, groupRef, navigation, isDM, showImage, userPermissions, showAssign, showConfirmationDialog, updateCanAssign}) {
 
     const {user} = useContext(AuthUserContext);
     const [items, setItems] = useState([]);
@@ -39,16 +39,6 @@ export default function CharacterCard({character, index, onChange, groupRef, nav
             .update(character)
             .then(console.log('Successfully updated character'), (error) =>
                 console.log('Failed to update character: ' + error)
-            );
-    }
-
-    function deleteCharacter() {
-        groupRef
-            .collection('characters')
-            .doc(character._id)
-            .delete()
-            .then(console.log('Successfully deleted character'), (error) =>
-                console.log('Failed to delete character: ' + error)
             );
     }
 
@@ -136,6 +126,7 @@ export default function CharacterCard({character, index, onChange, groupRef, nav
                                 style = {styles.charImage}
                             />
                         </TouchableOpacity>
+
 
                         <View style={styles.cardRow}>
                             <TextInput
@@ -236,150 +227,107 @@ export default function CharacterCard({character, index, onChange, groupRef, nav
                             />
                         </View>
                     </View>
-                    <View>
-                        <View style={styles.cardRow}>
-                            <TextInput
-                                label="Alignment"
-                                editable={isDM || (character.assignedTo != null && character.assignedTo === user.toJSON().email)}
-                                style={styles.stringContainer}
-                                placeholder={"Enter alignment..."}
-                                value={character.alignment}
-                                onChangeText={(text) => {
-                                    onChange(index, 'alignment', text);
-                                    updateCharacter();
-                                }
-                                }
-                            />
-                            <TextInput
-                                label="Max HP"
-                                editable={isDM || (character.assignedTo != null && character.assignedTo === user.toJSON().email)}
-                                keyboardType="phone-pad"
-                                style={styles.intContainer}
-                                value={character.max_hp}
-                                onChangeText={(text) => {
-                                    onChange(index, 'max_hp', text);
-                                    updateCharacter();
-                                }
-                                }
-                            />
-                            <TextInput
-                                label="Current HP"
-                                editable={isDM || (character.assignedTo != null && character.assignedTo === user.toJSON().email)}
-                                keyboardType="phone-pad"
-                                style={styles.intContainer}
-                                value={character.current_hp}
-                                onChangeText={(text) => {
-                                    onChange(index, 'current_hp', text);
-                                    updateCharacter();
-                                }
-                                }
-                            />
-                            <TextInput
-                                label="Temp HP"
-                                editable={isDM || (character.assignedTo != null && character.assignedTo === user.toJSON().email)}
-                                keyboardType="phone-pad"
-                                style={styles.intContainer}
-                                value={character.temp_hp}
-                                onChangeText={(text) => {
-                                    onChange(index, 'temp_hp', text);
-                                    updateCharacter();
-                                }
-                                }
-                            />
-                            <TextInput
-                                label="AC"
-                                editable={isDM || (character.assignedTo != null && character.assignedTo === user.toJSON().email)}
-                                keyboardType="phone-pad"
-                                style={styles.bottomrowIntContainer}
-                                value={character.armor_class}
-                                onChangeText={(text) => {
-                                    onChange(index, 'armor_class', text);
-                                    updateCharacter();
-                                }}
-                            />
-                            <TextInput
-                                label="SPD"
-                                editable={isDM || (character.assignedTo != null && character.assignedTo === user.toJSON().email)}
-                                keyboardType="phone-pad"
-                                style={styles.bottomrowIntContainer}
-                                value={String(character.speed)}
-                                onChangeText={(text) => {
-                                    onChange(index, 'speed', text);
-                                    updateCharacter();
-                                }}
-                            />
-                            {isDM ?
-                                <View style = {{flexDirection: 'column'}}>
-                                    <View style={styles.firstIconRow}>
-                                        {items.length !== 0 ?
-                                            <IconButton
-                                                icon="account-plus"
-                                                size={28}
-                                                color="#000"
-                                                style={character.assignedTo != null && character.assignedTo.length !== 0 ? styles.addIconDM : styles.addIcon}
-                                                onPress={() => {
-                                                    showAssign(character, index);
-                                                }}
-                                            /> : null
-                                        }
-                                        {character.assignedTo != null && character.assignedTo.length !== 0 ?
-                                            <IconButton
-                                                icon="account-remove"
-                                                size={28}
-                                                color="#000"
-                                                style={styles.removeIcon}
-                                                onPress={async () => {
-                                                    onChange(index, 'assignedTo', "");
-                                                    updateCharacter();
-                                                }}
-                                            />
-                                            :
-                                            null
-                                        }
-                                    </View>
-                                    <View style={styles.iconRow}>
-                                        {isDM || ((character.assignedTo != null && character.assignedTo === user.toJSON().email) && userPermissions != null && userPermissions.deleteOwnCharacters ) ?
-                                            <IconButton
-                                                icon="delete"
-                                                size={28}
-                                                color="#000"
-                                                style={{width: "40%", marginLeft: screenWidth * 0.0026}}
-                                                onPress={() => {
-                                                    showConfirmationDialog(character);
-                                                }} //delete this character
-                                            /> : null
-                                        }
+                    <View style={styles.cardRow}>
+                        <TextInput
+                            label="Alignment"
+                            editable={isDM || (character.assignedTo != null && character.assignedTo === user.toJSON().email)}
+                            style={styles.stringContainer}
+                            placeholder={"Enter alignment..."}
+                            value={character.alignment}
+                            onChangeText={(text) => {
+                                onChange(index, 'alignment', text);
+                                updateCharacter();
+                            }
+                            }
+                        />
+                        <TextInput
+                            label="Max HP"
+                            editable={isDM || (character.assignedTo != null && character.assignedTo === user.toJSON().email)}
+                            keyboardType="phone-pad"
+                            style={styles.intContainer}
+                            value={character.max_hp}
+                            onChangeText={(text) => {
+                                onChange(index, 'max_hp', text);
+                                updateCharacter();
+                            }
+                            }
+                        />
+                        <TextInput
+                            label="Current HP"
+                            editable={isDM || (character.assignedTo != null && character.assignedTo === user.toJSON().email)}
+                            keyboardType="phone-pad"
+                            style={styles.intContainer}
+                            value={character.current_hp}
+                            onChangeText={(text) => {
+                                onChange(index, 'current_hp', text);
+                                updateCharacter();
+                            }
+                            }
+                        />
+                        <TextInput
+                            label="Temp HP"
+                            editable={isDM || (character.assignedTo != null && character.assignedTo === user.toJSON().email)}
+                            keyboardType="phone-pad"
+                            style={styles.intContainer}
+                            value={character.temp_hp}
+                            onChangeText={(text) => {
+                                onChange(index, 'temp_hp', text);
+                                updateCharacter();
+                            }
+                            }
+                        />
+                        <TextInput
+                            label="AC"
+                            editable={isDM || (character.assignedTo != null && character.assignedTo === user.toJSON().email)}
+                            keyboardType="phone-pad"
+                            style={styles.bottomrowIntContainer}
+                            value={character.armor_class}
+                            onChangeText={(text) => {
+                                onChange(index, 'armor_class', text);
+                                updateCharacter();
+                            }}
+                        />
+                        <TextInput
+                            label="SPD"
+                            editable={isDM || (character.assignedTo != null && character.assignedTo === user.toJSON().email)}
+                            keyboardType="phone-pad"
+                            style={styles.bottomrowIntContainer}
+                            value={String(character.speed)}
+                            onChangeText={(text) => {
+                                onChange(index, 'speed', text);
+                                updateCharacter();
+                            }}
+                        />
+                        {isDM ?
+                            <View style = {styles.overallIconContainer}>
+                                <View style={styles.firstIconRow}>
+                                    {character.canAssign ?
                                         <IconButton
-                                            icon="arrow-expand-all"
+                                            icon="account-plus"
                                             size={28}
                                             color="#000"
-                                            style={isDM || ((character.assignedTo != null && character.assignedTo === user.toJSON().email) && userPermissions != null && userPermissions.deleteOwnCharacters) ? styles.expandIconDM : styles.expandIcon}
+                                            style={character.assignedTo != null && character.assignedTo.length !== 0 ? styles.addIconDM : styles.addIcon}
                                             onPress={() => {
-                                                navigation.navigate('CharacterSheet', {
-                                                    screen: 'Main',
-                                                    params: {
-                                                        charRef: groupRef.collection('characters').doc(character._id),
-                                                        character: character,
-                                                        index: index,
-                                                        groupRef: groupRef,
-                                                        onFSChange: onChange,
-                                                        isDM: isDM
-                                                    },
-                                                })
+                                                showAssign(character, index);
                                             }}
-                                        />
+                                        /> : null
+                                    }
+                                    {character.assignedTo != null && character.assignedTo.length !== 0 ?
                                         <IconButton
-                                            icon="eye-off"
+                                            icon="account-remove"
                                             size={28}
                                             color="#000"
-                                            style={isDM || ((character.assignedTo != null && character.assignedTo === user.toJSON().email) && userPermissions != null && userPermissions.deleteOwnCharacters) ? styles.minusIconDM : styles.minusIcon}
-                                            onPress={() => {
-                                                setHidden(true);
+                                            style={character.canAssign ? styles.removeIcon : styles.removeIconNoShare}
+                                            onPress={async () => {
+                                                updateCanAssign(character, index);
+                                                onChange(index, 'assignedTo', "");
+                                                updateCharacter();
                                             }}
                                         />
-                                    </View>
+                                        :
+                                        null
+                                    }
                                 </View>
-                                :
                                 <View style={styles.iconRow}>
                                     {isDM || ((character.assignedTo != null && character.assignedTo === user.toJSON().email) && userPermissions != null && userPermissions.deleteOwnCharacters ) ?
                                         <IconButton
@@ -421,8 +369,50 @@ export default function CharacterCard({character, index, onChange, groupRef, nav
                                         }}
                                     />
                                 </View>
-                            }
-                        </View>
+                            </View>
+                            :
+                            <View style={styles.iconRow}>
+                                {isDM || ((character.assignedTo != null && character.assignedTo === user.toJSON().email) && userPermissions != null && userPermissions.deleteOwnCharacters ) ?
+                                    <IconButton
+                                        icon="delete"
+                                        size={28}
+                                        color="#000"
+                                        style={{width: "40%", marginLeft: screenWidth * 0.0026}}
+                                        onPress={() => {
+                                            showConfirmationDialog(character);
+                                        }} //delete this character
+                                    /> : null
+                                }
+                                <IconButton
+                                    icon="arrow-expand-all"
+                                    size={28}
+                                    color="#000"
+                                    style={isDM || ((character.assignedTo != null && character.assignedTo === user.toJSON().email) && userPermissions != null && userPermissions.deleteOwnCharacters) ? styles.expandIconDM : styles.expandIcon}
+                                    onPress={() => {
+                                        navigation.navigate('CharacterSheet', {
+                                            screen: 'Main',
+                                            params: {
+                                                charRef: groupRef.collection('characters').doc(character._id),
+                                                character: character,
+                                                index: index,
+                                                groupRef: groupRef,
+                                                onFSChange: onChange,
+                                                isDM: isDM
+                                            },
+                                        })
+                                    }}
+                                />
+                                <IconButton
+                                    icon="eye-off"
+                                    size={28}
+                                    color="#000"
+                                    style={isDM || ((character.assignedTo != null && character.assignedTo === user.toJSON().email) && userPermissions != null && userPermissions.deleteOwnCharacters) ? styles.minusIconDM : styles.minusIcon}
+                                    onPress={() => {
+                                        setHidden(true);
+                                    }}
+                                />
+                            </View>
+                        }
                     </View>
                 </View>
             </Surface>
@@ -444,6 +434,45 @@ export default function CharacterCard({character, index, onChange, groupRef, nav
 }
 
 const styles = StyleSheet.create({
+    overallIconContainer: {
+        flexDirection: 'column',
+        position: 'absolute',
+        bottom: 0,
+        left: global.screenWidth * 0.55279,
+    },
+    charImageContainer: {
+        width: global.screenWidth * 0.0850187546886722,
+        height: global.screenHeight * 0.1129787234042553,
+        position: 'absolute',
+        left: global.screenWidth * 0.56189,
+        top: global.screenHeight * 0.0052978723404255,
+        zIndex: 999
+    },
+    charImageContainerDM: {
+        width: global.screenWidth * 0.0850187546886722,
+        height: global.screenHeight * 0.1129787234042553,
+        position: 'absolute',
+        left: global.screenWidth * 0.56189,
+        top: global.screenHeight * 0.0572978723404255,
+        zIndex: 999
+    },
+    firstIconRow: {
+        flexDirection: 'row',
+        width: global.screenWidth * 0.084,
+        marginTop: global.screenHeight * -0.036170212765957,
+        zIndex: 0
+    },
+    iconRow: {
+        flexDirection: 'row',
+        width: global.screenWidth * 0.084,
+        marginTop: global.screenHeight * -0.018170212765957,
+        zIndex: 0
+    },
+    charImage: {
+        width: "100%",
+        height: "100%",
+        resizeMode: "contain"
+    },
     hiddenButton: {
         width: "98.93%",
         marginLeft: screenWidth * 0.0037509377344336,
@@ -465,6 +494,10 @@ const styles = StyleSheet.create({
         width: "50%",
         marginLeft: screenWidth * -0.0065
     },
+    removeIconNoShare: {
+        width: "100%",
+        marginLeft: screenWidth * 0.0065
+    },
     addIcon: {
         width: "100%",
         marginLeft: screenWidth * 0.0065
@@ -475,25 +508,6 @@ const styles = StyleSheet.create({
     minusIconDM: {
         width: "40%",
         marginLeft: screenWidth * -0.0065
-    },
-    charImage: {
-        width: "100%",
-        height: "100%",
-        resizeMode: "center"
-    },
-    charImageContainer: {
-        width: global.screenWidth * 0.0750187546886722,
-        height: global.screenWidth * 0.0750187546886722,
-        position: 'absolute',
-        left: global.screenWidth * 0.56639,
-        top: global.screenHeight * 0.0132978723404255
-    },
-    charImageContainerDM: {
-        width: global.screenWidth * 0.0750187546886722,
-        height: global.screenWidth * 0.0750187546886722,
-        position: 'absolute',
-        left: global.screenWidth * 0.56639,
-        top: global.screenHeight * 0.0572978723404255
     },
     levelContainer: {
         width: global.screenWidth * 0.082521,
@@ -576,16 +590,6 @@ const styles = StyleSheet.create({
     },
     cardRow: {
         flexDirection: 'row',
-    },
-    firstIconRow: {
-        flexDirection: 'row',
-        width: global.screenWidth * 0.084,
-        marginTop: global.screenHeight * -0.036170212765957,
-    },
-    iconRow: {
-        flexDirection: 'row',
-        width: global.screenWidth * 0.084,
-        marginTop: global.screenHeight * -0.018170212765957,
     },
     intContainer: {
         marginBottom: screenHeight * 0.0026595744680851,

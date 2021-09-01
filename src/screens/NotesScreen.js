@@ -2,7 +2,7 @@ import React, {useContext, useEffect, useState} from 'react'; //If I need revisi
 import NoteCard from '../components/NoteCard'; //NoteCard is essentially represents a note after it has been created
 import colors from '../utils/colors'; //Getting colors we are using for the app
 import Spinner from '../components/Spinner'; //Spinner icon that shows
-import {StyleSheet, View, FlatList, Dimensions, ScrollView} from 'react-native'; //FlatList for viewing things in a list, View and Stylesheet we know too
+import {StyleSheet, View, FlatList, Dimensions, ScrollView, Platform} from 'react-native'; //FlatList for viewing things in a list, View and Stylesheet we know too
 import DropDown from "react-native-paper-dropdown";
 import { useRoute } from '@react-navigation/native';
 //Importing everything we need from react native paper. FAB stands for floating action button (represents the primary action in the screen). Portal is for rendering a component at
@@ -197,7 +197,7 @@ export default function NotesScreen({navigation, route}) {
                                 showDropDown={() => setShowDropDown(true)}
                                 onDismiss={() => setShowDropDown(false)}
                                 multiSelect
-                                dropDownStyle={styles.shareDropdown}
+                                dropDownStyle={Platform.OS === 'ios' ? styles.shareDropdownIOS : styles.shareDropdown}
                                 setValue={setRecipients}
                                 value={recipients}
                             />
@@ -304,6 +304,9 @@ export default function NotesScreen({navigation, route}) {
 
 //Styles for the content
 const styles = StyleSheet.create({
+    shareDropdownIOS: {
+        marginTop: screenHeight * -0.00463829787234,
+    },
     assignGap: {
         width: screenWidth * 0.04
     },

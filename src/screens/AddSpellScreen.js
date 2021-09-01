@@ -1,25 +1,41 @@
 import {Dimensions, StyleSheet, Text, TextInput as NativeTextInput, View, Platform} from "react-native";
-import {TextInput, Button, Checkbox} from "react-native-paper";
+import {TextInput, Button, Checkbox, Provider} from "react-native-paper";
 import React, {useEffect, useState} from "react";
 import {Picker} from "@react-native-picker/picker";
 import firebase from 'firebase';
 import 'firebase/firestore';
 import DropDown from "react-native-paper-dropdown";
+import {KeyboardAwareScrollView} from "react-native-keyboard-aware-scroll-view";
 
 global.screenWidth = Dimensions.get("window").width;
 global.screenHeight = Dimensions.get("window").height;
 
 export default function AddSpellScreen({navigation, route}) {
     const [name, setName] = useState("");
-    const [level, setLevel] = useState("Cantrip");
+    const [level, setLevel] = useState("");
+    const [levelWeb, setLevelWeb] = useState("Cantrip");
     const [castingTime, setCastingTime] = useState("");
     const [range, setRange] = useState("");
     const [components, setComponents] = useState("");
     const [duration, setDuration] = useState("");
     const [description, setDescription] = useState("");
+    const [showDropDown, setShowDropDown] = useState(false);
+    const items = [
+        {label: "Cantrip", value: "Cantrip"},
+        {label: "1", value: "1"},
+        {label: "2", value: "2"},
+        {label: "3", value: "3"},
+        {label: "4", value: "4"},
+        {label: "5", value: "5"},
+        {label: "6", value: "6"},
+        {label: "7", value: "7"},
+        {label: "8", value: "8"},
+        {label: "9", value: "9"},
+    ];
 
-    if (Platform.OS === "ios") {
         return (
+            <Provider>
+            <KeyboardAwareScrollView>
             <View style = {styles.totalContainer}>
                 <View style={styles.column}>
                     <View style = {styles.row}>
@@ -39,40 +55,44 @@ export default function AddSpellScreen({navigation, route}) {
                         />
                     </View>
                     <View style = {styles.row}>
-                        <View style = {styles.headingContainerIOS}>
+                        <View style = {Platform.OS === 'web' ? styles.dropdownLabelContainerWeb : styles.dropdownLabelContainer}>
                             <Text
                                 style={styles.typeLabel}
                             >
                                 Level:
                             </Text>
                         </View>
+                        {Platform.OS === 'web' ?
                             <Picker
-                                selectedValue={level}
-                                onValueChange = {(itemValue, itemIndex) => {
-                                    setLevel(itemValue);
-                                }}
-                                style = {styles.iosDropdownStyle}
+                                selectedValue={levelWeb}
+                            onValueChange = {(itemValue, itemIndex) => {setLevelWeb(itemValue)}}
+                            style = {styles.iosDropdownStyle}
                             >
                                 <Picker.Item label = "Cantrip" value = "Cantrip" key="0" />
-                                <Picker.Item label = "0" value = "0" key="1" />
-                                <Picker.Item label = "1" value = "1" key="2" />
-                                <Picker.Item label = "2" value = "2" key="3" />
-                                <Picker.Item label = "3" value = "3" key="4" />
-                                <Picker.Item label = "4" value = "4" key="5" />
-                                <Picker.Item label = "5" value = "5" key="6" />
-                                <Picker.Item label = "6" value = "6" key="7" />
-                                <Picker.Item label = "7" value = "7" key="8" />
-                                <Picker.Item label = "8" value = "8" key="9" />
-                                <Picker.Item label = "9" value = "9" key="10" />
+                                <Picker.Item label = "1" value = "1" key="1" />
+                                <Picker.Item label = "2" value = "2" key="2" />
+                                <Picker.Item label = "3" value = "3" key="3" />
+                                <Picker.Item label = "4" value = "4" key="4" />
+                                <Picker.Item label = "5" value = "5" key="5" />
+                                <Picker.Item label = "6" value = "6" key="6" />
+                                <Picker.Item label = "7" value = "7" key="7" />
+                                <Picker.Item label = "8" value = "8" key="8" />
+                                <Picker.Item label = "9" value = "9" key="9" />
                             </Picker>
-                        {/*<TextInput*/}
-                        {/*    style={styles.inputContainer}*/}
-                        {/*    keyboardType="number-pad"*/}
-                        {/*    placeholder={"Enter level..."}*/}
-                        {/*    onChangeText={(text) => {*/}
-                        {/*        setLevel(Number(text))*/}
-                        {/*    }}*/}
-                        {/*/>*/}
+                            :
+                            <View style = {styles.dropdownContainer}>
+                                <DropDown
+                                    label={"Select Level..."}
+                                    list={items}
+                                    visible={showDropDown}
+                                    showDropDown={() => setShowDropDown(true)}
+                                    onDismiss={() => setShowDropDown(false)}
+                                    dropDownStyle={Platform.OS === 'ios' ? styles.shareDropdownIOS : styles.shareDropdown}
+                                    setValue={setLevel}
+                                    value={level}
+                                />
+                            </View>
+                        }
                     </View>
                     <View style = {styles.row}>
                         <View style = {styles.headingContainer}>
@@ -176,211 +196,60 @@ export default function AddSpellScreen({navigation, route}) {
                 <Button
                     mode = "contained"
                     style = {styles.addButton}
-                    disabled={name.length === 0}
+                    disabled={Platform.OS === 'web' ? (name.length === 0 || levelWeb.length === 0) : (name.length === 0 || level.length === 0)}
                     onPress = {() => {
-                        global.charaRef.collection("spells").add({
-                            name: name,
-                            level: level,
-                            casting_time: castingTime,
-                            range: range,
-                            components: components,
-                            duration: duration,
-                            description: description
-                        });
-                        navigation.navigate('CharacterSheet', {
-                            screen: 'Spells'
-                        })
+                        if (Platform.OS === 'web') {
+                            global.charaRef.collection("spells").add({
+                                name: name,
+                                level: levelWeb.toString(),
+                                casting_time: castingTime,
+                                range: range,
+                                components: components,
+                                duration: duration,
+                                description: description
+                            }).then(() => {
+                                navigation.navigate('CharacterSheet', {
+                                    screen: 'Spells'
+                                })
+                            })
+                        }
+                        else {
+                            global.charaRef.collection("spells").add({
+                                name: name,
+                                level: level.toString(),
+                                casting_time: castingTime,
+                                range: range,
+                                components: components,
+                                duration: duration,
+                                description: description
+                            }).then(() => {
+                                navigation.navigate('CharacterSheet', {
+                                    screen: 'Spells'
+                                })
+                            })
+                        }
                     }}
                 >
                     Add
                 </Button>
                 <View style = {styles.gap}/>
             </View>
+            </KeyboardAwareScrollView>
+            </Provider>
         );
-    }
-    else {
-        let index = 0;
-        return (
-            <View style = {styles.totalContainer}>
-                <View style={styles.column}>
-                    <View style = {styles.row}>
-                        <View style = {styles.headingContainer}>
-                            <Text
-                                style={styles.typeLabel}
-                            >
-                                Name:
-                            </Text>
-                        </View>
-                        <TextInput
-                            style={styles.inputContainer}
-                            placeholder={"Enter name..."}
-                            onChangeText={(text) => {
-                                setName(text)
-                            }}
-                        />
-                    </View>
-                    <View style = {styles.row}>
-                        <View style = {styles.headingContainer}>
-                            <Text
-                                style={styles.typeLabel}
-                            >
-                                Level:
-                            </Text>
-                        </View>
-                        <View style = {styles.typeContainer}>
-                            <Picker
-                                selectedValue={level}
-                                onValueChange = {(itemValue, itemIndex) => {
-                                    setLevel(itemValue);
-                                }}
-                                style = {styles.totalDropdownStyle}
-                            >
-                                <Picker.Item label = "Cantrip" value = "Cantrip" key="0" />
-                                <Picker.Item label = "0" value = "0" key="1" />
-                                <Picker.Item label = "1" value = "1" key="2" />
-                                <Picker.Item label = "2" value = "2" key="3" />
-                                <Picker.Item label = "3" value = "3" key="4" />
-                                <Picker.Item label = "4" value = "4" key="5" />
-                                <Picker.Item label = "5" value = "5" key="6" />
-                                <Picker.Item label = "6" value = "6" key="7" />
-                                <Picker.Item label = "7" value = "7" key="8" />
-                                <Picker.Item label = "8" value = "8" key="9" />
-                                <Picker.Item label = "9" value = "9" key="10" />
-                            </Picker>
-                        </View>
-                    </View>
-                    <View style = {styles.row}>
-                        <View style = {styles.headingContainer}>
-                            <Text
-                                style={styles.typeLabel}
-                            >
-                                Casting Time:
-                            </Text>
-                        </View>
-                        <TextInput
-                            style={styles.inputContainer}
-                            placeholder={"Enter casting time..."}
-                            onChangeText={(text) => {
-                                setCastingTime(text)
-                            }}
-                        />
-                    </View>
-                    <View style = {styles.row}>
-                        <View style = {styles.headingContainer}>
-                            <Text
-                                style={styles.typeLabel}
-                            >
-                                Range:
-                            </Text>
-                        </View>
-                        <TextInput
-                            style={styles.inputContainer}
-                            placeholder={"Enter range..."}
-                            onChangeText={(text) => {
-                                setRange(text)
-                            }}
-                        />
-                    </View>
-                    <View style = {styles.row}>
-                        <View style = {styles.headingContainer}>
-                            <Text
-                                style={styles.typeLabel}
-                            >
-                                Components:
-                            </Text>
-                        </View>
-                        <TextInput
-                            style={styles.inputContainer}
-                            placeholder={"Enter components..."}
-                            onChangeText={(text) => {
-                                setComponents(text)
-                            }}
-                        />
-                    </View>
-                    <View style = {styles.row}>
-                        <View style = {styles.headingContainer}>
-                            <Text
-                                style={styles.typeLabel}
-                            >
-                                Duration:
-                            </Text>
-                        </View>
-                        <TextInput
-                            style={styles.inputContainer}
-                            placeholder={"Enter duration..."}
-                            onChangeText={(text) => {
-                                setDuration(text)
-                            }}
-                        />
-                    </View>
-                    <View style = {styles.row}>
-                        <View style = {styles.headingContainer}>
-                            <Text
-                                style={styles.typeLabel}
-                            >
-                                Description:
-                            </Text>
-                        </View>
-                        <TextInput
-                            style={styles.descriptionContainer}
-                            multiline={true}
-                            render={props => (
-                                <NativeTextInput
-                                    {...props}
-                                    style={[
-                                        props.style,
-                                        props.multiline
-                                            ? {
-                                                paddingTop: screenHeight * 0.0132978723404255,
-                                                paddingLeft: screenWidth * 0.0090022505626407,
-                                                paddingRight: screenWidth * 0.018754688672168,
-                                                paddingBottom: screenHeight * 0.0106382978723404,
-                                                height: screenHeight * 0.1029787234042553,
-                                            }
-                                            : null,
-                                    ]}
-                                    placeholder={"Enter description..."}
-                                />
-                            )}
-                            onChangeText={(text) => {
-                                setDescription(text)
-                            }}
-                        />
-                    </View>
-                </View>
-                <Button
-                    mode = "contained"
-                    style = {styles.addButton}
-                    disabled={name.length === 0}
-                    onPress = {() => {
-                        global.charaRef.collection("spells").add({
-                            name: name,
-                            level: level,
-                            casting_time: castingTime,
-                            range: range,
-                            components: components,
-                            duration: duration,
-                            description: description
-                        })
-                        navigation.navigate('CharacterSheet', {
-                            screen: 'Spells'
-                        })
-                    }}
-                >
-                    Add
-                </Button>
-                <View style = {styles.gap}/>
-            </View>
-        );
-    }
 }
 
 const styles = StyleSheet.create({
+    shareDropdown: {
+        marginTop: screenHeight * -0.020363829787234,
+    },
+    shareDropdownIOS: {
+        marginTop: screenHeight * -0.00463829787234,
+    },
     iosDropdownStyle: {
         width: screenWidth * 0.3345843960990248,
         height: screenHeight * 0.0598404255319149,
-        marginTop: screenHeight * -0.12,
-        marginBottom: screenHeight * 0.12,
+        marginBottom: screenHeight * 0.033,
         flex: 1,
         color: "#787878"
     },
@@ -423,10 +292,20 @@ const styles = StyleSheet.create({
         marginRight: screenWidth * 0.0015003750937734,
         width: screenWidth * 0.0847711927981995,
         height: screenHeight * 0.0598404255319149,
-        marginBottom: screenHeight * 0.013244680851064,
+        marginBottom: screenHeight * 0.033244680851064,
         borderBottomWidth: 1,
         borderTopRightRadius: 4,
         borderTopLeftRadius: 4,
+        borderColor: "#adadad",
+        backgroundColor: "#e0e0de",
+        fontFamily: 'sans-serif',
+        flex: 1,
+    },
+    dropdownContainer: {
+        marginTop: screenHeight * 0.0026595744680851,
+        marginLeft: screenWidth * 0.0015003750937734,
+        marginRight: screenWidth * 0.0015003750937734,
+        marginBottom: screenHeight * 0.033244680851064,
         borderColor: "#adadad",
         backgroundColor: "#e0e0de",
         fontFamily: 'sans-serif',
@@ -450,6 +329,22 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         marginBottom: screenHeight * 0.0026595744680851,
     },
+    dropdownLabelContainer: {
+        width: screenWidth * 0.1275318829707427,
+        height: screenHeight * 0.0398936170212766,
+        marginBottom: screenHeight * 0.0066489361702128,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: screenHeight * 0.0226085106383
+    },
+    dropdownLabelContainerWeb: {
+        width: screenWidth * 0.1275318829707427,
+        height: screenHeight * 0.0398936170212766,
+        marginBottom: screenHeight * 0.0066489361702128,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: screenHeight * 0.0116085106383
+    },
     addButton: {
         width: "17%",
         marginRight: screenWidth * 0.0412603150787697
@@ -465,7 +360,7 @@ const styles = StyleSheet.create({
         width: screenWidth * 0.3375843960990248,
         backgroundColor: "#e0e0de",
         fontFamily: 'sans-serif',
-        marginBottom: screenHeight * 0.013244680851064,
+        marginBottom: screenHeight * 0.033244680851064,
         height: screenHeight * 0.0598404255319149,
     },
     descriptionContainer: {
@@ -475,7 +370,7 @@ const styles = StyleSheet.create({
         width: screenWidth * 0.3375843960990248,
         backgroundColor: "#e0e0de",
         fontFamily: 'sans-serif',
-        marginBottom: screenHeight * 0.013244680851064,
+        marginBottom: screenHeight * 0.02244680851064,
         height: screenHeight * 0.0598404255319149,
     },
     column: {
@@ -483,7 +378,7 @@ const styles = StyleSheet.create({
         marginBottom: screenHeight * 0.0132978723404256,
         marginLeft: screenWidth * 0.0075018754688672,
         marginRight: screenWidth * 0.0075018754688672,
-        marginTop: screenHeight * 0.1291914893617021,
+        marginTop: screenHeight * 0.0291914893617021,
     },
     row: {
         flexDirection: 'row',

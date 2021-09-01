@@ -1,7 +1,7 @@
 import {Dimensions, StyleSheet, Text, TextInput as NativeTextInput, View} from "react-native";
 import {TextInput, Button} from "react-native-paper";
 import React, {useState} from "react";
-import {Picker} from "@react-native-picker/picker";
+import {KeyboardAwareScrollView} from "react-native-keyboard-aware-scroll-view";
 
 global.screenWidth = Dimensions.get("window").width;
 global.screenHeight = Dimensions.get("window").height;
@@ -15,6 +15,7 @@ export default function AddSpellScreen({navigation}) {
     const [duration, setDuration] = useState("");
     const [description, setDescription] = useState("");
     return (
+        <KeyboardAwareScrollView>
         <View style = {styles.totalContainer}>
             <View style={styles.column}>
                 <View style = {styles.row}>
@@ -86,6 +87,7 @@ export default function AddSpellScreen({navigation}) {
             </Button>
             <View style = {styles.gap}/>
         </View>
+        </KeyboardAwareScrollView>
     );
 }
 

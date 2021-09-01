@@ -1,9 +1,17 @@
 import {Text, TextInput} from "react-native-paper";
 import React, {useContext, useEffect, useState} from "react"
 import {createMaterialTopTabNavigator} from "@react-navigation/material-top-tabs";
-import {View, StyleSheet, TextInput as NativeTextInput, Dimensions} from "react-native";
+import {
+    View,
+    StyleSheet,
+    TextInput as NativeTextInput,
+    Dimensions,
+    ScrollView,
+    KeyboardAvoidingView
+} from "react-native";
 import colors from "../utils/colors";
 import {AuthUserContext} from "../navigation/AuthUserProvider";
+import {KeyboardAwareScrollView} from "react-native-keyboard-aware-scroll-view";
 
 global.screenWidth = Dimensions.get("window").width;
 global.screenHeight = Dimensions.get("window").height;
@@ -13,6 +21,18 @@ export default function BiographyScreen({navigation}) {
     const [character, setCharacter] = useState(global.character);
     const pushChange = global.onFSChange
     const {user} = useContext(AuthUserContext);
+
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('tabPress', e => {
+            // Prevent default behavior
+            console.log('test');
+            navigation.jumpTo('Biography');
+            // Do something manually
+            // ...
+        });
+
+        return unsubscribe;
+    })
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', e => {
@@ -100,6 +120,7 @@ export default function BiographyScreen({navigation}) {
     }
 
     return (
+        <KeyboardAwareScrollView>
         <View
             style = {styles.totalContainer}
         >
@@ -386,12 +407,13 @@ export default function BiographyScreen({navigation}) {
                 </View>
             </View>
         </View>
+        </KeyboardAwareScrollView>
     );
 }
 
 const styles = StyleSheet.create({
     totalContainer: {
-        flexDirection: 'row'
+        flexDirection: 'row',
     },
     side: {
         flexDirection: 'column',
@@ -431,7 +453,7 @@ const styles = StyleSheet.create({
         marginBottom: screenHeight * 0.0075018754688672,
         marginLeft: screenWidth * 0.0075018754688672,
         marginRight: screenWidth * 0.0075018754688672,
-        marginTop: screenHeight * 0.0348936170212766,
+        marginTop: screenHeight * 0.0316936170212766,
         width: "98.5%",
         height: "100%"
     },

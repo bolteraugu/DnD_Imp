@@ -15,6 +15,7 @@ import Weapon from "../components/Weapon";
 import Armor from "../components/Armor";
 import Possession from "../components/Possession";
 import {AuthUserContext} from "../navigation/AuthUserProvider";
+import {KeyboardAwareScrollView} from "react-native-keyboard-aware-scroll-view";
 
 global.screenWidth = Dimensions.get("window").width;
 global.screenHeight = Dimensions.get("window").height;
@@ -74,14 +75,14 @@ export default function InventoryScreen({route, navigation}) {
                         return data;
                     });
                     setPossessions(possession);
+                    if (loading) {
+                        setLoading(false);
+                    }
                 },
                 (error) => {
                     alert(error);
                 }
             );
-            if (loading) {
-                setLoading(false);
-            }
         });
         return unsubscribe;
 
@@ -163,10 +164,8 @@ export default function InventoryScreen({route, navigation}) {
     let armorIndex = 0;
     let possessionIndex = 0;
     return (
+        <KeyboardAwareScrollView>
         <View>
-            <KeyboardAvoidingView
-                behavior = {'height'}>
-                <ScrollView>
                     <View style = {styles.totalContainer}>
                         <View style = {styles.currencyContainer}>
                             <Text
@@ -280,6 +279,7 @@ export default function InventoryScreen({route, navigation}) {
                             </Text>
                             <FlatList
                                 data={weapons}
+                                character={character}
                                 style = {styles.list}
                                 keyExtractor={(item) => item._id}
                                 renderItem={({ item }) => (
@@ -312,6 +312,7 @@ export default function InventoryScreen({route, navigation}) {
                             </Text>
                             <FlatList
                                 data={armor}
+                                character={character}
                                 style = {styles.list}
                                 keyExtractor={(item) => item._id}
                                 renderItem={({ item }) => (
@@ -344,6 +345,7 @@ export default function InventoryScreen({route, navigation}) {
                             </Text>
                             <FlatList
                                 data={possessions}
+                                character={character}
                                 style = {styles.list}
                                 keyExtractor={(item) => item._id}
                                 renderItem={({ item }) => (
@@ -372,9 +374,8 @@ export default function InventoryScreen({route, navigation}) {
 
                         </View>
                     </View>
-                </ScrollView>
-            </KeyboardAvoidingView>
         </View>
+        </KeyboardAwareScrollView>
     );
 }
 

@@ -2,7 +2,7 @@ import {Button, Dialog, FAB, IconButton, Portal, Provider, Text, TextInput, Titl
 import React, {useContext, useEffect, useRef, useState} from "react";
 import {
     Dimensions,
-    KeyboardAvoidingView,
+    KeyboardAvoidingView, Platform,
     ScrollView,
     StyleSheet,
     TextInput as NativeTextInput,
@@ -12,6 +12,7 @@ import {AuthUserContext} from "../navigation/AuthUserProvider";
 import Spinner from "../components/Spinner";
 import RenderHtml from 'react-native-render-html';
 import colors from "../utils/colors";
+import {KeyboardAwareScrollView} from "react-native-keyboard-aware-scroll-view";
 
 global.screenWidth = Dimensions.get("window").width;
 global.screenHeight = Dimensions.get("window").height;
@@ -101,10 +102,11 @@ export default function EditNotesScreen({navigation, route}) {
     return (
         <Provider>
         <View style = {styles.totalContainer}>
-            <KeyboardAvoidingView
-                behavior = {"height"}
-                keyboardVerticalOffset = {screenHeight * -0.2925531914893617}
-            >
+            <KeyboardAwareScrollView>
+            {/*<KeyboardAvoidingView*/}
+            {/*    behavior = {"height"}*/}
+            {/*    keyboardVerticalOffset = {screenHeight * -0.2925531914893617}*/}
+            {/*>*/}
             <View style = {styles.container}>
                 <View style = {styles.borderTitle}>
                 <Text style = {styles.headingTitle}>
@@ -149,7 +151,7 @@ export default function EditNotesScreen({navigation, route}) {
                             <TextInput // Content of the note (I think note should be shown multi-lined by default instead of one lined.
                                 // onChangeText={(text) => setInputContent(text)}
                                 multiline={true}
-                                style = {styles.contentInput}
+                                style = {Platform.OS === 'web' ? styles.contentInputWeb : styles.contentInput}
                                 value = {note.content}
                                 onSelectionChange={(event) => setCursorPosition(event.nativeEvent.selection.start)}
                                 onChangeText={(text) => {
@@ -193,15 +195,8 @@ export default function EditNotesScreen({navigation, route}) {
                         </View>
                     </View>
                 </View>
-                <FAB
-                    style={styles.helpFAB}
-                    small icon="help"
-                    onPress={() => {
-                        showHelpDialog()
-                    }}
-                />
-                <View style = {styles.iconRow}>
-                    <Surface style={styles.surface1}>
+                <View style = {Platform.OS === 'web' ? styles.iconRowWeb : styles.iconRow}>
+                    <Surface style={Platform.OS === 'web' ? styles.surface1Web : styles.surface1}>
                     <IconButton
                         icon = "image"
                         //style = {styles.insertButton}
@@ -216,7 +211,7 @@ export default function EditNotesScreen({navigation, route}) {
                         }
                     />
                     </Surface>
-                    <Surface style={styles.surface2}>
+                    <Surface style={Platform.OS === 'web' ? styles.surface2Web : styles.surface2}>
                     <IconButton
                         icon = "link"
                         //style = {styles.insertButton}
@@ -227,8 +222,16 @@ export default function EditNotesScreen({navigation, route}) {
                     />
                     </Surface>
                 </View>
+                <FAB
+                    style={Platform.OS === 'web' ? styles.helpFABWeb : styles.helpFAB}
+                    small icon="help"
+                    onPress={() => {
+                        showHelpDialog()
+                    }}
+                />
                 <View style = {styles.emptyGap}/>
-            </KeyboardAvoidingView>
+            </KeyboardAwareScrollView>
+            {/*</KeyboardAvoidingView>*/}
             <Portal>
                 <Dialog
                     visible={helpVisible}
@@ -333,7 +336,12 @@ const styles = StyleSheet.create({
         marginRight: screenWidth * 0.02,
         fontSize: 16
     },
-    surface1: {
+    iconRowWeb: {
+        flexDirection: 'row',
+        marginLeft: screenWidth * 0.0575,
+        marginTop: screenHeight * -0.058
+    },
+    surface1Web: {
         elevation: 4,
         marginBottom: screenHeight * 0.0026595744680851,
         marginTop: screenHeight * 0.0026595744680851,
@@ -341,13 +349,51 @@ const styles = StyleSheet.create({
         marginRight: screenWidth * 0.0037509377344336,
         backgroundColor: "#ebebeb"
     },
-    surface2: {
+    surface2Web: {
         elevation: 4,
         marginBottom: screenHeight * 0.0026595744680851,
         marginTop: screenHeight * 0.0026595744680851,
         marginLeft: screenWidth * -0.003309377344336,
         marginRight: screenWidth * 0.0037509377344336,
         backgroundColor: "#ebebeb"
+    },
+    iconRow: {
+        flexDirection: 'row',
+        position: 'absolute',
+        bottom: screenHeight * 0.111,
+        left: screenWidth * 0.0575,
+    },
+    surface1: {
+        elevation: 4,
+        marginBottom: screenHeight * 0.0026595744680851,
+        marginTop: screenHeight * 0.0026595744680851,
+        marginLeft: screenWidth * 0.005709377344336,
+        marginRight: screenWidth * 0.0037509377344336,
+        backgroundColor: "#c9dfff"
+    },
+    surface2: {
+        elevation: 4,
+        marginBottom: screenHeight * 0.0026595744680851,
+        marginTop: screenHeight * 0.0026595744680851,
+        marginLeft: screenWidth * -0.003309377344336,
+        marginRight: screenWidth * 0.0037509377344336,
+        backgroundColor: "#c9dfff",
+    },
+    helpFAB: {
+        //Absolute so it ignores it's parents positioning and instead is positioned bottom left corner with a margin of 20.
+        backgroundColor: colors.primary,
+        marginLeft: screenWidth * -0.0450037509377344,
+        position: 'absolute',
+        left: screenWidth * 0.0630150037509377,
+        bottom: screenHeight * 0.0128510638297872
+    },
+    helpFABWeb: {
+        //Absolute so it ignores it's parents positioning and instead is positioned bottom left corner with a margin of 20.
+        backgroundColor: colors.primary,
+        marginLeft: screenWidth * -0.0450037509377344,
+        position: 'absolute',
+        left: screenWidth * 0.0600150037509377,
+        bottom: screenHeight * 0.018510638297872
     },
     helpMessage: {
         width: screenWidth * 0.37,
@@ -394,24 +440,8 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         fontSize: 23
     },
-    helpFAB: {
-        //Absolute so it ignores it's parents positioning and instead is positioned bottom left corner with a margin of 20.
-        backgroundColor: colors.primary,
-        marginLeft: screenWidth * -0.0450037509377344,
-        position: 'absolute',
-        left: screenWidth * 0.0600150037509377,
-        bottom: screenHeight * 0.3058510638297872
-        // marginRight: screenWidth * 0.0150037509377344,
-        // marginTop: screenHeight * 0.0265957446808511,
-        // marginBottom: screenHeight * 0.0265957446808511,
-    },
-    iconRow: {
-        flexDirection: 'row',
-        marginLeft: screenWidth * 0.0575,
-        marginTop: screenHeight * -0.045
-    },
     previewContainer: {
-        height: screenHeight * 0.5715957446808511,
+        height: screenHeight * 0.6265957446808511,
         width: "100%",
         borderRadius: 4,
         paddingLeft: screenWidth * 0.010454688672168,
@@ -419,7 +449,6 @@ const styles = StyleSheet.create({
         backgroundColor: "#e4e4e4"
     },
     emptyGap: {
-        height: screenHeight * 0.3
     },
     contentHeadingContainer: {
       flexDirection: 'row'
@@ -501,10 +530,15 @@ const styles = StyleSheet.create({
         marginLeft: screenWidth * -0.44,
         marginBottom: screenHeight * 0.0265957446808511,
     },
-    contentInput: {
+    contentInputWeb: {
         width: "100%",
         marginBottom: screenHeight * 0.0415957446808511,
         height: screenHeight * 0.5715957446808511
+    },
+    contentInput: {
+        width: "100%",
+        marginBottom: screenHeight * 0.0415957446808511,
+        height: screenHeight * 0.4415957446808511
     },
     button1: {
         width: screenWidth * 0.15037509377344,
