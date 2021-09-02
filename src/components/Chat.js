@@ -620,7 +620,7 @@ export default function Chat({groupRef, navigation, showImage, itemsT, isDM, use
                                                     imageUUID: ""
                                                 })
                                             }).then(() => {
-                                                groupRef.collection('characters').where('canAssign', "==", false).onSnapshot((docs) => {
+                                                groupRef.collection('characters').where('canAssign', "==", false).get().then((docs) => {
                                                     docs.forEach((doc) => {
                                                         groupRef.collection('characters').doc(doc.id).update({
                                                             canAssign: true

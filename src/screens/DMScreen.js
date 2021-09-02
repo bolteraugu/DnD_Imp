@@ -223,6 +223,7 @@ export default function DMScreen({route, navigation}) {
       }
       else {
           setLoading(true);
+          console.log(assignItems.length);
           groupRef
               .collection('characters')
               .add(CharacterTemplate)
@@ -721,8 +722,8 @@ export default function DMScreen({route, navigation}) {
                                 mode="contained"
                                 style={styles.assignButton}
                                 disabled={Platform.OS === 'web'
-                                    ? recipientsWeb.length === 0
-                                    : recipients.length === 0
+                                    ? recipientsWeb == null || recipientsWeb.length === 0
+                                    : recipients == null || recipients.length === 0
                                 }
                                 onPress={() => {
                                     if (Platform.OS === 'web') {

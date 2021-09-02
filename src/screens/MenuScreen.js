@@ -42,7 +42,6 @@ export default function MenuScreen({navigation}) {
   const [groupName, setGroupName] = useState('');
   const [groupToLeave, setGroupToLeave] = useState(null);
   const [deletePhrase, setDeletePhrase] = useState('');
-  const [numMembers, setNumMembers] = useState(0);
 
   /**
    * Create a new Firestore collection to save threads
@@ -207,16 +206,27 @@ export default function MenuScreen({navigation}) {
                   else {
                       firebase.firestore().collection('groups').doc(groupID).collection('characters').get().then((char) => {
                           char.docs.forEach((charDoc) => {
-                              if (charDoc.get('assignedTo').length === 0) {
-                                  firebase.firestore().collection('groups').doc(groupID).collection('characters').doc(charDoc.id).update({
-                                      canAssign: (numMembers-2 > 0)
-                                  })
-                              }
-                              else {
-                                  firebase.firestore().collection('groups').doc(groupID).collection('characters').doc(charDoc.id).update({
-                                      canAssign: (numMembers-3 > 0)
-                                  })
-                              }
+                              firebase.firestore().collection('groups').doc(groupID).get().then((d) => {
+                                  if (charDoc.get('assignedTo').length === 0) {
+                                      firebase.firestore().collection('groups').doc(groupID).collection('characters').doc(charDoc.id).update({
+                                          canAssign: (d.get('numMembers')-2 > 0)
+                                      })
+                                  }
+                                  else {
+                                      firebase.firestore().collection('groups').doc(groupID).collection('characters').doc(charDoc.id).update({
+                                          canAssign: (d.get('numMembers')-3 > 0)
+                                      })
+                                  }
+                              })
+                          })
+                      }).then(() => {
+                          firebase.firestore().collection('groups').doc(groupID).update({
+                              members:
+                                  firebase.firestore.FieldValue.arrayRemove(
+                                      user.toJSON().email
+                                  ),
+                              numMembers:
+                                  firebase.firestore.FieldValue.increment(-1),
                           })
                       }).then(async () => {
                           if (deletedMessage.length === 0) {
