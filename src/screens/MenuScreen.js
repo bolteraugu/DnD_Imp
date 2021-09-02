@@ -43,7 +43,6 @@ export default function MenuScreen({navigation}) {
   const [groupToLeave, setGroupToLeave] = useState(null);
   const [deletePhrase, setDeletePhrase] = useState('');
   const [numMembers, setNumMembers] = useState(0);
-    const [members, setMembers] = useState(null);
 
   /**
    * Create a new Firestore collection to save threads
@@ -136,36 +135,35 @@ export default function MenuScreen({navigation}) {
   }
 
   async function LeaveGroup(groupID, deletedMessage) {
-      firebase.firestore().collection('groups').doc(groupID).get().then((d) => {
-          setNumMembers(d.get('numMembers'));
-          setMembers(d.get('members'));
-      }).then(() => {
-          firebase.firestore().collection('groups').doc(groupID).update({
-              members:
-                  firebase.firestore.FieldValue.arrayRemove(
-                      user.toJSON().email
-                  ),
-              numMembers:
-                  firebase.firestore.FieldValue.increment(-1),
-          }).then(() => {
-              firebase.firestore().collection('groups').doc(groupID).collection('members').doc(user.toJSON().email).get().then((doc) => {
+      await firebase.firestore().collection('groups').doc(groupID).collection('members').doc(user.toJSON().email).get().then((doc) => {
                   if (doc.get('isDM')) {
                       firebase.firestore().collection('groups').doc(groupID).collection('members').get().then((members) => {
                           let breakLoop = false;
                           members.docs.forEach((membersDoc) => {
                               if (membersDoc.id !== user.toJSON().email && !breakLoop) {
                                   firebase.firestore().collection('groups').doc(groupID).collection('characters').get().then((char) => {
-                                      char.docs.forEach((charDoc) => {
-                                          if (charDoc.get('assignedTo').length === 0 || charDoc.get('assignedTo') === membersDoc) {
-                                              firebase.firestore().collection('groups').doc(groupID).collection('characters').doc(charDoc.id).update({
-                                                  canAssign: (numMembers-2 > 0)
-                                              })
-                                          }
-                                          else {
-                                              firebase.firestore().collection('groups').doc(groupID).collection('characters').doc(charDoc.id).update({
-                                                  canAssign: (numMembers-3 > 0)
-                                              })
-                                          }
+                                      char.docs.forEach(async (charDoc) => {
+                                          await firebase.firestore().collection('groups').doc(groupID).get().then((d) => {
+                                              if (charDoc.get('assignedTo').length === 0 || charDoc.get('assignedTo') === membersDoc) {
+                                                  firebase.firestore().collection('groups').doc(groupID).collection('characters').doc(charDoc.id).update({
+                                                      canAssign: (d.get('numMembers')-2 > 0)
+                                                  })
+                                              }
+                                              else {
+                                                  firebase.firestore().collection('groups').doc(groupID).collection('characters').doc(charDoc.id).update({
+                                                      canAssign: (d.get('numMembers')-3 > 0)
+                                                  })
+                                              }
+                                          })
+                                      })
+                                  }).then(() => {
+                                      firebase.firestore().collection('groups').doc(groupID).update({
+                                          members:
+                                              firebase.firestore.FieldValue.arrayRemove(
+                                                  user.toJSON().email
+                                              ),
+                                          numMembers:
+                                              firebase.firestore.FieldValue.increment(-1),
                                       })
                                   }).then(() => {
                                       firebase.firestore().collection('groups').doc(groupID).collection('members').doc(user.toJSON().email).update({
@@ -180,7 +178,7 @@ export default function MenuScreen({navigation}) {
                                                       firebase.firestore().collection('groups').doc(groupID).collection('messages').add({
                                                           text: `${user.toJSON().email} has left the group.`,
                                                           createdAt: new Date().getTime(),
-                                                          recipients: [...members],
+                                                          recipients: [...d.get('members').filter(val => val !== user.toJSON().email)],
                                                           deletedOrMissing: false,
                                                           system: true
                                                       })
@@ -239,9 +237,9 @@ export default function MenuScreen({navigation}) {
                       text: `User ${user.toJSON().email} has left the group.`,
                       date: new Date().toString(),
                   })
-              })
-          })
-      })
+              }).then(() => {
+                hideDialog();
+            })
   }
 
   async function DeleteGroup(groupID) {
@@ -643,6 +641,8 @@ export default function MenuScreen({navigation}) {
                                                     text: `User ${userEmail} was deleted.`,
                                                     deletedOn: new Date().toString(),
                                                 });
+                                        }).then(() => {
+                                            hideDeleteDialog();
                                         })
                                     }
                                     catch (e) {

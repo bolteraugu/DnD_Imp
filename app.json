@@ -3,7 +3,7 @@
     "name": "D&D Imp",
     "slug": "DnD_Imp",
     "platforms": ["ios", "android", "web"],
-    "version": "1.0.1",
+    "version": "1.0.2",
     "icon": "./assets/dragon-icon.png",
     "splash": {
       "image": "./assets/dragon-loading.png",
@@ -20,7 +20,7 @@
       "supportsTablet": true,
       "icon": "./assets/dragon-icon.png",
       "bundleIdentifier": "com.bolteraugu.dndImp",
-      "buildNumber": "1.0.1",
+      "buildNumber": "1.0.2",
       "splash": {
         "image": "./assets/dragon-loading.png",
         "resizeMode": "cover",
