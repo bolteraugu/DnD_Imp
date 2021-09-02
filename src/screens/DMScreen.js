@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useContext} from 'react';
-import {Dimensions, FlatList, Image, Platform, ScrollView, StyleSheet, View} from 'react-native';
+import {Dimensions, FlatList, Image, Keyboard, Platform, ScrollView, StyleSheet, View} from 'react-native';
 import {Button, Dialog, IconButton, Portal, Provider, Text, TextInput, Title, Checkbox} from 'react-native-paper';
 import CharacterCard from '../components/CharacterCard';
 import Chat from '../components/Chat';
@@ -61,8 +61,11 @@ export default function DMScreen({route, navigation}) {
     let assignIndex = 0;
 
   global.showSettingsDialog = () => {
+      Keyboard.dismiss();
       if (Platform.OS === 'web') {
-          setNewDM(itemsWeb[0]);
+          if (itemsWeb != null && itemsWeb.length !== 0) {
+              setNewDM(itemsWeb[0]);
+          }
       }
       showDialog();
   };
@@ -702,7 +705,7 @@ export default function DMScreen({route, navigation}) {
 
                             <DropDown
                                 label={"Please select a user..."}
-                                list={assignItemsWeb.filter(val => val !== assignCharacter.assignedTo)}
+                                list={assignItems.filter(val => val.label !== assignCharacter.assignedTo)}
                                 visible={showAssignDropDown}
                                 showDropDown={() => setShowAssignDropDown(true)}
                                 onDismiss={() => setShowAssignDropDown(false)}
@@ -1061,12 +1064,12 @@ const styles = StyleSheet.create({
     },
     fullSizeWindow: {
         width: screenWidth * 0.973,
-        height: screenHeight * 0.88,
+        height: screenHeight * 0.83,
         marginTop: screenHeight * 0.0253829787234
     },
     fullSizeImage: {
         width: screenWidth * 0.973,
-        height: screenHeight * 0.80,
+        height: screenHeight * 0.75,
         marginTop: screenHeight * 0.01163829787234,
         resizeMode: "center"
     },

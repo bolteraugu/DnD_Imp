@@ -1822,12 +1822,12 @@ export default function MainScreen({route, navigation}) {
 const styles = StyleSheet.create({
     fullSizeWindow: {
         width: screenWidth * 0.973,
-        height: screenHeight * 0.82,
+        height: screenHeight * 0.77,
         marginTop: screenHeight * 0.0233829787234
     },
     fullSizeImage: {
         width: screenWidth * 0.973,
-        height: screenHeight * 0.72,
+        height: screenHeight * 0.67,
         marginTop: screenHeight * 0.01163829787234,
         resizeMode: "center"
     },

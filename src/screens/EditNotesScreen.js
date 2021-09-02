@@ -277,7 +277,7 @@ export default function EditNotesScreen({navigation, route}) {
                 <Dialog
                     visible={linkVisible}
                     onDismiss={hideLinkDialog}
-                    style={styles.shareWindow}
+                    style={Platform.OS === 'ios' ? styles.shareWindowIOS : styles.shareWindow}
                 >
                     <Dialog.Title
                         style={styles.shareTitle}>Insert a link</Dialog.Title>
@@ -326,6 +326,10 @@ export default function EditNotesScreen({navigation, route}) {
 }
 
 const styles = StyleSheet.create({
+    shareTitle: {
+        textAlign: 'center',
+        alignSelf: 'center'
+    },
     exitButton: {
         marginRight: screenWidth * -0.001,
         marginTop: screenHeight * -0.037
@@ -412,6 +416,11 @@ const styles = StyleSheet.create({
     shareWindow: {
         width: "50%",
         marginTop: screenHeight * 0.025,
+        alignSelf: 'center'
+    },
+    shareWindowIOS: {
+        width: "50%",
+        marginTop: screenHeight * -0.455,
         alignSelf: 'center'
     },
     faqWindow: {

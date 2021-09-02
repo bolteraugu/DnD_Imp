@@ -323,6 +323,7 @@ export default function Chat({groupRef, navigation, showImage, itemsT, isDM, use
                             <Bubble
                                 {...props}
                                 position={props.currentMessage.user.email === currentUser.email ? 'right' : 'left'}
+                                renderMessageImage={renderMessageImage}
                                 wrapperStyle={{
                                     right: {
                                         backgroundColor: '#6646ee',
@@ -386,6 +387,7 @@ export default function Chat({groupRef, navigation, showImage, itemsT, isDM, use
                             <Bubble
                                 {...props}
                                 position={props.currentMessage.user.email === currentUser.email ? 'right' : 'left'}
+                                renderMessageImage={renderMessageImage}
                                 wrapperStyle={{
                                     right: {
                                         backgroundColor: '#6646ee',
