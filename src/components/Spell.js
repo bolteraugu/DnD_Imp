@@ -255,8 +255,10 @@ export default function Spell({spell, onChange, index, isDM, character}) {
                                         style = {{height: screenHeight * 0.0598936170212766}}
                                         initValue={spell.level}
                                         onChange = {(option) => {
-                                            updateSpell('level', option.label)
-                                            onChange(index, 'level', option.label);
+                                            if (option != null && option.label != null) {
+                                                updateSpell('level', option.label);
+                                                onChange(index, 'level', option.label);
+                                            }
                                         }}
                                     />
                                 </View>

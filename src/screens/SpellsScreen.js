@@ -70,6 +70,7 @@ export default function SpellsScreen({route, navigation}) {
 
     function updateSpell(index, field, value) {
         const newSpells = [...spells];
+        console.log(index);
         newSpells[index][field] = value;
         setSpells(newSpells);
     }

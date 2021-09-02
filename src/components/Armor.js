@@ -181,8 +181,10 @@ export default function Armor({armor, onChange, index, isDM, character}) {
                                         style = {{height: screenHeight * 0.0598936170212766}}
                                         initValue={armor.type}
                                         onChange = {(option) => {
-                                            updateArmor('type', option.label)
-                                            onChange(index, 'type', option.label);
+                                            if (option != null && option.label != null) {
+                                                updateArmor('type', option.label);
+                                                onChange(index, 'type', option.label);
+                                            }
                                         }}
                                     />
                                 </View>

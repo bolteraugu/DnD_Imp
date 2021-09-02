@@ -483,7 +483,9 @@ const styles = StyleSheet.create({
         width: "98.93%",
         marginLeft: screenWidth * 0.0037509377344336,
         marginRight: screenWidth * 0.0037509377344336,
-        marginBottom: screenHeight * 0.0066489361702128
+        marginBottom: screenHeight * 0.0066489361702128,
+        backgroundColor: 'black',
+        color: 'white'
     },
     expandIconDM: {
         width: "40%",
