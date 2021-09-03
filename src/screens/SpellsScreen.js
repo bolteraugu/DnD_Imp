@@ -10,7 +10,7 @@ import {
     TouchableOpacity,
     View
 } from "react-native"
-import {Button, Text, TextInput} from "react-native-paper";
+import {Button, Dialog, IconButton, Portal, Provider, Text, TextInput} from "react-native-paper";
 import Spinner from "../components/Spinner";
 import Spell from "../components/Spell";
 import {AuthUserContext} from "../navigation/AuthUserProvider";
@@ -25,6 +25,14 @@ export default function SpellsScreen({route, navigation}) {
     const [spells, setSpells] = useState([]);
     const [loading, setLoading] = useState(true);
     const {user} = useContext(AuthUserContext);
+    const [helpVisible, setHelpVisible] = useState(false);
+    const hideHelpDialog = () => setHelpVisible(false);
+    const showHelpDialog = () => setHelpVisible(true);
+
+    global.ShowHelpCharacterSheet = () => {
+        Keyboard.dismiss();
+        showHelpDialog();
+    };
 
     useEffect(() => {
         let isMounted = true;
@@ -188,10 +196,11 @@ export default function SpellsScreen({route, navigation}) {
 
     let index = 0;
     return (
-        <KeyboardAwareScrollView
-            extraHeight={screenHeight * 0.1412}
-        >
-        <View>
+            <Provider>
+                <KeyboardAwareScrollView
+                    extraHeight={screenHeight * 0.1412}
+                >
+                <View>
                     <View style = {styles.totalContainer}>
                         <View style = {styles.topRow}>
                             <View style = {styles.spellsInfoContainer}>
@@ -485,12 +494,79 @@ export default function SpellsScreen({route, navigation}) {
                         </View>
                         <View style = {styles.gap}/>
                     </View>
-        </View>
+                </View>
+                <Portal>
+                    <Dialog
+                        visible={helpVisible}
+                        onDismiss={hideHelpDialog}
+                        style={styles.helpWindow}
+                    >
+                        <View style = {{alignSelf: 'center'}}>
+                            <Dialog.Title
+                                style={styles.helpTitleWindow}
+                            >
+                                Full Character Sheet Screen Help
+                            </Dialog.Title>
+                        </View>
+                        <IconButton
+                            icon="close" //Getting the back icon image
+                            size={36} //Setting the size
+                            color="#a60000" //And the color
+                            style = {styles.exitButtonHelp}
+                            onPress={() => {
+                                hideHelpDialog()
+                            }}
+                        />
+                        <Dialog.Content>
+                            <Text
+                                style={styles.helpTextBold}
+                            >
+                                Please note that this help window is available on every screen by clicking on the help icon in the top right corner. The information shown in this window differs depending on the screen you are on.
+                            </Text>
+                            <Text>
+                                In this screen you can view and edit the full details of a character. The details have been categorised into four tabs.{"\n"}
+                                - Main, containing the core, most frequently accessed, information. {"\n"}
+                                - Biography containing biographical, non-numeric characteristics. {"\n"}
+                                - Inventory containing currency, weapons, armor and possessions. {'\n'}
+                                - Spells containing spell characteristics, spell slots and spells.  {'\n\n'}
+
+                                In the main tab you can change the character's image by clicking on the 'Change Image' button which will take you to the 'Image Selector'
+                                screen where you can upload and use a new image or use one you have uploaded in the past.{'\n\n'}
+
+                                In the inventory tab you can add new weapons, armor and possessions by using the associated add buttons and in the spells tab you can add
+                                spells the same way.{'\n\n'}
+
+                                Edits made to a character in this screen will be reflected in the overview of the character in the Groups screen and vice-versa.{'\n\n'}
+                                Edits made to a character in this screen and the 'Groups' screen will be applied for all players who have access to the character.
+                            </Text>
+                        </Dialog.Content>
+                    </Dialog>
+                </Portal>
         </KeyboardAwareScrollView>
+            </Provider>
     );
 }
 
 const styles = StyleSheet.create({
+    exitButtonHelp: {
+        left: screenWidth * 0.635,
+        top: screenHeight * -0.02,
+        position: 'absolute'
+    },
+    helpWindow: {
+        width: screenWidth * 0.675,
+        alignSelf: 'center',
+        marginTop: screenHeight * -0.0463829787234
+    },
+    helpTitleWindow: {
+        alignSelf: 'center',
+        textAlign: 'center'
+    },
+    helpTextBold: {
+        textAlign: 'center',
+        fontWeight: 'bold',
+        marginBottom: screenHeight * 0.02
+    },
     centerButton: {
         width: "100%",
         justifyContent: 'center',

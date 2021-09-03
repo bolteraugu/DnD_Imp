@@ -1,5 +1,15 @@
 import React, {useState, useEffect, useContext} from 'react';
-import {Dimensions, FlatList, Image, Keyboard, Platform, ScrollView, StyleSheet, View} from 'react-native';
+import {
+    Dimensions,
+    FlatList,
+    Image,
+    Keyboard,
+    Platform,
+    ScrollView,
+    StyleSheet,
+    TouchableOpacity,
+    View
+} from 'react-native';
 import {Button, Dialog, IconButton, Portal, Provider, Text, TextInput, Title, Checkbox} from 'react-native-paper';
 import CharacterCard from '../components/CharacterCard';
 import Chat from '../components/Chat';
@@ -12,6 +22,7 @@ import DropDown from "react-native-paper-dropdown";
 import {Picker} from "@react-native-picker/picker";
 import "../screens/NotesScreen"
 import {KeyboardAwareScrollView} from "react-native-keyboard-aware-scroll-view";
+import colors from "../utils/colors";
 
 global.screenWidth = Dimensions.get("window").width;
 global.screenHeight = Dimensions.get("window").height;
@@ -59,6 +70,10 @@ export default function DMScreen({route, navigation}) {
     const showDeleteAllDialog = () => setDeleteAllVisible(true);
     const hideDeleteAllDialog = () => setDeleteAllVisible(false);
     let assignIndex = 0;
+    const [helpVisible, setHelpVisible] = useState(false);
+    const hideHelpDialog = () => setHelpVisible(false);
+    const showHelpDialog = () => setHelpVisible(true);
+    const [helpTab, setHelpTab] = useState("Characters");
 
   global.showSettingsDialog = () => {
       Keyboard.dismiss();
@@ -68,7 +83,14 @@ export default function DMScreen({route, navigation}) {
           }
       }
       showDialog();
+      hideHelpDialog();
   };
+
+    global.ShowHelpDM = () => {
+        Keyboard.dismiss();
+        setHelpTab("Characters");
+        showHelpDialog();
+    };
 
   global.navigateToNotes = () => {
       navigation.navigate('Notes', {
@@ -321,7 +343,7 @@ export default function DMScreen({route, navigation}) {
                               />
                           </View>
                           <View style={styles.checkboxContainer}>
-                              <Text style={styles.checkboxText}>Can view anyone's notes</Text>
+                              <Text style={styles.checkboxText}>Can view and edit anyone's notes</Text>
                               <Checkbox.Android
                                   status={userPermissions != null && userPermissions.viewAllNotes ? 'checked' : 'unchecked'}
                                   onPress={() => {
@@ -597,6 +619,164 @@ export default function DMScreen({route, navigation}) {
                         style={styles.fullSizeImage}
                     />
                     <View/>
+                </Dialog>
+            </Portal>
+            <Portal>
+                <Dialog
+                    visible={helpVisible}
+                    onDismiss={hideHelpDialog}
+                    style={styles.helpWindow}
+                >
+                    <View style = {{alignSelf: 'center'}}>
+                        <Dialog.Title
+                            style={styles.helpWindowTitle}
+                        >
+                            Group Overview Screen Help
+                        </Dialog.Title>
+                    </View>
+                    <IconButton
+                        icon="close" //Getting the back icon image
+                        size={36} //Setting the size
+                        color="#a60000" //And the color
+                        style = {styles.exitButtonHelp}
+                        onPress={() => {
+                            hideHelpDialog()
+                        }}
+                    />
+                    <Text
+                        style={styles.helpTextBold}
+                    >
+                        Please note that this help window is available on every screen by clicking on the help icon in the top right corner. The information shown in this window differs depending on the screen you are on.
+                    </Text>
+                    <View style = {styles.tabContainer}>
+                        <TouchableOpacity
+                            style = {helpTab === 'Characters' ? styles.currentTab : styles.otherTab}
+                            onPress={() => setHelpTab('Characters')}
+                        >
+                            <Text style = {helpTab === 'Characters' ? styles.mainTabText : styles.otherTabText}>General</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style = {helpTab === 'Chat' ? styles.currentTab : styles.otherTab}
+                            onPress={() => setHelpTab('Chat')}
+                        >
+                            <Text style = {helpTab === 'Chat' ? styles.mainTabText : styles.otherTabText}>Chat</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style = {helpTab === 'Default Permissions' ? styles.currentTab : styles.otherTab}
+                            onPress={() => setHelpTab('Default Permissions')}
+                        >
+                            <Text style = {helpTab === 'Default Permissions' ? styles.mainTabText : styles.otherTabText}>Permissions</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style = {helpTab === 'Settings' ? styles.currentTab : styles.otherTab}
+                            onPress={() => setHelpTab('Settings')}
+                        >
+                            <Text style = {helpTab === 'Settings' ? styles.mainTabText : styles.otherTabText}>Settings</Text>
+                        </TouchableOpacity>
+                    </View>
+
+                    <Dialog.Content>
+                        {helpTab === 'Characters' ?
+                            <Text>
+                                - To create a new character click the add new character button. There is no limit to the number of characters you can create.{'\n\n'}
+
+                                - To view a character's image in it's full resolution you can click on the image. To delete a character press the delete
+                                button. Deleting a character will delete it for all players. {'\n\n'}
+
+                                - To see the full details of a character view the 'Full Character Sheet' screen click the 'Full Character Sheet' button.
+                                You can change a character's image in this screen.{'\n\n'}
+
+                                - To hide a character from your current view press the hide button. If you want to show the character again then click the black show
+                                button that is visible when the character is hidden.{'\n\n'}
+
+                                - To assign/unassign a player character to/from a character use the assign and unassign buttons. Multiple player characters can't be
+                                assigned to the same character. Assigning a player character to the character gives them access to view and edit the character. {'\n\n'}
+
+                                - Dungeon Master's can't assign characters to themselves and characters they created will be unassigned. Characters player characters create will
+                                be assigned to themselves. There is no limit to the number of characters a player character is assigned to.{'\n\n'}
+
+                                - To access the notes screen click the notes icon in between the help icon and the settings icon.{'\n\n'}
+
+                                - People can be added to the group by clicking the plus person icon button in the top right corner of the screen and submitting
+                                their email in the text input provided. There is no limit to the number of members that can be in a group. People that are added to
+                                a group will be a player character as a group can only have one Dungeon Master.
+                            </Text>
+                            :
+                            helpTab === 'Chat' ?
+                                <Text>
+                                    - To send a text message in chat type the message in the text input and press the send button.{'\n\n'}
+
+                                    - If you would like to send an image click the image icon in the text input. Clicking this will take you to the 'Image Selector'
+                                    screen where you can upload and select a new image or select one you have used in the past.{'\n\n'}
+
+                                    - By default, when you send a message it will send it to all group members. To specify what members you want to send it to you
+                                    can use the select recipients dropdown at the top of the chat window.{'\n\n'}
+
+                                    - You can see the full resolution of your chat profile image or images you send in chat by clicking on the image.{'\n\n'}
+
+                                    - The chat is also searchable. Clicking on the search icon will show a window where you can submit a search term (case-sensitive).
+                                    Once submitted only messages that contain the search term will be shown. To clear the search term (i.e. show all messages) you
+                                    can click the clear search button and to edit the search you can click the edit search button.{'\n\n'}
+
+                                    - To delete messages click the enable message selection button which will allow you to select messages by showing checkboxes
+                                    next to the messages. Any selected messages (messages with the checkbox checked) will be deleted when the delete selected
+                                    messages button is clicked. Messages that are deleted, show the text "This message has been deleted" to avoid group members
+                                    getting confused. To disable message selection click the disable message selection button.{'\n\n'}
+
+                                    - The chat is also searchable. Clicking on the search icon will show a window where you can submit a search term (case-sensitive).
+                                    Once submitted only messages that contain the search term will be shown. To clear the search term (i.e. show all messages) you
+                                    can click the clear search button and to edit the search you can click the edit search button.
+                                </Text>
+                                :
+                                helpTab === 'Default Permissions' ?
+                                    <Text style = {{marginBottom: screenHeight * -0.012}}>
+                                        <Text style={{fontWeight: "bold"}}>Dungeon Master's permissions:{'\n'}</Text>
+                                        - Can view, edit, hide, assign, unassign and delete any character.{'\n'}
+                                        - Can add people to the group.{'\n'}
+                                        - Can view, edit, share and delete any note.{'\n'}
+                                        - Can change who the dungeon master is.{'\n'}
+                                        - Can change player characters' default permissions.{'\n'}
+                                        - Can delete all chat messages at once.{'\n'}
+                                        - Can edit the group name.{'\n'}
+                                        - Can leave the group.{'\n'}
+                                        - Has access to all chat features (to learn about the chat features click on the 'Chat' tab of this window).{'\n'}
+                                        - Can only see and delete messages that are sent to them.{'\n'}
+                                        - Can set their chat profile image.{'\n'}
+                                        - Can upload, share, delete and edit the name of images.{'\n\n'}
+
+                                        <Text style={{fontWeight: "bold"}}>Player characters' default permissions:{'\n'}</Text>
+                                        - Can view, edit and hide any characters assigned to them.{'\n'}
+                                        - Can view and edit any note created by them or shared to them.{'\n'}
+                                        - Can share any note they created but can't share notes that were shared to them.{'\n'}
+                                        - Can edit the group name.{'\n'}
+                                        - Can leave the group.{'\n'}
+                                        - Has access to all chat features.{'\n'}
+                                        - Can only see messages that are sent to them and can only delete messages they send.{'\n'}
+                                        - Can set their chat profile image.{'\n'}
+                                        - Can upload, share, delete and edit the name of images.
+                                    </Text>
+                                    :
+                                    <Text>
+                                        The settings can be accessed by clicking on the settings cog icon in the top right corner of the screen.{'\n\n'}
+                                        <Text style={{fontWeight: "bold"}}>Settings available to the Dungeon Master and player characters:{'\n'}</Text>
+                                        - Change chat profile picture. Clicking this button will take you to the 'Image Selector' screen where you can upload and
+                                        select a new image or select one you have used in this past. Submitting the selected image will change your chat profile
+                                        image (the image that shows up next to your chat messages).{'\n\n'}
+
+                                        <Text style={{fontWeight: "bold"}}>Settings available only to the Dungeon Master:{'\n'}</Text>
+                                        - Delete all chat messages. This setting deletes all messages in the chat permanently. Unlike deleting selected messages,
+                                        this does not change the text to "This message has been deleted" but instead permanently deletes them. As there is no limit
+                                        to the number of messages that can be stored, it is advised to only use this feature when it is needed.{'\n'}
+                                        - Change dungeon master. This setting is for changing the group's Dungeon Master and since a group can only have one Dungeon
+                                        Master, the existing Dungeon Master will become a player character when the change is applied.{'\n'}
+                                        - Change player character's permissions. This setting allows the default permissions for player characters to be changed.
+                                        The change in default permissions is applied to all existing player characters and any future ones that join the group. The
+                                        specific permissions that can be set are self-explanatory but it is important to note that enabling the 'Can view other
+                                        players' characters' include unassigned characters and does not include editing or deleting the characters (i.e. read-only
+                                        view).
+                                    </Text>
+                        }
+                    </Dialog.Content>
                 </Dialog>
             </Portal>
         </Provider>
@@ -971,6 +1151,164 @@ export default function DMScreen({route, navigation}) {
                     <View/>
                 </Dialog>
             </Portal>
+            <Portal>
+                <Dialog
+                    visible={helpVisible}
+                    onDismiss={hideHelpDialog}
+                    style={styles.helpWindow}
+                >
+                    <View style = {{alignSelf: 'center'}}>
+                        <Dialog.Title
+                            style={styles.helpWindowTitle}
+                        >
+                            Group Overview Screen Help
+                        </Dialog.Title>
+                    </View>
+                    <IconButton
+                        icon="close" //Getting the back icon image
+                        size={36} //Setting the size
+                        color="#a60000" //And the color
+                        style = {styles.exitButtonHelp}
+                        onPress={() => {
+                            hideHelpDialog()
+                        }}
+                    />
+                    <Text
+                        style={styles.helpTextBold}
+                    >
+                        Please note that this help window is available on every screen by clicking on the help icon in the top right corner. The information shown in this window differs depending on the screen you are on.
+                    </Text>
+                    <View style = {styles.tabContainer}>
+                        <TouchableOpacity
+                            style = {helpTab === 'Characters' ? styles.currentTab : styles.otherTab}
+                            onPress={() => setHelpTab('Characters')}
+                        >
+                            <Text style = {helpTab === 'Characters' ? styles.mainTabText : styles.otherTabText}>General</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style = {helpTab === 'Chat' ? styles.currentTab : styles.otherTab}
+                            onPress={() => setHelpTab('Chat')}
+                        >
+                            <Text style = {helpTab === 'Chat' ? styles.mainTabText : styles.otherTabText}>Chat</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style = {helpTab === 'Default Permissions' ? styles.currentTab : styles.otherTab}
+                            onPress={() => setHelpTab('Default Permissions')}
+                        >
+                            <Text style = {helpTab === 'Default Permissions' ? styles.mainTabText : styles.otherTabText}>Permissions</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style = {helpTab === 'Settings' ? styles.currentTab : styles.otherTab}
+                            onPress={() => setHelpTab('Settings')}
+                        >
+                            <Text style = {helpTab === 'Settings' ? styles.mainTabText : styles.otherTabText}>Settings</Text>
+                        </TouchableOpacity>
+                    </View>
+
+                    <Dialog.Content>
+                        {helpTab === 'Characters' ?
+                            <Text>
+                                - To create a new character click the add new character button. There is no limit to the number of characters you can create.{'\n\n'}
+
+                                - To view a character's image in it's full resolution you can click on the image. To delete a character press the delete
+                                button.{'\n\n'}
+
+                                - To see the full details of a character view the 'Full Character Sheet' screen click the 'Full Character Sheet' button.
+                                You can change a character's image in this screen.{'\n\n'}
+
+                                - To hide a character from your current view press the hide button. If you want to show the character again then click the black show
+                                button that is visible when the character is hidden.{'\n\n'}
+
+                                - To assign/unassign a player character to/from a character use the assign and unassign buttons. Multiple player characters can't be
+                                assigned to the same character. Assigning a player character to the character gives them access to view and edit the character. {'\n\n'}
+
+                                - Dungeon Master's can't assign characters to themselves and characters they created will be unassigned. Characters player characters create will
+                                be assigned to themselves. There is no limit to the number of characters a player character is assigned to.{'\n\n'}
+
+                                - To access the notes screen click the notes icon in between the help icon and the settings icon.{'\n\n'}
+
+                                - People can be added to the group by clicking the plus person icon button in the top right corner of the screen and submitting
+                                their email in the text input provided. There is no limit to the number of members that can be in a group. People that are added to
+                                a group will be a player character as a group can only have one Dungeon Master.
+                            </Text>
+                            :
+                            helpTab === 'Chat' ?
+                                <Text>
+                                    - To send a text message in chat type the message in the text input and press the send button.{'\n\n'}
+
+                                    - If you would like to send an image click the image icon in the text input. Clicking this will take you to the 'Image Selector'
+                                    screen where you can upload and select a new image or select one you have used in this past.{'\n\n'}
+
+                                    - By default, when you send a message it will send it to all group members. To specify what members you want to send it to you
+                                    can use the select recipients dropdown at the top of the chat window.{'\n\n'}
+
+                                    - You can see the full resolution of your chat profile image or images you send in chat by clicking on the image.{'\n\n'}
+
+                                    - The chat is also searchable. Clicking on the search icon will show a window where you can submit a search term (case-sensitive).
+                                    Once submitted only messages that contain the search term will be shown. To clear the search term (i.e. show all messages) you
+                                    can click the clear search button and to edit the search you can click the edit search button.{'\n\n'}
+
+                                    - To delete messages click the enable message selection button which will allow you to select messages by showing checkboxes
+                                    next to the messages. Any selected messages (messages with the checkbox checked) will be deleted when the delete selected
+                                    messages button is clicked. Messages that are deleted, show the text "This message has been deleted" to avoid group members
+                                    getting confused. To disable message selection click the disable message selection button.{'\n\n'}
+
+                                    - The chat is also searchable. Clicking on the search icon will show a window where you can submit a search term (case-sensitive).
+                                    Once submitted only messages that contain the search term will be shown. To clear the search term (i.e. show all messages) you
+                                    can click the clear search button and to edit the search you can click the edit search button.
+                                </Text>
+                                :
+                                helpTab === 'Default Permissions' ?
+                                    <Text style = {{marginBottom: screenHeight * -0.012}}>
+                                        <Text style={{fontWeight: "bold"}}>Dungeon Master's permissions:{'\n'}</Text>
+                                        - Can view, edit, hide, assign, unassign and delete any character.{'\n'}
+                                        - Can add people to the group.{'\n'}
+                                        - Can view, edit, share and delete any note.{'\n'}
+                                        - Can change who the dungeon master is.{'\n'}
+                                        - Can change player characters' default permissions.{'\n'}
+                                        - Can delete all chat messages at once.{'\n'}
+                                        - Can edit the group name.{'\n'}
+                                        - Can leave the group.{'\n'}
+                                        - Has access to all chat features (to learn about the chat features click on the 'Chat' tab of this window).{'\n'}
+                                        - Can only see and delete messages that are sent to them.{'\n'}
+                                        - Can set their chat profile image.{'\n'}
+                                        - Can upload, share, delete and edit the name of images.{'\n\n'}
+
+                                        <Text style={{fontWeight: "bold"}}>Player characters' default permissions:{'\n'}</Text>
+                                        - Can view, edit and hide any characters assigned to them.{'\n'}
+                                        - Can view and edit any note created by them or shared to them.{'\n'}
+                                        - Can share any note they created but can't share notes that were shared to them.{'\n'}
+                                        - Can edit the group name.{'\n'}
+                                        - Can leave the group.{'\n'}
+                                        - Has access to all chat features.{'\n'}
+                                        - Can only see messages that are sent to them and can only delete messages they send.{'\n'}
+                                        - Can set their chat profile image.{'\n'}
+                                        - Can upload, share, delete and edit the name of images.
+                                    </Text>
+                                    :
+                                    <Text>
+                                        The settings can be accessed by clicking on the settings cog icon in the top right corner of the screen.{'\n\n'}
+                                        <Text style={{fontWeight: "bold"}}>Settings available to the Dungeon Master and player characters:{'\n'}</Text>
+                                        - Change chat profile picture. Clicking this button will take you to the 'Image Selector' screen where you can upload and
+                                        select a new image or select one you have used in this past. Submitting the selected image will change your chat profile
+                                        image (the image that shows up next to your chat messages).{'\n\n'}
+
+                                        <Text style={{fontWeight: "bold"}}>Settings available only to the Dungeon Master:{'\n'}</Text>
+                                        - Delete all chat messages. This setting deletes all messages in the chat permanently. Unlike deleting selected messages,
+                                        this does not change the text to "This message has been deleted" but instead permanently deletes them. As there is no limit
+                                        to the number of messages that can be stored, it is advised to only use this feature when it is needed.{'\n'}
+                                        - Change dungeon master. This setting is for changing the group's Dungeon Master and since a group can only have one Dungeon
+                                        Master, the existing Dungeon Master will become a player character when the change is applied.{'\n'}
+                                        - Change player character's permissions. This setting allows the default permissions for player characters to be changed.
+                                        The change in default permissions is applied to all existing player characters and any future ones that join the group. The
+                                        specific permissions that can be set are self-explanatory but it is important to note that enabling the 'Can view other
+                                        players' characters' include unassigned characters and does not include editing or deleting the characters (i.e. read-only
+                                        view).
+                                    </Text>
+                        }
+                    </Dialog.Content>
+                </Dialog>
+            </Portal>
         </Provider>
     );
   }
@@ -981,6 +1319,59 @@ DMScreen.navigationOptions = {
 };
 
 const styles = StyleSheet.create({
+    exitButtonHelp: {
+        left: screenWidth * 0.765,
+        top: screenHeight * -0.02,
+        position: 'absolute'
+    },
+    helpWindow: {
+        width: screenWidth * 0.805,
+        alignSelf: 'center',
+        marginTop: screenHeight * 0.03
+        //height : screenHeight * 0.575
+    },
+    helpWindowTitle: {
+        alignSelf: 'center',
+        textAlign: 'center'
+    },
+    helpTextBold: {
+        textAlign: 'center',
+        fontWeight: 'bold',
+        marginBottom: screenHeight * 0.02,
+        marginLeft: screenWidth * 0.02,
+        marginRight: screenWidth * 0.02,
+    },
+    tabContainer: {
+        flexDirection: 'row',
+        width: "100%",
+        height: screenHeight * 0.06,
+        backgroundColor: "#f7f7f7",
+        marginBottom: screenHeight * 0.03
+    },
+    currentTab: {
+        flex: 1,
+        borderBottomWidth: 2,
+        borderColor: "black",
+        justifyContent: 'center',
+        textAlign: 'center'
+    },
+    otherTab: {
+        flex: 1,
+        justifyContent: 'center',
+        textAlign: 'center',
+        borderBottomWidth: 1,
+        borderColor: colors.primary,
+    },
+    otherTabText: {
+        fontSize: 13,
+        color: colors.primary,
+        textAlign: 'center'
+    },
+    mainTabText: {
+        fontSize: 13,
+        color: "black",
+        textAlign: 'center'
+    },
     iosDropdownStyle: {
         width: screenWidth * 0.3345843960990248,
         height: screenHeight * 0.0598404255319149,

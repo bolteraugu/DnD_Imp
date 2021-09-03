@@ -1,4 +1,4 @@
-import {Text, TextInput} from "react-native-paper";
+import {Dialog, IconButton, Portal, Provider, Text, TextInput} from "react-native-paper";
 import React, {useContext, useEffect, useState} from "react"
 import {createMaterialTopTabNavigator} from "@react-navigation/material-top-tabs";
 import {
@@ -7,7 +7,7 @@ import {
     TextInput as NativeTextInput,
     Dimensions,
     ScrollView,
-    KeyboardAvoidingView
+    KeyboardAvoidingView, Keyboard
 } from "react-native";
 import colors from "../utils/colors";
 import {AuthUserContext} from "../navigation/AuthUserProvider";
@@ -21,6 +21,14 @@ export default function BiographyScreen({navigation}) {
     const [character, setCharacter] = useState(global.character);
     const pushChange = global.onFSChange
     const {user} = useContext(AuthUserContext);
+    const [helpVisible, setHelpVisible] = useState(false);
+    const hideHelpDialog = () => setHelpVisible(false);
+    const showHelpDialog = () => setHelpVisible(true);
+
+    global.ShowHelpCharacterSheet = () => {
+        Keyboard.dismiss();
+        showHelpDialog();
+    };
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('tabPress', e => {
@@ -120,298 +128,366 @@ export default function BiographyScreen({navigation}) {
     }
 
     return (
-        <KeyboardAwareScrollView>
-        <View
-            style = {styles.totalContainer}
-        >
-            <View style = {styles.side}>
-                <View style = {styles.corner}>
-                    <View style = {styles.personalityTraitsIdealsContainer}>
-                        <View style = {styles.personalityTraitsContainer}>
-                            <TextInput
-                                style = {styles.personalityTraitsInput}
-                                underlineColor="transparent"
-                                multiline={true}
-                                editable={global.isDM || character.assignedTo === user.toJSON().email}
-                                value = {character.personality_traits}
-                                render={props => (
-                                    <NativeTextInput
-                                        {...props}
-                                        style={[
-                                            props.style,
-                                            props.multiline
-                                                ? {
-                                                    paddingTop: screenHeight * 0.0398936170212766,
-                                                    paddingLeft: screenWidth * 0.018754688672168,
-                                                    paddingRight: screenWidth * 0.018754688672168,
-                                                    paddingBottom: screenHeight * 0.0106382978723404,
-                                                    height: screenHeight * 0.1329787234042553,
-                                                }
-                                                : null,
-                                        ]}
+            <Provider>
+                <KeyboardAwareScrollView>
+                <View
+                    style = {styles.totalContainer}
+                >
+                    <View style = {styles.side}>
+                        <View style = {styles.corner}>
+                            <View style = {styles.personalityTraitsIdealsContainer}>
+                                <View style = {styles.personalityTraitsContainer}>
+                                    <TextInput
+                                        style = {styles.personalityTraitsInput}
+                                        underlineColor="transparent"
+                                        multiline={true}
                                         editable={global.isDM || character.assignedTo === user.toJSON().email}
-                                        placeholder={"Enter personality traits..."}
+                                        value = {character.personality_traits}
+                                        render={props => (
+                                            <NativeTextInput
+                                                {...props}
+                                                style={[
+                                                    props.style,
+                                                    props.multiline
+                                                        ? {
+                                                            paddingTop: screenHeight * 0.0398936170212766,
+                                                            paddingLeft: screenWidth * 0.018754688672168,
+                                                            paddingRight: screenWidth * 0.018754688672168,
+                                                            paddingBottom: screenHeight * 0.0106382978723404,
+                                                            height: screenHeight * 0.1329787234042553,
+                                                        }
+                                                        : null,
+                                                ]}
+                                                editable={global.isDM || character.assignedTo === user.toJSON().email}
+                                                placeholder={"Enter personality traits..."}
+                                            />
+                                        )}
+                                        onChangeText={(text) => {
+                                            pushChange(global.index, 'personality_traits', text);
+                                            updateCharacterLocal('personality_traits', text);
+                                            updateCharacter('personality_traits', text);
+                                        }}
                                     />
-                                )}
-                                onChangeText={(text) => {
-                                    pushChange(global.index, 'personality_traits', text);
-                                    updateCharacterLocal('personality_traits', text);
-                                    updateCharacter('personality_traits', text);
-                                }}
-                            />
-                            <Text
-                                style = {styles.personalityTraitsHeading}
-                            >
-                                Personality Traits
-                            </Text>
+                                    <Text
+                                        style = {styles.personalityTraitsHeading}
+                                    >
+                                        Personality Traits
+                                    </Text>
+                                </View>
+                                <View style = {styles.idealsContainer}>
+                                    <TextInput
+                                        style = {styles.idealsInput}
+                                        underlineColor="transparent"
+                                        editable={global.isDM || character.assignedTo === user.toJSON().email}
+                                        multiline={true}
+                                        value = {character.ideals}
+                                        render={props => (
+                                            <NativeTextInput
+                                                {...props}
+                                                style={[
+                                                    props.style,
+                                                    props.multiline
+                                                        ? {
+                                                            paddingTop: screenHeight * 0.0398936170212766,
+                                                            paddingLeft: screenWidth * 0.018754688672168,
+                                                            paddingRight: screenWidth * 0.018754688672168,
+                                                            paddingBottom: screenHeight * 0.0106382978723404,
+                                                            height: screenHeight * 0.1329787234042553,
+                                                        }
+                                                        : null,
+                                                ]}
+                                                editable={global.isDM || character.assignedTo === user.toJSON().email}
+                                                placeholder={"Enter ideals..."}
+                                            />
+                                        )}
+                                        onChangeText={(text) => {
+                                            pushChange(global.index, 'ideals', text);
+                                            updateCharacterLocal('ideals', text);
+                                            updateCharacter('ideals', text);
+                                        }}
+                                    />
+                                    <Text
+                                        style = {styles.idealsHeading}
+                                    >
+                                        Ideals
+                                    </Text>
+                                </View>
+                            </View>
+                            <View style = {styles.bondsFlawsContainer}>
+                                <View style = {styles.personalityTraitsContainer}>
+                                    <TextInput
+                                        style = {styles.bondsInput}
+                                        underlineColor="transparent"
+                                        multiline={true}
+                                        editable={global.isDM || character.assignedTo === user.toJSON().email}
+                                        value = {character.bonds}
+                                        render={props => (
+                                            <NativeTextInput
+                                                {...props}
+                                                style={[
+                                                    props.style,
+                                                    props.multiline
+                                                        ? {
+                                                            paddingTop: screenHeight * 0.0398936170212766,
+                                                            paddingLeft: screenWidth * 0.018754688672168,
+                                                            paddingRight: screenWidth * 0.018754688672168,
+                                                            paddingBottom: screenHeight * 0.0106382978723404,
+                                                            height: screenHeight * 0.1329787234042553,
+                                                        }
+                                                        : null,
+                                                ]}
+                                                editable={global.isDM || character.assignedTo === user.toJSON().email}
+                                                placeholder={"Enter bonds..."}
+                                            />
+                                        )}
+                                        onChangeText={(text) => {
+                                            pushChange(global.index, 'bonds', text);
+                                            updateCharacterLocal('bonds', text);
+                                            updateCharacter('bonds', text);
+                                        }}
+                                    />
+                                    <Text
+                                        style = {styles.personalityTraitsHeading}
+                                    >
+                                        Bonds
+                                    </Text>
+                                </View>
+                                <View style = {styles.idealsContainer}>
+                                    <TextInput
+                                        style = {styles.flawsInput}
+                                        underlineColor="transparent"
+                                        multiline={true}
+                                        editable={global.isDM || character.assignedTo === user.toJSON().email}
+                                        value = {character.flaws}
+                                        render={props => (
+                                            <NativeTextInput
+                                                {...props}
+                                                style={[
+                                                    props.style,
+                                                    props.multiline
+                                                        ? {
+                                                            paddingTop: screenHeight * 0.0398936170212766,
+                                                            paddingLeft: screenWidth * 0.018754688672168,
+                                                            paddingRight: screenWidth * 0.018754688672168,
+                                                            paddingBottom: screenHeight * 0.0106382978723404,
+                                                            height: screenHeight * 0.1329787234042553,
+                                                        }
+                                                        : null,
+                                                ]}
+                                                editable={global.isDM || character.assignedTo === user.toJSON().email}
+                                                placeholder={"Enter flaws..."}
+                                            />
+                                        )}
+                                        onChangeText={(text) => {
+                                            pushChange(global.index, 'flaws', text);
+                                            updateCharacterLocal('flaws', text);
+                                            updateCharacter('flaws', text);
+                                        }}
+                                    />
+                                    <Text
+                                        style = {styles.idealsHeading}
+                                    >
+                                        Flaws
+                                    </Text>
+                                </View>
+                            </View>
                         </View>
-                        <View style = {styles.idealsContainer}>
-                            <TextInput
-                                style = {styles.idealsInput}
-                                underlineColor="transparent"
-                                editable={global.isDM || character.assignedTo === user.toJSON().email}
-                                multiline={true}
-                                value = {character.ideals}
-                                render={props => (
-                                    <NativeTextInput
-                                        {...props}
-                                        style={[
-                                            props.style,
-                                            props.multiline
-                                                ? {
-                                                    paddingTop: screenHeight * 0.0398936170212766,
-                                                    paddingLeft: screenWidth * 0.018754688672168,
-                                                    paddingRight: screenWidth * 0.018754688672168,
-                                                    paddingBottom: screenHeight * 0.0106382978723404,
-                                                    height: screenHeight * 0.1329787234042553,
-                                                }
-                                                : null,
-                                        ]}
-                                        editable={global.isDM || character.assignedTo === user.toJSON().email}
-                                        placeholder={"Enter ideals..."}
-                                    />
-                                )}
-                                onChangeText={(text) => {
-                                    pushChange(global.index, 'ideals', text);
-                                    updateCharacterLocal('ideals', text);
-                                    updateCharacter('ideals', text);
-                                }}
-                            />
-                            <Text
-                                style = {styles.idealsHeading}
-                            >
-                                Ideals
-                            </Text>
+                        <View style = {styles.corner}>
+                            <View style = {styles.featuresAndTraitsContainer}>
+                                <TextInput
+                                    style = {styles.featuresAndTraitsInput}
+                                    underlineColor="transparent"
+                                    multiline={true}
+                                    editable={global.isDM || character.assignedTo === user.toJSON().email}
+                                    value = {character.features_and_traits}
+                                    render={props => (
+                                        <NativeTextInput
+                                            {...props}
+                                            style={[
+                                                props.style,
+                                                props.multiline
+                                                    ? {
+                                                        paddingTop: screenHeight * 0.0398936170212766,
+                                                        paddingLeft: screenWidth * 0.018754688672168,
+                                                        paddingRight: screenWidth * 0.018754688672168,
+                                                        paddingBottom: screenHeight * 0.0106382978723404,
+                                                        height: screenHeight * 0.1329787234042553,
+                                                    }
+                                                    : null,
+                                            ]}
+                                            editable={global.isDM || character.assignedTo === user.toJSON().email}
+                                            placeholder={"Enter features & traits..."}
+                                        />
+                                    )}
+                                    onChangeText={(text) => {
+                                        pushChange(global.index, 'features_and_traits', text);
+                                        updateCharacterLocal('features_and_traits', text);
+                                        updateCharacter('features_and_traits', text);
+                                    }}
+                                />
+                                <Text
+                                    style = {styles.idealsHeading}
+                                >
+                                    Features & Traits
+                                </Text>
+                            </View>
                         </View>
                     </View>
-                    <View style = {styles.bondsFlawsContainer}>
-                        <View style = {styles.personalityTraitsContainer}>
-                            <TextInput
-                                style = {styles.bondsInput}
-                                underlineColor="transparent"
-                                multiline={true}
-                                editable={global.isDM || character.assignedTo === user.toJSON().email}
-                                value = {character.bonds}
-                                render={props => (
-                                    <NativeTextInput
-                                        {...props}
-                                        style={[
-                                            props.style,
-                                            props.multiline
-                                                ? {
-                                                    paddingTop: screenHeight * 0.0398936170212766,
-                                                    paddingLeft: screenWidth * 0.018754688672168,
-                                                    paddingRight: screenWidth * 0.018754688672168,
-                                                    paddingBottom: screenHeight * 0.0106382978723404,
-                                                    height: screenHeight * 0.1329787234042553,
-                                                }
-                                                : null,
-                                        ]}
-                                        editable={global.isDM || character.assignedTo === user.toJSON().email}
-                                        placeholder={"Enter bonds..."}
-                                    />
-                                )}
-                                onChangeText={(text) => {
-                                    pushChange(global.index, 'bonds', text);
-                                    updateCharacterLocal('bonds', text);
-                                    updateCharacter('bonds', text);
-                                }}
-                            />
-                            <Text
-                                style = {styles.personalityTraitsHeading}
-                            >
-                                Bonds
-                            </Text>
+                    <View style = {styles.side}>
+                        <View style = {styles.topRightCorner}>
+                            <View style = {styles.appearanceContainer}>
+                                <TextInput
+                                    style = {styles.appearanceInput}
+                                    underlineColor="transparent"
+                                    multiline={true}
+                                    editable={global.isDM || character.assignedTo === user.toJSON().email}
+                                    value = {character.appearance}
+                                    render={props => (
+                                        <NativeTextInput
+                                            {...props}
+                                            style={[
+                                                props.style,
+                                                props.multiline
+                                                    ? {
+                                                        paddingTop: screenHeight * 0.0398936170212766,
+                                                        paddingLeft: screenWidth * 0.018754688672168,
+                                                        paddingRight: screenWidth * 0.018754688672168,
+                                                        paddingBottom: screenHeight * 0.0106382978723404,
+                                                        height: screenHeight * 0.1329787234042553,
+                                                    }
+                                                    : null,
+                                            ]}
+                                            editable={global.isDM || character.assignedTo === user.toJSON().email}
+                                            placeholder={"Enter character appearance..."}
+                                        />
+                                    )}
+                                    onChangeText={(text) => {
+                                        pushChange(global.index, 'appearance', text);
+                                        updateCharacterLocal('appearance', text);
+                                        updateCharacter('appearance', text);
+                                    }}
+                                />
+                                <Text
+                                    style = {styles.idealsHeading}
+                                >
+                                    Character Appearance
+                                </Text>
+                            </View>
                         </View>
-                        <View style = {styles.idealsContainer}>
-                            <TextInput
-                                style = {styles.flawsInput}
-                                underlineColor="transparent"
-                                multiline={true}
-                                editable={global.isDM || character.assignedTo === user.toJSON().email}
-                                value = {character.flaws}
-                                render={props => (
-                                    <NativeTextInput
-                                        {...props}
-                                        style={[
-                                            props.style,
-                                            props.multiline
-                                                ? {
-                                                    paddingTop: screenHeight * 0.0398936170212766,
-                                                    paddingLeft: screenWidth * 0.018754688672168,
-                                                    paddingRight: screenWidth * 0.018754688672168,
-                                                    paddingBottom: screenHeight * 0.0106382978723404,
-                                                    height: screenHeight * 0.1329787234042553,
-                                                }
-                                                : null,
-                                        ]}
-                                        editable={global.isDM || character.assignedTo === user.toJSON().email}
-                                        placeholder={"Enter flaws..."}
-                                    />
-                                )}
-                                onChangeText={(text) => {
-                                    pushChange(global.index, 'flaws', text);
-                                    updateCharacterLocal('flaws', text);
-                                    updateCharacter('flaws', text);
-                                }}
-                            />
-                            <Text
-                                style = {styles.idealsHeading}
-                            >
-                                Flaws
-                            </Text>
+                        <View style = {styles.bottomRightCorner}>
+                            <View style = {styles.backstoryContainer}>
+                                <TextInput
+                                    style = {styles.backstoryInput}
+                                    underlineColor="transparent"
+                                    multiline={true}
+                                    editable={global.isDM || character.assignedTo === user.toJSON().email}
+                                    value = {character.backstory}
+                                    render={props => (
+                                        <NativeTextInput
+                                            {...props}
+                                            style={[
+                                                props.style,
+                                                props.multiline
+                                                    ? {
+                                                        paddingTop: screenHeight * 0.0398936170212766,
+                                                        paddingLeft: screenWidth * 0.018754688672168,
+                                                        paddingRight: screenWidth * 0.018754688672168,
+                                                        paddingBottom: screenHeight * 0.0106382978723404,
+                                                        height: screenHeight * 0.1329787234042553,
+                                                    }
+                                                    : null,
+                                            ]}
+                                            editable={global.isDM || character.assignedTo === user.toJSON().email}
+                                            placeholder={"Enter character backstory..."}
+                                        />
+                                    )}
+                                    onChangeText={(text) => {
+                                        pushChange(global.index, 'backstory', text);
+                                        updateCharacterLocal('backstory', text);
+                                        updateCharacter('backstory', text);
+                                    }}
+                                />
+                                <Text
+                                    style = {styles.idealsHeading}
+                                >
+                                    Character Backstory
+                                </Text>
+                            </View>
                         </View>
                     </View>
                 </View>
-                <View style = {styles.corner}>
-                    <View style = {styles.featuresAndTraitsContainer}>
-                        <TextInput
-                            style = {styles.featuresAndTraitsInput}
-                            underlineColor="transparent"
-                            multiline={true}
-                            editable={global.isDM || character.assignedTo === user.toJSON().email}
-                            value = {character.features_and_traits}
-                            render={props => (
-                                <NativeTextInput
-                                    {...props}
-                                    style={[
-                                        props.style,
-                                        props.multiline
-                                            ? {
-                                                paddingTop: screenHeight * 0.0398936170212766,
-                                                paddingLeft: screenWidth * 0.018754688672168,
-                                                paddingRight: screenWidth * 0.018754688672168,
-                                                paddingBottom: screenHeight * 0.0106382978723404,
-                                                height: screenHeight * 0.1329787234042553,
-                                            }
-                                            : null,
-                                    ]}
-                                    editable={global.isDM || character.assignedTo === user.toJSON().email}
-                                    placeholder={"Enter features & traits..."}
-                                />
-                            )}
-                            onChangeText={(text) => {
-                                pushChange(global.index, 'features_and_traits', text);
-                                updateCharacterLocal('features_and_traits', text);
-                                updateCharacter('features_and_traits', text);
+                <Portal>
+                    <Dialog
+                        visible={helpVisible}
+                        onDismiss={hideHelpDialog}
+                        style={styles.helpWindow}
+                    >
+                        <View style = {{alignSelf: 'center'}}>
+                            <Dialog.Title
+                                style={styles.helpTitleWindow}
+                            >
+                                Full Character Sheet Screen Help
+                            </Dialog.Title>
+                        </View>
+                        <IconButton
+                            icon="close" //Getting the back icon image
+                            size={36} //Setting the size
+                            color="#a60000" //And the color
+                            style = {styles.exitButtonHelp}
+                            onPress={() => {
+                                hideHelpDialog()
                             }}
                         />
-                        <Text
-                            style = {styles.idealsHeading}
-                        >
-                            Features & Traits
-                        </Text>
-                    </View>
-                </View>
-            </View>
-            <View style = {styles.side}>
-                <View style = {styles.topRightCorner}>
-                    <View style = {styles.appearanceContainer}>
-                        <TextInput
-                            style = {styles.appearanceInput}
-                            underlineColor="transparent"
-                            multiline={true}
-                            editable={global.isDM || character.assignedTo === user.toJSON().email}
-                            value = {character.appearance}
-                            render={props => (
-                                <NativeTextInput
-                                    {...props}
-                                    style={[
-                                        props.style,
-                                        props.multiline
-                                            ? {
-                                                paddingTop: screenHeight * 0.0398936170212766,
-                                                paddingLeft: screenWidth * 0.018754688672168,
-                                                paddingRight: screenWidth * 0.018754688672168,
-                                                paddingBottom: screenHeight * 0.0106382978723404,
-                                                height: screenHeight * 0.1329787234042553,
-                                            }
-                                            : null,
-                                    ]}
-                                    editable={global.isDM || character.assignedTo === user.toJSON().email}
-                                    placeholder={"Enter character appearance..."}
-                                />
-                            )}
-                            onChangeText={(text) => {
-                                pushChange(global.index, 'appearance', text);
-                                updateCharacterLocal('appearance', text);
-                                updateCharacter('appearance', text);
-                            }}
-                        />
-                        <Text
-                            style = {styles.idealsHeading}
-                        >
-                            Character Appearance
-                        </Text>
-                    </View>
-                </View>
-                <View style = {styles.bottomRightCorner}>
-                    <View style = {styles.backstoryContainer}>
-                        <TextInput
-                            style = {styles.backstoryInput}
-                            underlineColor="transparent"
-                            multiline={true}
-                            editable={global.isDM || character.assignedTo === user.toJSON().email}
-                            value = {character.backstory}
-                            render={props => (
-                                <NativeTextInput
-                                    {...props}
-                                    style={[
-                                        props.style,
-                                        props.multiline
-                                            ? {
-                                                paddingTop: screenHeight * 0.0398936170212766,
-                                                paddingLeft: screenWidth * 0.018754688672168,
-                                                paddingRight: screenWidth * 0.018754688672168,
-                                                paddingBottom: screenHeight * 0.0106382978723404,
-                                                height: screenHeight * 0.1329787234042553,
-                                            }
-                                            : null,
-                                    ]}
-                                    editable={global.isDM || character.assignedTo === user.toJSON().email}
-                                    placeholder={"Enter character backstory..."}
-                                />
-                            )}
-                            onChangeText={(text) => {
-                                pushChange(global.index, 'backstory', text);
-                                updateCharacterLocal('backstory', text);
-                                updateCharacter('backstory', text);
-                            }}
-                        />
-                        <Text
-                            style = {styles.idealsHeading}
-                        >
-                            Character Backstory
-                        </Text>
-                    </View>
-                </View>
-            </View>
-        </View>
+                        <Dialog.Content>
+                            <Text
+                                style={styles.helpTextBold}
+                            >
+                                Please note that this help window is available on every screen by clicking on the help icon in the top right corner. The information shown in this window differs depending on the screen you are on.
+                            </Text>
+                            <Text>
+                                In this screen you can view and edit the full details of a character. The details have been categorised into four tabs.{"\n"}
+                                - Main, containing the core, most frequently accessed, information. {"\n"}
+                                - Biography containing biographical, non-numeric characteristics. {"\n"}
+                                - Inventory containing currency, weapons, armor and possessions. {'\n'}
+                                - Spells containing spell characteristics, spell slots and spells.  {'\n\n'}
+
+                                In the main tab you can change the character's image by clicking on the 'Change Image' button which will take you to the 'Image Selector'
+                                screen where you can upload and use a new image or use one you have uploaded in the past.{'\n\n'}
+
+                                In the inventory tab you can add new weapons, armor and possessions by using the associated add buttons and in the spells tab you can add
+                                spells the same way.{'\n\n'}
+
+                                Edits made to a character in this screen will be reflected in the overview of the character in the Groups screen and vice-versa.{'\n\n'}
+                                Edits made to a character in this screen and the 'Groups' screen will be applied for all players who have access to the character.
+                            </Text>
+                        </Dialog.Content>
+                    </Dialog>
+                </Portal>
         </KeyboardAwareScrollView>
+            </Provider>
     );
 }
 
 const styles = StyleSheet.create({
+    exitButtonHelp: {
+        left: screenWidth * 0.635,
+        top: screenHeight * -0.02,
+        position: 'absolute'
+    },
+    helpWindow: {
+        width: screenWidth * 0.675,
+        alignSelf: 'center',
+        marginTop: screenHeight * -0.0463829787234
+    },
+    helpTitleWindow: {
+        alignSelf: 'center',
+        textAlign: 'center'
+    },
+    helpTextBold: {
+        textAlign: 'center',
+        fontWeight: 'bold',
+        marginBottom: screenHeight * 0.02
+    },
     totalContainer: {
         flexDirection: 'row',
     },

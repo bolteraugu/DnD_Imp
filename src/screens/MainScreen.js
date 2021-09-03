@@ -4,7 +4,7 @@ import {
     StyleSheet,
     TouchableOpacity,
     View,
-    TextInput as NativeTextInput
+    TextInput as NativeTextInput, Keyboard
 } from 'react-native';
 import {TextInput, Text, Button, Portal, Dialog, Title, IconButton, Provider} from "react-native-paper"; //Probably will need text...
 import colors from '../utils/colors';
@@ -19,6 +19,14 @@ export default function MainScreen({route, navigation}) {
     const showImageDialog = () => setImageVisible(true);
     const hideImageDialog = () => setImageVisible(false);
     const [imageVisible, setImageVisible] = useState(false);
+    const [helpVisible, setHelpVisible] = useState(false);
+    const hideHelpDialog = () => setHelpVisible(false);
+    const showHelpDialog = () => setHelpVisible(true);
+
+    global.ShowHelpCharacterSheet = () => {
+        Keyboard.dismiss();
+        showHelpDialog();
+    };
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', e => {
@@ -1807,19 +1815,76 @@ export default function MainScreen({route, navigation}) {
                     <View/>
                 </Dialog>
             </Portal>
+            <Portal>
+                <Dialog
+                    visible={helpVisible}
+                    onDismiss={hideHelpDialog}
+                    style={styles.helpWindow}
+                >
+                    <View style = {{alignSelf: 'center'}}>
+                        <Dialog.Title
+                            style={styles.helpTitleWindow}
+                        >
+                            Full Character Sheet Screen Help
+                        </Dialog.Title>
+                    </View>
+                    <IconButton
+                        icon="close" //Getting the back icon image
+                        size={36} //Setting the size
+                        color="#a60000" //And the color
+                        style = {styles.exitButtonHelp}
+                        onPress={() => {
+                            hideHelpDialog()
+                        }}
+                    />
+                    <Dialog.Content>
+                        <Text
+                            style={styles.helpTextBold}
+                        >
+                            Please note that this help window is available on every screen by clicking on the help icon in the top right corner. The information shown in this window differs depending on the screen you are on.
+                        </Text>
+                        <Text>
+                            In this screen you can view and edit the full details of a character. The details have been categorised into four tabs.{"\n"}
+                            - Main, containing the core, most frequently accessed, information. {"\n"}
+                            - Biography containing biographical, non-numeric characteristics. {"\n"}
+                            - Inventory containing currency, weapons, armor and possessions. {'\n'}
+                            - Spells containing spell characteristics, spell slots and spells.  {'\n\n'}
+
+                            In the main tab you can change the character's image by clicking on the 'Change Image' button which will take you to the 'Image Selector'
+                            screen where you can upload and use a new image or use one you have uploaded in the past.{'\n\n'}
+
+                            In the inventory tab you can add new weapons, armor and possessions by using the associated add buttons and in the spells tab you can add
+                            spells the same way.{'\n\n'}
+
+                            Edits made to a character in this screen will be reflected in the overview of the character in the Groups screen and vice-versa.{'\n\n'}
+                            Edits made to a character in this screen and the 'Groups' screen will be applied for all players who have access to the character.
+                        </Text>
+                    </Dialog.Content>
+                </Dialog>
+            </Portal>
         </Provider>
     );
-    // TOP NESTED TAB NAVIGATION
-    // MAIN | NOTES | SPELLS
-
-    // MAIN SHOWS ALL CARD INFO IN A DIFF LAYOUT
-
-    // NOTES IS SIMPLE TITLE,CONTENT FLATLIST WITH INPUT
-
-    // CHAT SHOULD BE VISIBLE AT ALL TIMES
-    // IDEALLY NOT HAVING TO BE RELOADED EACH TIME
 }
 const styles = StyleSheet.create({
+    exitButtonHelp: {
+        left: screenWidth * 0.635,
+        top: screenHeight * -0.02,
+        position: 'absolute'
+    },
+    helpWindow: {
+        width: screenWidth * 0.675,
+        alignSelf: 'center',
+        marginTop: screenHeight * -0.0463829787234
+    },
+    helpTitleWindow: {
+        alignSelf: 'center',
+        textAlign: 'center'
+    },
+    helpTextBold: {
+        textAlign: 'center',
+        fontWeight: 'bold',
+        marginBottom: screenHeight * 0.02
+    },
     fullSizeWindow: {
         width: screenWidth * 0.973,
         height: screenHeight * 0.77,
@@ -1849,24 +1914,6 @@ const styles = StyleSheet.create({
     },
     gap: {
       height: screenHeight * 0.0692
-    },
-    tabContainer: {
-        flexDirection: 'row',
-        width: "100%",
-        height: "5%",
-        backgroundColor: "#ffffff"
-    },
-    currentTab: {
-        flex: 1,
-        borderBottomWidth: 2,
-        borderColor: colors.primary,
-        justifyContent: 'center'
-    },
-    otherTab: {
-        flex: 1,
-        justifyContent: 'center',
-        borderBottomWidth: 1,
-        borderColor: "#ededed",
     },
     otherTabText: {
         fontSize: 13,

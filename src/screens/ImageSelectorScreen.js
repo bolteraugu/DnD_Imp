@@ -1,5 +1,15 @@
-import {Button, Dialog, FAB, Portal, Provider, Text, TextInput} from 'react-native-paper';
-import {Dimensions, FlatList, Image, Platform, ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native';
+import {Button, Dialog, FAB, IconButton, Portal, Provider, Text, TextInput} from 'react-native-paper';
+import {
+    Dimensions,
+    FlatList,
+    Image,
+    Keyboard, Linking,
+    Platform,
+    ScrollView,
+    StyleSheet,
+    TouchableOpacity,
+    View
+} from 'react-native';
 import React, {useContext, useEffect, useState} from 'react';
 import * as ImagePicker from 'expo-image-picker';
 import {AuthUserContext} from "../navigation/AuthUserProvider";
@@ -42,6 +52,14 @@ export default function ImageSelectorScreen({navigation, route}) {
     const showDeleteDialog = () => setDeleteVisible(true);
     const hideDeleteDialog = () => setDeleteVisible(false);
     let membersTemp = [];
+    const [helpVisible, setHelpVisible] = useState(false);
+    const showHelpDialog = () => setHelpVisible(true);
+    const hideHelpDialog = () => setHelpVisible(false);
+
+    global.ShowHelpImageSelector = () => {
+        Keyboard.dismiss();
+        showHelpDialog();
+    };
 
     useEffect(() => {
         let isMounted = true;
@@ -647,11 +665,87 @@ export default function ImageSelectorScreen({navigation, route}) {
                     </Dialog.Actions>
                 </Dialog>
             </Portal>
+            <Portal>
+                <Dialog
+                    visible={helpVisible}
+                    onDismiss={hideHelpDialog}
+                    style={styles.helpWindow}
+                >
+                    <View style = {{alignSelf: 'center'}}>
+                        <Dialog.Title
+                            style={styles.helpTitle}
+                        >
+                            Image Selector Screen Help
+                        </Dialog.Title>
+                    </View>
+                    <IconButton
+                        icon="close" //Getting the back icon image
+                        size={36} //Setting the size
+                        color="#a60000" //And the color
+                        style = {styles.exitButton}
+                        onPress={() => {
+                            hideHelpDialog()
+                        }}
+                    />
+                    <Dialog.Content>
+                        <Text
+                            style={styles.helpTextBold}
+                        >
+                            Please note that this help window is available on every screen by clicking on the help icon in the top right corner. The information shown in this window differs depending on the screen you are on.
+                        </Text>
+                        <Text>
+                            - In this screen you can upload a new image to your gallery by clicking the 'Upload an Image' button and you can select and
+                            confirm an image from it.{'\n\n'}
+
+                            - If you are using this app on an Android or IOS device clicking on the 'Upload an Image' button will ask you if the app can have access
+                            to your device's storage. It requires this permission so it can open the file picker, which lets you choose the image to upload. So, you
+                            must allow the app access to your device's storage if you want to upload an image.
+                            {'\n\n'}
+
+                            - After choosing an image from the file picker, the image will be added to your gallery. You can share, delete and edit the name of
+                            any images in your gallery using the text buttons on the image cards.{'\n\n'}
+
+                            - When you share an image with a player, you share a copy of it, unlike sharing notes where you share a reference.This means that if you
+                            edit the image's name or delete it, this edit/delete will only be applied to your copy of the image, not the copies of the image created
+                            from sharing it. However, when images are shared, the sharing metadata (who has the image been shared with) is copied as well, and changes to this metadata apply
+                            to all copies. This means when you share an image to a player, all other players who have a copy of the image can no longer share it
+                            to that player. {'\n\n'}
+
+                            -You can choose what image to select by clicking on the associated image card. A red outline surrounds the selected image. If you clicked
+                            the 'Change Chat Profile Picture' button in Settings or the 'Change Image' button in the Full Character Sheet then your chat profile's
+                            /character's current image will be the selected image when you navigate to this screen. {'\n\n'}
+
+                            -When you confirm an image, the image will be used depending on the purpose of navigating to this screen. For example, if you are setting
+                            your chat's profile picture then the confirmed image will become your chat's profile picture whereas if you are embedding an image into
+                            a note then the confirmed image will be embedded into the note.
+                        </Text>
+                    </Dialog.Content>
+                </Dialog>
+            </Portal>
         </Provider>
     );
 }
 
 const styles = StyleSheet.create({
+    exitButton: {
+        left: screenWidth * 0.685,
+        top: screenHeight * -0.02,
+        position: 'absolute'
+    },
+    helpWindow: {
+        width: screenWidth * 0.725,
+        alignSelf: 'center',
+        marginTop: screenHeight * -0.0563829787234
+    },
+    helpTitle: {
+        alignSelf: 'center',
+        textAlign: 'center'
+    },
+    helpTextBold: {
+        textAlign: 'center',
+        fontWeight: 'bold',
+        marginBottom: screenHeight * 0.02
+    },
     shareDropdownIOS: {
         marginTop: screenHeight * -0.00463829787234,
     },

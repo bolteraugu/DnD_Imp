@@ -304,120 +304,70 @@ export default function CharacterCard({character, index, onChange, groupRef, nav
                                 updateCharacter();
                             }}
                         />
-                        {isDM ?
-                            <View style = {styles.overallIconContainer}>
-                                <View style={styles.firstIconRow}>
-                                    {character.canAssign ?
-                                        <IconButton
-                                            icon="account-plus"
-                                            size={28}
-                                            color="#000"
-                                            style={character.assignedTo != null && character.assignedTo.length !== 0 ? styles.addIconDM : styles.addIcon}
-                                            onPress={() => {
-                                                showAssign(character, index);
-                                            }}
-                                        /> : null
-                                    }
-                                    {character.assignedTo != null && character.assignedTo.length !== 0 ?
-                                        <IconButton
-                                            icon="account-remove"
-                                            size={28}
-                                            color="#000"
-                                            style={character.canAssign ? styles.removeIcon : styles.removeIconNoShare}
-                                            onPress={async () => {
-                                                updateCanAssign(character, index);
-                                                onChange(index, 'assignedTo', "");
-                                                updateCharacter();
-                                            }}
-                                        />
-                                        :
-                                        null
-                                    }
-                                </View>
-                                <View style={styles.iconRow}>
-                                    {isDM || ((character.assignedTo != null && character.assignedTo === user.toJSON().email) && userPermissions != null && userPermissions.deleteOwnCharacters ) ?
-                                        <IconButton
-                                            icon="delete"
-                                            size={28}
-                                            color="#000"
-                                            style={{width: "40%", marginLeft: screenWidth * 0.0026}}
-                                            onPress={() => {
-                                                showConfirmationDialog(character);
-                                            }} //delete this character
-                                        /> : null
-                                    }
-                                    <IconButton
-                                        icon="arrow-expand-all"
-                                        size={28}
-                                        color="#000"
-                                        style={isDM || ((character.assignedTo != null && character.assignedTo === user.toJSON().email) && userPermissions != null && userPermissions.deleteOwnCharacters) ? styles.expandIconDM : styles.expandIcon}
-                                        onPress={() => {
-                                            navigation.navigate('CharacterSheet', {
-                                                screen: 'Main',
-                                                params: {
-                                                    charRef: groupRef.collection('characters').doc(character._id),
-                                                    character: character,
-                                                    index: index,
-                                                    groupRef: groupRef,
-                                                    onFSChange: onChange,
-                                                    isDM: isDM
-                                                },
-                                            })
-                                        }}
-                                    />
-                                    <IconButton
-                                        icon="eye-off"
-                                        size={28}
-                                        color="#000"
-                                        style={isDM || ((character.assignedTo != null && character.assignedTo === user.toJSON().email) && userPermissions != null && userPermissions.deleteOwnCharacters) ? styles.minusIconDM : styles.minusIcon}
-                                        onPress={() => {
-                                            setHidden(true);
-                                        }}
-                                    />
-                                </View>
-                            </View>
+                    </View>
+                    <View style = {styles.cardRow}>
+                        <Button
+                            style = {styles.FCSCardButton}
+                            onPress={() => {
+                                navigation.navigate('CharacterSheet', {
+                                    screen: 'Main',
+                                    params: {
+                                        charRef: groupRef.collection('characters').doc(character._id),
+                                        character: character,
+                                        index: index,
+                                        groupRef: groupRef,
+                                        onFSChange: onChange,
+                                        isDM: isDM
+                                    },
+                                })
+                            }}
+                        >
+                            Full Character Sheet
+                        </Button>
+                        <Button
+                            style = {styles.HideCardButton}
+                            onPress={() => {
+                                setHidden(true);
+                            }}
+                        >
+                            Hide
+                        </Button>
+                        {isDM || ((character.assignedTo != null && character.assignedTo === user.toJSON().email) && userPermissions != null && userPermissions.deleteOwnCharacters ) ?
+                            <Button
+                                style = {styles.DeleteCardButton}
+                                onPress={() => {
+                                    showConfirmationDialog(character);
+                                }} //delete this character
+                            >
+                                Delete
+                            </Button>
+                            : null
+                        }
+                        {isDM && character.canAssign ?
+                            <Button
+                                style={styles.AssignCardButton}
+                                onPress={() => {
+                                    showAssign(character, index);
+                                }}
+                            >
+                                Assign
+                            </Button>
                             :
-                            <View style={styles.iconRow}>
-                                {isDM || ((character.assignedTo != null && character.assignedTo === user.toJSON().email) && userPermissions != null && userPermissions.deleteOwnCharacters ) ?
-                                    <IconButton
-                                        icon="delete"
-                                        size={28}
-                                        color="#000"
-                                        style={{width: "40%", marginLeft: screenWidth * 0.0026}}
-                                        onPress={() => {
-                                            showConfirmationDialog(character);
-                                        }} //delete this character
-                                    /> : null
-                                }
-                                <IconButton
-                                    icon="arrow-expand-all"
-                                    size={28}
-                                    color="#000"
-                                    style={isDM || ((character.assignedTo != null && character.assignedTo === user.toJSON().email) && userPermissions != null && userPermissions.deleteOwnCharacters) ? styles.expandIconDM : styles.expandIcon}
-                                    onPress={() => {
-                                        navigation.navigate('CharacterSheet', {
-                                            screen: 'Main',
-                                            params: {
-                                                charRef: groupRef.collection('characters').doc(character._id),
-                                                character: character,
-                                                index: index,
-                                                groupRef: groupRef,
-                                                onFSChange: onChange,
-                                                isDM: isDM
-                                            },
-                                        })
-                                    }}
-                                />
-                                <IconButton
-                                    icon="eye-off"
-                                    size={28}
-                                    color="#000"
-                                    style={isDM || ((character.assignedTo != null && character.assignedTo === user.toJSON().email) && userPermissions != null && userPermissions.deleteOwnCharacters) ? styles.minusIconDM : styles.minusIcon}
-                                    onPress={() => {
-                                        setHidden(true);
-                                    }}
-                                />
-                            </View>
+                            null
+                        }
+                        {isDM && character.assignedTo != null && character.assignedTo.length !== 0 ?
+                            <Button
+                                style = {styles.UnassignCardButton}
+                                onPress={() => {
+                                    updateCanAssign(character, index);
+                                    onChange(index, 'assignedTo', "");
+                                    updateCharacter();
+                                }}
+                            >
+                                Unassign
+                            </Button>
+                            :
+                            null
                         }
                     </View>
                 </View>
@@ -440,6 +390,37 @@ export default function CharacterCard({character, index, onChange, groupRef, nav
 }
 
 const styles = StyleSheet.create({
+    FCSCardButton: {
+        marginTop: screenHeight * 0.002,
+        marginBottom: screenHeight * 0.002,
+        marginLeft: screenWidth * 0.006,
+        marginRight: screenWidth * 0.006
+    },
+    DeleteCardButton: {
+        marginTop: screenHeight * 0.002,
+        marginBottom: screenHeight * 0.002,
+        marginLeft: screenWidth * 0.006,
+        marginRight: screenWidth * 0.006
+    },
+    HideCardButton: {
+        marginTop: screenHeight * 0.002,
+        marginBottom: screenHeight * 0.002,
+        marginLeft: screenWidth * 0.006,
+        marginRight: screenWidth * 0.006
+    },
+    AssignCardButton: {
+        marginTop: screenHeight * 0.002,
+        marginBottom: screenHeight * 0.002,
+        marginLeft: screenWidth * 0.006,
+        marginRight: screenWidth * 0.006
+    },
+    UnassignCardButton: {
+        marginTop: screenHeight * 0.002,
+        marginBottom: screenHeight * 0.002,
+        marginLeft: screenWidth * 0.006,
+        marginRight: screenWidth * 0.006,
+        color: "#004ecc"
+    },
     overallIconContainer: {
         flexDirection: 'column',
         position: 'absolute',
@@ -448,7 +429,7 @@ const styles = StyleSheet.create({
     },
     charImageContainer: {
         width: global.screenWidth * 0.0850187546886722,
-        height: global.screenHeight * 0.1129787234042553,
+        height: global.screenHeight * 0.208,
         position: 'absolute',
         left: global.screenWidth * 0.56189,
         top: global.screenHeight * 0.0052978723404255,
@@ -456,7 +437,7 @@ const styles = StyleSheet.create({
     },
     charImageContainerDM: {
         width: global.screenWidth * 0.0850187546886722,
-        height: global.screenHeight * 0.1129787234042553,
+        height: global.screenHeight * 0.208,
         position: 'absolute',
         left: global.screenWidth * 0.56189,
         top: global.screenHeight * 0.0572978723404255,
@@ -477,7 +458,7 @@ const styles = StyleSheet.create({
     charImage: {
         width: "100%",
         height: "100%",
-        resizeMode: "contain"
+        resizeMode: "contain",
     },
     hiddenButton: {
         width: "98.93%",

@@ -1,8 +1,8 @@
 import {Button, Dialog, FAB, IconButton, Portal, Provider, Text, TextInput, Title, Surface} from "react-native-paper";
 import React, {useContext, useEffect, useRef, useState} from "react";
 import {
-    Dimensions,
-    KeyboardAvoidingView, Platform,
+    Dimensions, Keyboard,
+    KeyboardAvoidingView, Linking, Platform,
     ScrollView,
     StyleSheet,
     TextInput as NativeTextInput,
@@ -29,6 +29,11 @@ export default function EditNotesScreen({navigation, route}) {
     const hideLinkDialog = () => setLinkVisible(false);
     const [hyperlinkUrl, setHyperlinkUrl] = useState("");
     const [hyperlinkLabel, setHyperlinkLabel] = useState("");
+
+    global.ShowHelpEditNotes = () => {
+        Keyboard.dismiss();
+        showHelpDialog();
+    };
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', e => {
@@ -103,10 +108,6 @@ export default function EditNotesScreen({navigation, route}) {
         <Provider>
         <View style = {styles.totalContainer}>
             <KeyboardAwareScrollView>
-            {/*<KeyboardAvoidingView*/}
-            {/*    behavior = {"height"}*/}
-            {/*    keyboardVerticalOffset = {screenHeight * -0.2925531914893617}*/}
-            {/*>*/}
             <View style = {styles.container}>
                 <View style = {styles.borderTitle}>
                 <Text style = {styles.headingTitle}>
@@ -125,7 +126,8 @@ export default function EditNotesScreen({navigation, route}) {
                         placeholder = {"Enter the note's title..."}
                     />
                     <Text style = {styles.helpMessage}>
-                        If this is your first time editing a note then, before you start editing, please learn how to edit notes by clicking on the help icon in the bottom left hand corner.
+                        If this is your first time editing a note then, before you start editing, please learn how to edit notes by clicking on the help icon in the
+                        top right hand corner.
                     </Text>
                 </View>
             </View>
@@ -222,57 +224,7 @@ export default function EditNotesScreen({navigation, route}) {
                     />
                     </Surface>
                 </View>
-                <FAB
-                    style={Platform.OS === 'web' ? styles.helpFABWeb : styles.helpFAB}
-                    small icon="help"
-                    onPress={() => {
-                        showHelpDialog()
-                    }}
-                />
-                <View style = {styles.emptyGap}/>
             </KeyboardAwareScrollView>
-            {/*</KeyboardAvoidingView>*/}
-            <Portal>
-                <Dialog
-                    visible={helpVisible}
-                    onDismiss={() => {
-                        hideHelpDialog()
-                    }}
-                    style = {styles.faqWindow}
-                >
-                    <View style = {styles.headingRow}>
-                        <View style = {styles.centerTitle}>
-                            <Title
-                                style = {styles.helpTitle}
-                            >
-                                Information about Editing Notes
-                            </Title>
-                        </View>
-                        <IconButton
-                            icon="close" //Getting the back icon image
-                            size={36} //Setting the size
-                            color="#a60000" //And the color
-                            style = {styles.exitButton}
-                            onPress={() => {
-                                hideHelpDialog()
-                            }}
-                        />
-                    </View>
-                    <Text style = {styles.body}>
-                        When editing the notes content, whatever you write will be parsed as HTML. To write text in the note without any stylisation you don't need to write any HTML code
-                        because in HTML free standing text (i.e. plain text with no HTML code (e.g. "Hello World")) will be processed correctly. {'\n'}{'\n'}There is an image icon and a link icon in
-                        the bottom left hand corner underneath the 'write content' text input. Clicking the image icon will take you to a screen where you can upload and pick
-                        an image. When the image is picked you will be taken back to this screen and the image will be embedded into the note. It will be embedded by inserting
-                        an &lt;img&gt; HTML tag. If you wish to delete the embedded image then you will need to delete this img tag (HTML tags finish with a "&gt;"). Clicking the link
-                        icon will show a dialog where you can enter the hyperlink label and url and once submitted the hyperlink will be inserted via inserting an 'a' HTML tag. If
-                        you wish to delete the hyperlink then you will need to delete the 'a' tag. {'\n'}{'\n'}Further stylisation can be applied by using other HTML tags. For example if you want
-                        to make text italic then you can wrap it in &lt;i&gt;&lt;/i&gt; (e.g. &lt;i&gt;Hello World&lt;/i&gt;). If you wanted to make the text a header you could wrap it
-                        in &lt;h1&gt;&lt;/h1&gt; (e.g. &lt;h1&gt;Hello World&lt;/h1&gt;). {'\n'}{'\n'}Whenever you press the enter key when editing the notes content a hidden &lt;br&gt; tag will
-                        be automatically inserted (&lt;br&gt; is the line break tag in HTML) and these tags will be deleted if the line breaks are deleted. So you do not have to worry
-                        about manually inserting line breaks (though you can add line breaks that way if you would like).
-                    </Text>
-                </Dialog>
-            </Portal>
             <Portal>
                 <Dialog
                     visible={linkVisible}
@@ -320,6 +272,59 @@ export default function EditNotesScreen({navigation, route}) {
                     </Dialog.Actions>
                 </Dialog>
             </Portal>
+            <Portal>
+                <Dialog
+                    visible={helpVisible}
+                    onDismiss={hideHelpDialog}
+                    style={styles.helpWindow}
+                >
+                    <View style = {{alignSelf: 'center'}}>
+                        <Dialog.Title
+                            style={styles.helpTitle}
+                        >
+                            Edit Notes Screen Help
+                        </Dialog.Title>
+                    </View>
+                    <IconButton
+                        icon="close" //Getting the back icon image
+                        size={36} //Setting the size
+                        color="#a60000" //And the color
+                        style = {styles.exitButton}
+                        onPress={() => {
+                            hideHelpDialog()
+                        }}
+                    />
+                    <Dialog.Content>
+                        <Text
+                            style={styles.helpTextBold}
+                        >
+                            Please note that this help window is available on every screen by clicking on the help icon in the top right corner. The information shown in this window differs depending on the screen you are on.
+                        </Text>
+                        <Text>
+                            - In this screen you can edit a note. You can edit it's title in the title text input at the top left corner of the screen. It's content
+                            can be edited using the 'Write Content' text input below the 'Title' text input. {'\n\n'}
+
+                            - When editing the notes content, whatever you write will be parsed as HTML. To write text in the note without any stylisation you don't need to write any
+                            HTML code because in HTML free standing text (i.e. plain text with no HTML code (e.g. "Hello World")) will be processed correctly (will show as plain text).
+                            {'\n\n'}
+
+                            - There is an image icon and a link icon in the bottom left hand corner underneath the 'write content' text input. Clicking the image icon will take you to a screen where you can upload and pick
+                            an image. When the image is picked you will be taken back to this screen and the image will be embedded into the note. It will be embedded by inserting
+                            an &lt;img&gt; HTML tag. If you wish to delete the embedded image then you will need to delete this img tag (HTML tags finish with a "&gt;").{'\n\n'}
+
+                            - Clicking the link icon will show a dialog where you can enter the hyperlink label and url and once submitted the hyperlink will be inserted via inserting an
+                            &lt;a&gt; HTML tag. If you wish to delete the hyperlink then you will need to delete the &lt;a&gt; tag.{'\n\n'}
+
+                            - Further stylisation can be applied by using other HTML tags. For example if you want to make text italic then you can wrap it in &lt;i&gt;&lt;/i&gt; (e.g. &lt;i&gt;Hello World&lt;/i&gt;). If you wanted to make the text a header you could wrap it
+                            in &lt;h1&gt;&lt;/h1&gt; (e.g. &lt;h1&gt;Hello World&lt;/h1&gt;). {'\n'}{'\n'}
+
+                            - Whenever you press the enter key when editing the notes content a hidden &lt;br&gt; tag will be automatically inserted (&lt;br&gt; is
+                            the line break tag in HTML) and these tags will be deleted if the line breaks are deleted. So you do not have to worry about manually
+                            inserting line breaks (though, if you want to, you can add additional line breaks by writing &lt;br&gt; tags).
+                        </Text>
+                    </Dialog.Content>
+                </Dialog>
+            </Portal>
         </View>
 </Provider>
     )
@@ -331,8 +336,23 @@ const styles = StyleSheet.create({
         alignSelf: 'center'
     },
     exitButton: {
-        marginRight: screenWidth * -0.001,
-        marginTop: screenHeight * -0.037
+        left: screenWidth * 0.625,
+        top: screenHeight * -0.02,
+        position: 'absolute'
+    },
+    helpWindow: {
+        width: screenWidth * 0.665,
+        alignSelf: 'center',
+        marginTop: screenHeight * -0.0563829787234
+    },
+    helpTitle: {
+        alignSelf: 'center',
+        textAlign: 'center'
+    },
+    helpTextBold: {
+        textAlign: 'center',
+        fontWeight: 'bold',
+        marginBottom: screenHeight * 0.02
     },
     body: {
         marginTop: screenHeight * 0.05,
@@ -445,10 +465,6 @@ const styles = StyleSheet.create({
         marginTop: screenHeight * 0.030,
         marginLeft: screenWidth * 0.011
     },
-    helpTitle: {
-        alignSelf: 'center',
-        fontSize: 23
-    },
     previewContainer: {
         height: screenHeight * 0.6265957446808511,
         width: "100%",
@@ -456,8 +472,6 @@ const styles = StyleSheet.create({
         paddingLeft: screenWidth * 0.010454688672168,
         paddingRight: screenWidth * 0.010754688672168,
         backgroundColor: "#e4e4e4"
-    },
-    emptyGap: {
     },
     contentHeadingContainer: {
       flexDirection: 'row'

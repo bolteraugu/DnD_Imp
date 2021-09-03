@@ -49,22 +49,38 @@ export default function AppStack({navigation}) {
         options={() => ({
           // eslint-disable-next-line react/display-name
           headerRight: () => (
-            <IconButton
-              icon="logout-variant"
-              size={28}
-              color="#ffffff"
-              onPress={() => logout()}
-            />
+              <View style = {{flexDirection: 'row'}}>
+                  <IconButton
+                      icon="help"
+                      size={28}
+                      color="#ffffff"
+                      onPress={() => global.ShowHelpMenu()}
+                  />
+                    <IconButton
+                      icon="logout-variant"
+                      size={28}
+                      color="#ffffff"
+                      onPress={() => logout()}
+                    />
+              </View>
           ),
         })}
       />
       <Stack.Screen
         name="DM"
         component={DMScreen}
-        options={({route, navigation}) => ({
+        options={({route}) => ({
           title: route.params.group.name,
             headerRight: () => (
                 <View style = {styles.horzRow}>
+                    <IconButton
+                        icon="help"
+                        size={28}
+                        color="#ffffff"
+                        onPress={() => {
+                            global.ShowHelpDM();
+                        }}
+                    />
                     <IconButton
                         icon="note-multiple"
                         size={28}
@@ -86,80 +102,133 @@ export default function AppStack({navigation}) {
         })}
       />
       <Stack.Screen name="CharacterSheet" component={CharacterNav}
-                    options={{
+                    options={() => ({
                         title: "Full Character Sheet",
-                    }}
+                        headerRight: () => (
+                            <IconButton
+                                icon="help"
+                                size={28}
+                                color="#ffffff"
+                                onPress={() => global.ShowHelpCharacterSheet()}
+                            />
+                        )}
+                    )}
                     screenOptions={{
                         headerStyle: {
                             backgroundColor: colors.primary
                         }
                     }}
+
       />
         <Stack.Screen name="ImageSelector" component={ImageSelectorScreen}
-                      options={{
-                          title: "Image Selector",
-                      }}/>
+                      options={() => ({
+                              title: "Image Selector",
+                              headerRight: () => (
+                                  <IconButton
+                                      icon="help"
+                                      size={28}
+                                      color="#ffffff"
+                                      onPress={() => global.ShowHelpImageSelector()}
+                                  />
+                              )}
+                      )}
+        />
         <Stack.Screen name="Notes" component={NotesScreen}
-                      options={{
-                          title: "Notes",
-                      }}/>
+                      options={() => ({
+                              title: "Notes",
+                              headerRight: () => (
+                                  <IconButton
+                                      icon="help"
+                                      size={28}
+                                      color="#ffffff"
+                                      onPress={() => global.ShowHelpNotes()}
+                                  />
+                              )}
+                      )}
+        />
         <Stack.Screen name="EditNote" component={EditNotesScreen}
-                    options={({route}) => ({
-                        title: "Edit " + route.params.note.title,
-                    })}
+                      options={({route}) => ({
+                              title: "Edit " + route.params.note.title,
+                              headerRight: () => (
+                                  <IconButton
+                                      icon="help"
+                                      size={28}
+                                      color="#ffffff"
+                                      onPress={() => global.ShowHelpEditNotes()}
+                                  />
+                              )}
+                      )}
         />
         <Stack.Screen name="ViewNote" component={ViewNotesScreen}
-                    options={({route}) => ({
-                        title: "View " + route.params.note.title,
-                    })}
+                      options={({route}) => ({
+                              title: "View " + route.params.note.title,
+                              headerRight: () => (
+                                  <IconButton
+                                      icon="help"
+                                      size={28}
+                                      color="#ffffff"
+                                      onPress={() => global.ShowHelpViewNotes()}
+                                  />
+                              )}
+                      )}
         />
         <Stack.Screen name="AddWeapon" component={AddWeaponScreen}
-                      options={{
-                          title: "Add Weapon",
-                      }}/>
+                      options={() => ({
+                              title: "Add Weapon",
+                              headerRight: () => (
+                                  <IconButton
+                                      icon="help"
+                                      size={28}
+                                      color="#ffffff"
+                                      onPress={() => global.ShowHelpWeapon()}
+                                  />
+                              )}
+                      )}
+        />
         <Stack.Screen name="AddArmor" component={AddArmorScreen}
-                      options={{
-                          title: "Add Armor",
-                      }}/>
+                      options={() => ({
+                              title: "Add Armor",
+                              headerRight: () => (
+                                  <IconButton
+                                      icon="help"
+                                      size={28}
+                                      color="#ffffff"
+                                      onPress={() => global.ShowHelpArmor()}
+                                  />
+                              )}
+                      )}
+        />
         <Stack.Screen name="AddPossession" component={AddPossessionScreen}
-                      options={{
-                          title: "Add Possession",
-                      }}/>
+                      options={() => ({
+                              title: "Add Possession",
+                              headerRight: () => (
+                                  <IconButton
+                                      icon="help"
+                                      size={28}
+                                      color="#ffffff"
+                                      onPress={() => global.ShowHelpPossession()}
+                                  />
+                              )}
+                      )}
+        />
         <Stack.Screen name="AddSpell" component={AddSpellScreen}
-                      options={{
-                          title: "Add Spell",
-                      }}/>
+                      options={() => ({
+                              title: "Add Spell",
+                              headerRight: () => (
+                                  <IconButton
+                                      icon="help"
+                                      size={28}
+                                      color="#ffffff"
+                                      onPress={() => global.ShowHelpSpell()}
+                                  />
+                              )}
+                      )}
+        />
     </Stack.Navigator>
   );
 }
 
 const Tab = createMaterialTopTabNavigator();
-
-// function NoteNav() {
-//     return (
-//         <View style={styles.playerScreenContainer}>
-//             <View style={styles.playerTabsContainer}>
-//                 <Tab.Navigator
-//                     backBehavior="none"
-//                     tabBarOptions={{
-//                         style: {backgroundColor: colors.lightGrey},
-//                     }}
-//                 >
-//                     <Tab.Screen name="EditNote" component={EditNotesScreen}
-//                         options={{
-//                             title: "Edit Note",
-//                         }}
-//                     />
-//                     <Tab.Screen name="ViewNoteImages" component={ViewNoteImagesScreen}
-//                                 options={{
-//                                     title: "Images",
-//                                 }}
-//                     />
-//                 </Tab.Navigator>
-//             </View>
-//         </View>
-//     );
-// }
 
 function CharacterNav() {
   return (
@@ -171,7 +240,7 @@ function CharacterNav() {
             style: {backgroundColor: colors.lightGrey},
           }}
         >
-          <Tab.Screen name="Main" component={MainScreen} />
+          <Tab.Screen name="Main" component={MainScreen}/>
             <Tab.Screen name="Biography" component={BiographyScreen} />
             <Tab.Screen name="Inventory" component={InventoryScreen} />
             <Tab.Screen name="Spells" component={SpellsScreen} />

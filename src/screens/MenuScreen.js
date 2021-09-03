@@ -1,5 +1,5 @@
 import React, {useState, useContext, useEffect} from 'react';
-import {StyleSheet, FlatList, View, Dimensions, Platform} from 'react-native';
+import {StyleSheet, FlatList, View, Dimensions, Platform, Keyboard} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 import {AuthUserContext} from '../navigation/AuthUserProvider';
 import {
@@ -42,6 +42,14 @@ export default function MenuScreen({navigation}) {
   const [groupName, setGroupName] = useState('');
   const [groupToLeave, setGroupToLeave] = useState(null);
   const [deletePhrase, setDeletePhrase] = useState('');
+    const [helpVisible, setHelpVisible] = useState(false);
+    const hideHelpDialog = () => setHelpVisible(false);
+    const showHelpDialog = () => setHelpVisible(true);
+
+    global.ShowHelpMenu = () => {
+        Keyboard.dismiss();
+        showHelpDialog();
+    };
 
   /**
    * Create a new Firestore collection to save threads
@@ -674,6 +682,53 @@ export default function MenuScreen({navigation}) {
                     </Dialog.Actions>
                 </Dialog>
             </Portal>
+            <Portal>
+                <Dialog
+                    visible={helpVisible}
+                    onDismiss={hideHelpDialog}
+                    style={styles.helpWindow}
+                >
+                    <View style = {{alignSelf: 'center'}}>
+                        <Dialog.Title
+                            style={styles.helpTitle}
+                        >
+                            Groups Screen Help
+                        </Dialog.Title>
+                    </View>
+                    <IconButton
+                        icon="close" //Getting the back icon image
+                        size={36} //Setting the size
+                        color="#a60000" //And the color
+                        style = {styles.exitButton}
+                        onPress={() => {
+                            hideHelpDialog()
+                        }}
+                    />
+                    <Dialog.Content>
+                        <Text
+                            style={styles.helpTextBold}
+                        >
+                            Please note that this help window is available on every screen by clicking on the help icon in the top right corner. The information shown in this window differs depending on the screen you are on.
+                        </Text>
+                        <Text>
+                            - In this screen you can create D&D groups which you can invite your friends to, edit the names of groups you have created, leave
+                            groups you are a part of and delete your account.{'\n\n'}
+
+                            - When you create a group you will automatically join it and become the Dungeon Master of that group.{'\n\n'}
+
+                            - If you leave a group that has other members in it, your information in that group (characters, images, notes etc.) will not be deleted.
+                            So if you rejoin the group later, you will have not lost any progress. However, if you are the DM of that group then another group
+                            member will become DM when you leave.{'\n\n'}
+
+                            - If you are the last person leaving the group then the group will be deleted since it is impossible for a user to join an empty group.{'\n\n'}
+
+                            - Editing the name of the group will edit it for all members.{'\n\n'}
+
+                            - There is no limit to the number of groups you can create.
+                        </Text>
+                    </Dialog.Content>
+                </Dialog>
+            </Portal>
         </KeyboardAwareScrollView>
     </Provider>
   );
@@ -684,6 +739,25 @@ MenuScreen.navigationOptions = {
 };
 
 const styles = StyleSheet.create({
+    exitButton: {
+        left: screenWidth * 0.565,
+        top: screenHeight * -0.02,
+        position: 'absolute'
+    },
+    helpWindow: {
+        width: screenWidth * 0.605,
+        alignSelf: 'center',
+        marginTop: screenHeight * -0.0563829787234
+    },
+    helpTitle: {
+        alignSelf: 'center',
+        textAlign: 'center'
+    },
+    helpTextBold: {
+        textAlign: 'center',
+        fontWeight: 'bold',
+        marginBottom: screenHeight * 0.02
+    },
   createGroupInput: {
     width: '60.4%',
     marginLeft: screenWidth * -0.0042010502625656

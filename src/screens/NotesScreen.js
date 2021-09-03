@@ -2,7 +2,7 @@ import React, {useContext, useEffect, useState} from 'react'; //If I need revisi
 import NoteCard from '../components/NoteCard'; //NoteCard is essentially represents a note after it has been created
 import colors from '../utils/colors'; //Getting colors we are using for the app
 import Spinner from '../components/Spinner'; //Spinner icon that shows
-import {StyleSheet, View, FlatList, Dimensions, ScrollView, Platform} from 'react-native'; //FlatList for viewing things in a list, View and Stylesheet we know too
+import {StyleSheet, View, FlatList, Dimensions, ScrollView, Platform, Keyboard} from 'react-native'; //FlatList for viewing things in a list, View and Stylesheet we know too
 import DropDown from "react-native-paper-dropdown";
 import { useRoute } from '@react-navigation/native';
 //Importing everything we need from react native paper. FAB stands for floating action button (represents the primary action in the screen). Portal is for rendering a component at
@@ -13,7 +13,7 @@ import {
     Dialog,
     FAB,
     Provider,
-    Text
+    Text, IconButton
 } from 'react-native-paper';
 import {AuthUserContext} from "../navigation/AuthUserProvider";
 import firebase from "firebase";
@@ -39,6 +39,13 @@ export default function NotesScreen({navigation, route}) {
     const [deleteVisible, setDeleteVisible] = useState(false); //Whether the data is loading
     const showDeleteDialog = () => setDeleteVisible(true);
     const hideDeleteDialog = () => setDeleteVisible(false);
+    const [helpVisible, setHelpVisible] = useState(false);
+    const hideHelpDialog = () => setHelpVisible(false);
+    const showHelpDialog = () => setHelpVisible(true);
+
+    global.ShowHelpNotes = () => {
+        showHelpDialog();
+    };
 
     // Load data from firebase
     useEffect(() => {
@@ -104,7 +111,7 @@ export default function NotesScreen({navigation, route}) {
 
     function ShowNotes() {
         if (notes.length === 0) {
-            return <Text style={styles.emptyMessage}>You currently do not have any notes. Press the + icon in the bottom left to add a new one.</Text>;
+            return <Text style={styles.emptyMessage}>You currently do not have any notes. Press the + icon in the bottom left to create a new one.</Text>;
         }
         else {
             return (
@@ -298,12 +305,73 @@ export default function NotesScreen({navigation, route}) {
                     </Dialog.Actions>
                 </Dialog>
             </Portal>
+            <Portal>
+                <Dialog
+                    visible={helpVisible}
+                    onDismiss={hideHelpDialog}
+                    style={styles.helpWindow}
+                >
+                    <View style = {{alignSelf: 'center'}}>
+                        <Dialog.Title
+                            style={styles.helpTitle}
+                        >
+                            Notes Screen Help
+                        </Dialog.Title>
+                    </View>
+                    <IconButton
+                        icon="close" //Getting the back icon image
+                        size={36} //Setting the size
+                        color="#a60000" //And the color
+                        style = {styles.exitButton}
+                        onPress={() => {
+                            hideHelpDialog()
+                        }}
+                    />
+                    <Dialog.Content>
+                        <Text
+                            style={styles.helpTextBold}
+                        >
+                            Please note that this help window is available on every screen by clicking on the help icon in the top right corner. The information shown in this window differs depending on the screen you are on.
+                        </Text>
+                        <Text>
+                            - In this screen you can view, share, delete notes and edit notes.
+                            You also can create a new note by clicking the + icon in the bottom left corner.{'\n\n'}
+
+                            - To view/edit a note click the view/edit button for the note you want to view/edit. This will take you to a screen where you can view/edit the note.
+                            {'\n\n'}
+
+                            - There is no limit to the number of notes you can create.{'\n\n'}
+
+                            - When you share a note, you share a reference to it. This means that any actions to the note (editing, deleting and sharing) will be applied to this reference, meaning it will be applied for all users who have access to the note.
+                        </Text>
+                    </Dialog.Content>
+                </Dialog>
+            </Portal>
         </Provider>
     );
 }
 
 //Styles for the content
 const styles = StyleSheet.create({
+    exitButton: {
+        left: screenWidth * 0.625,
+        top: screenHeight * -0.02,
+        position: 'absolute'
+    },
+    helpWindow: {
+        width: screenWidth * 0.665,
+        alignSelf: 'center',
+        marginTop: screenHeight * -0.0563829787234
+    },
+    helpTitle: {
+        alignSelf: 'center',
+        textAlign: 'center'
+    },
+    helpTextBold: {
+        textAlign: 'center',
+        fontWeight: 'bold',
+        marginBottom: screenHeight * 0.02
+    },
     shareDropdownIOS: {
         marginTop: screenHeight * -0.00463829787234,
     },

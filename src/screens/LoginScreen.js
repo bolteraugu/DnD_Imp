@@ -1,6 +1,6 @@
 import React, {useState, useContext} from 'react';
-import {View, StyleSheet, Dimensions} from 'react-native';
-import {Title, TextInput, Button, Text, IconButton} from 'react-native-paper';
+import {View, StyleSheet, Dimensions, Keyboard} from 'react-native';
+import {Title, TextInput, Button, Text, IconButton, Provider, Dialog, Portal} from 'react-native-paper';
 import {TouchableWithoutFeedback} from 'react-native';
 import {AuthUserContext} from '../navigation/AuthUserProvider';
 import {Checkbox} from 'react-native-paper';
@@ -14,12 +14,19 @@ export default function LoginScreen({navigation}) {
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState(false);
-
   const {login} = useContext(AuthUserContext);
+  const [helpVisible, setHelpVisible] = useState(false);
+  const hideHelpDialog = () => setHelpVisible(false);
+  const showHelpDialog = () => setHelpVisible(true);
+
+    global.ShowHelpLogin = () => {
+      Keyboard.dismiss();
+      showHelpDialog();
+    };
 
   //Got help for checkbox code from here: https://callstack.github.io/react-native-paper/checkbox.html
-
   return (
+      <Provider>
       <View style = {styles.titleBox}>
           <Title style={styles.titleText}>Welcome to Dungeon Minion 5e</Title>
     <View style={styles.body}>
@@ -82,10 +89,73 @@ export default function LoginScreen({navigation}) {
       >Contact Us</Button>
     </View>
       </View>
+        <Portal>
+          <Dialog
+              visible={helpVisible}
+              onDismiss={hideHelpDialog}
+              style={styles.helpWindow}
+          >
+            <View style = {{alignSelf: 'center'}}>
+                <Dialog.Title
+                    style={styles.helpTitle}
+                >
+                  Login Screen Help
+                </Dialog.Title>
+            </View>
+            <IconButton
+                icon="close" //Getting the back icon image
+                size={36} //Setting the size
+                color="#a60000" //And the color
+                style = {styles.exitButton}
+                onPress={() => {
+                  hideHelpDialog()
+                }}
+            />
+            <Dialog.Content>
+              <Text
+                  style={styles.helpTextBold}
+              >
+                Please note that this help window is available on every screen by clicking on the help icon in the top right corner. The information shown in this window differs depending on the screen you are on.
+              </Text>
+              <Text>
+                - In this screen you can login by entering your account's email and password.{'\n\n'}
+
+                - The password field has a visibility icon which toggles whether you can see your password.{'\n\n'}
+
+                - If you do not yet have an account you can click on the register button which will take you to the register screen where you can create one.{'\n\n'}
+
+                - If you have an account but have forgotten your password you can click on the forgot password button which will take you to the forgot password
+                screen.{'\n\n'}
+
+                - Checking the 'Remember Me' checkbox means in the future you don't have to login into your account when you restart this app.
+              </Text>
+            </Dialog.Content>
+          </Dialog>
+        </Portal>
+      </Provider>
   );
 }
 
 const styles = StyleSheet.create({
+  exitButton: {
+    left: screenWidth * 0.565,
+    top: screenHeight * -0.02,
+    position: 'absolute'
+  },
+  helpWindow: {
+    width: screenWidth * 0.605,
+    alignSelf: 'center',
+    marginTop: screenHeight * -0.0563829787234
+  },
+  helpTitle: {
+    alignSelf: 'center',
+    textAlign: 'center'
+  },
+  helpTextBold: {
+    textAlign: 'center',
+    fontWeight: 'bold',
+    marginBottom: screenHeight * 0.02
+  },
   contactUs: {
     marginTop: screenHeight * 0.2659574468085106,
   },

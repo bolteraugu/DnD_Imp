@@ -1,5 +1,5 @@
-import {Dimensions, StyleSheet, Text, TextInput as NativeTextInput, View, Platform} from "react-native";
-import {TextInput, Button, Checkbox, Provider} from "react-native-paper";
+import {Dimensions, StyleSheet, Text, TextInput as NativeTextInput, View, Platform, Linking} from "react-native";
+import {TextInput, Button, Checkbox, Provider, Portal, Dialog, IconButton} from "react-native-paper";
 import React, {useEffect, useState} from "react";
 import {Picker} from "@react-native-picker/picker";
 import firebase from 'firebase';
@@ -32,6 +32,13 @@ export default function AddSpellScreen({navigation, route}) {
         {label: "8", value: "8"},
         {label: "9", value: "9"},
     ];
+    const [helpVisible, setHelpVisible] = useState(false);
+    const hideHelpDialog = () => setHelpVisible(false);
+    const showHelpDialog = () => setHelpVisible(true);
+
+    global.ShowHelpSpell = () => {
+        showHelpDialog();
+    };
 
         return (
             <Provider>
@@ -53,6 +60,11 @@ export default function AddSpellScreen({navigation, route}) {
                                 setName(text)
                             }}
                         />
+                        <Text
+                            style = {Platform.OS === 'web' ? styles.requiredFieldWeb : styles.requiredField}
+                        >
+                            *
+                        </Text>
                     </View>
                     <View style = {styles.row}>
                         <View style = {Platform.OS === 'web' ? styles.dropdownLabelContainerWeb : styles.dropdownLabelContainer}>
@@ -93,6 +105,11 @@ export default function AddSpellScreen({navigation, route}) {
                                 />
                             </View>
                         }
+                        <Text
+                            style = {Platform.OS === 'web' ? styles.requiredFieldWeb : styles.requiredField}
+                        >
+                            *
+                        </Text>
                     </View>
                     <View style = {styles.row}>
                         <View style = {styles.headingContainer}>
@@ -234,12 +251,92 @@ export default function AddSpellScreen({navigation, route}) {
                 </Button>
                 <View style = {styles.gap}/>
             </View>
+                <Portal>
+                    <Dialog
+                        visible={helpVisible}
+                        onDismiss={hideHelpDialog}
+                        style={styles.helpWindow}
+                    >
+                        <View style = {{alignSelf: 'center'}}>
+                            <Dialog.Title
+                                style={styles.helpTitle}
+                            >
+                                Add Spell Screen Help
+                            </Dialog.Title>
+                        </View>
+                        <IconButton
+                            icon="close" //Getting the back icon image
+                            size={36} //Setting the size
+                            color="#a60000" //And the color
+                            style = {styles.exitButton}
+                            onPress={() => {
+                                hideHelpDialog()
+                            }}
+                        />
+                        <Dialog.Content>
+                            <Text
+                                style={styles.helpTextBold}
+                            >
+                                Please note that this help window is available on every screen by clicking on the help icon in the top right corner. The information shown in this window differs depending on the screen you are on.
+                            </Text>
+                            <Text>
+                                - In this screen you can create and add a spell to the character you are editing.{'\n\n'}
+
+                                - The required fields for the spell is the name field and the level field (indicated by the red asterisks).
+                                {'\n\n'}
+
+                                - There is no limit to the number of spells you can create.{'\n\n'}
+
+                                - When you add a spell to a character, the addition will be applied for all players who have access to the character.{'\n\n'}
+
+                                - The spell fields are based on information found in the <Text style = {{color: "#3d39e6"}} onPress={() => Linking.openURL('https://media.wizards.com/2016/downloads/DND/SRD-OGL_V5.1.pdf')}>5.1 Systems Reference Document.</Text>
+                            </Text>
+                        </Dialog.Content>
+                    </Dialog>
+                </Portal>
             </KeyboardAwareScrollView>
             </Provider>
         );
 }
 
 const styles = StyleSheet.create({
+    exitButton: {
+        left: screenWidth * 0.625,
+        top: screenHeight * -0.02,
+        position: 'absolute'
+    },
+    helpWindow: {
+        width: screenWidth * 0.665,
+        alignSelf: 'center',
+        marginTop: screenHeight * -0.0563829787234
+    },
+    helpTitle: {
+        alignSelf: 'center',
+        textAlign: 'center'
+    },
+    helpTextBold: {
+        textAlign: 'center',
+        fontWeight: 'bold',
+        marginBottom: screenHeight * 0.02
+    },
+    requiredField: {
+        color: "red",
+        alignSelf: 'center',
+        marginTop: screenHeight * -0.02,
+        marginLeft: screenWidth * -0.00835,
+        left: screenWidth * 0.0125,
+        fontSize: 25
+    },
+    requiredFieldWeb: {
+        color: "red",
+        alignSelf: 'center',
+        marginTop: screenHeight * -0.02,
+        marginLeft: screenWidth * -0.0036,
+        position: 'absolute',
+        left: screenWidth * 0.4775,
+        top: screenHeight * 0.035,
+        fontSize: 25
+    },
     shareDropdown: {
         marginTop: screenHeight * -0.020363829787234,
     },
