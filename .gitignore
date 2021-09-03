@@ -2,3 +2,5 @@
 /.idea/workspace.xml
 /Documentation_Images
 /.expo/packager-info.json
+
+.vercel

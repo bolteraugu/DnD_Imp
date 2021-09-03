@@ -681,7 +681,7 @@ export default function DMScreen({route, navigation}) {
                                 - To create a new character click the add new character button. There is no limit to the number of characters you can create.{'\n\n'}
 
                                 - To view a character's image in it's full resolution you can click on the image. To delete a character press the delete
-                                button. Deleting a character will delete it for all players. {'\n\n'}
+                                button.{'\n\n'}
 
                                 - To see the full details of a character view the 'Full Character Sheet' screen click the 'Full Character Sheet' button.
                                 You can change a character's image in this screen.{'\n\n'}
@@ -707,7 +707,7 @@ export default function DMScreen({route, navigation}) {
                                     - To send a text message in chat type the message in the text input and press the send button.{'\n\n'}
 
                                     - If you would like to send an image click the image icon in the text input. Clicking this will take you to the 'Image Selector'
-                                    screen where you can upload and select a new image or select one you have used in the past.{'\n\n'}
+                                    screen where you can upload and select a new image or select one you have used in this past.{'\n\n'}
 
                                     - By default, when you send a message it will send it to all group members. To specify what members you want to send it to you
                                     can use the select recipients dropdown at the top of the chat window.{'\n\n'}
