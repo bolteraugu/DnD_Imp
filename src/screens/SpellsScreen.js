@@ -96,7 +96,7 @@ export default function SpellsScreen({route, navigation}) {
         else if (fieldName === 'spell_save_DC') {
             global.charaRef
                 .update({
-                    spell_save_DC: Number(value)
+                    spell_save_DC: value
                 })
                 .then(console.log('Successfully updated character'), (error) =>
                     console.log('Failed to update character: ' + error)
@@ -105,7 +105,7 @@ export default function SpellsScreen({route, navigation}) {
         else if (fieldName === 'spell_attack_bonus') {
             global.charaRef
                 .update({
-                    spell_attack_bonus: Number(value)
+                    spell_attack_bonus: value
                 })
                 .then(console.log('Successfully updated character'), (error) =>
                     console.log('Failed to update character: ' + error)
@@ -114,7 +114,7 @@ export default function SpellsScreen({route, navigation}) {
         else if (fieldName === 'first_level_spell_slots') {
             global.charaRef
                 .update({
-                    first_level_spell_slots: Number(value)
+                    first_level_spell_slots: value
                 })
                 .then(console.log('Successfully updated character'), (error) =>
                     console.log('Failed to update character: ' + error)
@@ -123,7 +123,7 @@ export default function SpellsScreen({route, navigation}) {
         else if (fieldName === 'second_level_spell_slots') {
             global.charaRef
                 .update({
-                    second_level_spell_slots: Number(value)
+                    second_level_spell_slots: value
                 })
                 .then(console.log('Successfully updated character'), (error) =>
                     console.log('Failed to update character: ' + error)
@@ -132,7 +132,7 @@ export default function SpellsScreen({route, navigation}) {
         else if (fieldName === 'third_level_spell_slots') {
             global.charaRef
                 .update({
-                    third_level_spell_slots: Number(value)
+                    third_level_spell_slots: value
                 })
                 .then(console.log('Successfully updated character'), (error) =>
                     console.log('Failed to update character: ' + error)
@@ -141,7 +141,7 @@ export default function SpellsScreen({route, navigation}) {
         else if (fieldName === 'fourth_level_spell_slots') {
             global.charaRef
                 .update({
-                    fourth_level_spell_slots: Number(value)
+                    fourth_level_spell_slots: value
                 })
                 .then(console.log('Successfully updated character'), (error) =>
                     console.log('Failed to update character: ' + error)
@@ -150,7 +150,7 @@ export default function SpellsScreen({route, navigation}) {
         else if (fieldName === 'fifth_level_spell_slots') {
             global.charaRef
                 .update({
-                    fifth_level_spell_slots: Number(value)
+                    fifth_level_spell_slots: value
                 })
                 .then(console.log('Successfully updated character'), (error) =>
                     console.log('Failed to update character: ' + error)
@@ -159,7 +159,7 @@ export default function SpellsScreen({route, navigation}) {
         else if (fieldName === 'sixth_level_spell_slots') {
             global.charaRef
                 .update({
-                    sixth_level_spell_slots: Number(value)
+                    sixth_level_spell_slots: value
                 })
                 .then(console.log('Successfully updated character'), (error) =>
                     console.log('Failed to update character: ' + error)
@@ -168,7 +168,7 @@ export default function SpellsScreen({route, navigation}) {
         else if (fieldName === 'seventh_level_spell_slots') {
             global.charaRef
                 .update({
-                    seventh_level_spell_slots: Number(value)
+                    seventh_level_spell_slots: value
                 })
                 .then(console.log('Successfully updated character'), (error) =>
                     console.log('Failed to update character: ' + error)
@@ -177,7 +177,7 @@ export default function SpellsScreen({route, navigation}) {
         else if (fieldName === 'eighth_level_spell_slots') {
             global.charaRef
                 .update({
-                    eighth_level_spell_slots: Number(value)
+                    eighth_level_spell_slots: value
                 })
                 .then(console.log('Successfully updated character'), (error) =>
                     console.log('Failed to update character: ' + error)
@@ -186,7 +186,7 @@ export default function SpellsScreen({route, navigation}) {
         else if (fieldName === 'ninth_level_spell_slots') {
             global.charaRef
                 .update({
-                    ninth_level_spell_slots: Number(value)
+                    ninth_level_spell_slots: value
                 })
                 .then(console.log('Successfully updated character'), (error) =>
                     console.log('Failed to update character: ' + error)
